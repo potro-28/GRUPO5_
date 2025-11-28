@@ -2,7 +2,6 @@
 from django.db import models
 from datetime import datetime
 
-<<<<<<< HEAD
 # Create your models here.
 #---------MODELO ASISTENCIA -----------------------------------------------------
 class Asistencia(models.Model):
@@ -201,7 +200,6 @@ class Meta:
     verbose_name = "Turno Entrenador"
     verbose_name_plural = "Turnos Entrenadores"
     db_table = "turno_entrenadores"
-=======
 
 
 
@@ -523,4 +521,3 @@ class Meta:
         db_table = "Nutricion"
         verbose_name = "Nutricion"
         verbose_name_plural = "Nutriciones"
->>>>>>> 16af046 (Modificaciones en models.py)
