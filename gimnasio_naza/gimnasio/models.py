@@ -324,21 +324,15 @@ from decimal import Decimal
 
 
 class Rutina(models.Model):
-    tipo = models.CharField(
-        max_length=50,
+    tipo = models.CharField(max_length=50,
         choices=[
             ('FUERZA', 'Fuerza'),
             ('CARDIO', 'Cardio'),
-            ('MIXTA', 'Mixta'),
             ('FUNCIONAL', 'Funcional'),
         ],
-        db_index=True
     )
 
-    disponibilidad = models.IntegerField(
-        default=1,
-        db_index=True
-    )
+    disponibilidad = models.IntegerField()
 
     distribucion = models.CharField(
         max_length=30,
@@ -346,31 +340,45 @@ class Rutina(models.Model):
             ('SUPERIOR', 'Superior'),
             ('INFERIOR', 'Inferior'),
             ('COMPLETA', 'Cuerpo completo'),
-            ('HIIT', 'HIIT'),
         ]
     )
 
-    id_imc = models.ForeignKey(
-        'Imc',
-        on_delete=models.SET_NULL,
-        null=True,
-        db_index=True
-    )
-
-    intensidad = models.DecimalField(
-        max_digits=4,
-        decimal_places=1,
-        default=Decimal('0.0')
-    )
+    fk_imc = models.ForeignKey(Masa_corporal,on_delete=models.CASCADE)
 
     class Meta:
-        db_table = 'rutinas'
-        indexes = [
-            models.Index(fields=['tipo'], name='idx_tipo_rt'),
-            models.Index(fields=['disponibilidad'], name='idx_disp_rt'),
-            models.Index(fields=['id_imc'], name='idx_imc_rt'),
-            models.Index(fields=['tipo', 'disponibilidad'], name='idx_tipo_disp'),
-        ]
+        verbose_name = 'Rutina'
+        verbose_name_plural = 'Rutinas'
+        db_table = 'rutina'
 
     def __str__(self):
-        return f"Rutina {self.id}"
+        return self.id
+    
+class Registro_Visitantes(models.Model):
+    fecha_registro = models.DateField(default=datetime.now)
+    fk_usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
+
+    def _str_(self):
+        return self.id
+
+    class Meta:
+        verbose_name = 'Registro_Visitante'
+        verbose_name_plural = 'Registro_Visitantes'
+        db_table = 'registro_Visitantes'
+        
+class Turno_Entrenadores(models.Model):
+    JORNADA_CHOICES = [
+    ('mañana', 'mañana'),
+    ('tarde', 'tarde'),
+    ]
+
+    fecha_turno_inicio = models.DateField(default=datetime.now)
+    fecha_turno_final = models.DateField(default=datetime.now)
+    jornada = models.CharField(max_length=10,choices=JORNADA_CHOICES)
+
+    def __str__(self):
+        return self.id
+
+class Meta:
+    verbose_name = "Turno Entrenador"
+    verbose_name_plural = "Turnos Entrenadores"
+    db_table = "turno_entrenadores"
