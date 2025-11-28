@@ -184,35 +184,18 @@ class Encuesta(models.Model):
         return self.id
 
     class Meta:
-        verbose_name = 'Reporte'
-        verbose_name_plural = 'Reportes'
-        db_table = 'Reporte'
+        db_table = 'rutinas'
+        indexes = [
+            models.Index(fields=['tipo'], name='idx_tipo_rt'),
+            models.Index(fields=['disponibilidad'], name='idx_disp_rt'),
+            models.Index(fields=['id_imc'], name='idx_imc_rt'),
+            models.Index(fields=['tipo', 'disponibilidad'], name='idx_tipo_disp'),
+        ]
 
-#--------------------------------Modulo Gestión de reportes y PQRS------------------------
-
-class Soporte_PQRS(models.Model):
-    TIPO_PQRS_CHOICES = [
-        ('peticion', 'Peticion'),
-        ('queja', 'Queja'),
-        ('reclamo', 'Reclamo'),
-        ('sugerencia', 'Sugerencia'),
-    ]
-    tipo = models.CharField(max_length=20,choices=TIPO_PQRS_CHOICES,default='peticion')
-    descripcion = models.TextField()
-    fecha_ingreso = models.DateField(default=datetime.now)
-    ESTADO_CHOICES = [
-    ('pendiente', 'pendiente'),
-    ('en_proceso', 'en_proceso'),
-    ('solucionada', 'solucionada'),
-    ]
-
-    estado = models.CharField(max_length=20,choices=ESTADO_CHOICES,default='pendiente')
-    fk_usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
-    
     def __str__(self):
-      return self.id
-        
-    class Meta:   
-        verbose_name = 'PQRS'
-        verbose_name_plural = 'PQRS'
-        db_table = 'PQRS'
+        return f"Rutina {self.id}"
+
+class Meta:
+    verbose_name = "Turno Entrenador"
+    verbose_name_plural = "Turnos Entrenadores"
+    db_table = "turno_entrenadores"
