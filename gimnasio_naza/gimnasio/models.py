@@ -3,6 +3,7 @@ from datetime import datetime
 from decimal import Decimal  
 
 # Create your models here.
+
 #---------MODELO ASISTENCIA -----------------------------------------------------
 class Asistencia(models.Model):
     fecha_asistencia = models.DateField(default=datetime.now, verbose_name='Fecha de Asistencia')
@@ -334,3 +335,61 @@ class Meta:
     verbose_name = "Turno Entrenador"
     verbose_name_plural = "Turnos Entrenadores"
     db_table = "turno_entrenadores"
+
+#-----------------IMC------------------------------
+
+class Masa_corporal (models.Model):
+    peso_cliente=models.DecimalField(max_digits=10, decimal_places=2)
+    fecha_control=models.DateField()
+    altura_cliente=models.DecimalField(max_digits=10, decimal_places=2)
+    fk_Nutricion=models.ForeignKey('Nutricion', on_delete=models.CASCADE ,verbose_name='Nutricion')
+   
+  def __str__(self):
+        return self.id
+  class meta:
+      db_table='Masa_corporal'
+      verbose_name='Masa_corporal'
+      verbose_name_plural='Masas_corporales'
+    
+'''----------certificaciones-----------'''
+
+class Certificacion_interna(models.Model):
+    descripcion_certificacion=models.CharField(max_length=500)
+    fecha_certifiacion=models.DateField(auto_now=False, auto_now_add=False)
+    fk_Asistencia=models.ForeignKey("Asistencia", on_delete=models.CASCADE, verbose_name='Asistencia')
+  def __str__(self):
+    return self.id
+  class meta:
+      db_table='Certifiacion_interna'
+      verbose_name='Certificaion_interna'
+      verbose_name_plural='Certificaiones_internas'
+
+'''---------sanciones----------'''
+
+class Sancion(models.Model):
+    
+    Tipo_sancion_chioce=[
+        ('leve','Leve'),
+        ('moderada','Moderada'),
+        ('grave','Grave')
+    ]
+    Estado_choice=[
+        ('activa','Activa')
+        ('inactiva','inactiva')
+        ('pendiente','Pendiente')
+    ]
+    motivo_sancion=models.CharField(max_length=350)
+    tipo_sancion=models.CharField(max_length=80,choices=Tipo_sancion_chioce)
+    fecha_inicio=models.DateField()
+    duracion_sancion=models.IntegerField(mas_digits=30)
+    fecha_fin=models.DateField()
+    estado=models.CharField(max_length=80,choice=Estado_choice)
+    fk_usuario=models.ForeignKey("Usuario", on_delete=models.CASCADE, verbose_name='Usuario')
+    
+  def __str__(self):
+    return self.id
+    
+  class meta:
+      db_table='Sancion'
+      verbose_name='Sancion'
+      verbose_name_plural='Sanciones'
