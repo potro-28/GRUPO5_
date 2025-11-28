@@ -1,5 +1,6 @@
 from django.db import models
 from datetime import datetime
+from decimal import Decimal  
 
 # Create your models here.
 #---------MODELO ASISTENCIA -----------------------------------------------------
@@ -165,7 +166,8 @@ class Encuesta(models.Model):
         db_table = 'encuesta'
    
  #--------------------------------Modulo Gestión de reportes y PQRS------------------------
-     TIPO_REPORTE_CHOICES = [
+class Reportes_estadisticas(models.Model):
+    TIPO_REPORTE_CHOICES = [
         ('membresia', 'Membresia'),
         ('asistencia', 'Asistencia'),
         ('elemento', 'Elemento'),
@@ -216,7 +218,7 @@ class Soporte_PQRS(models.Model):
         verbose_name_plural = 'PQRS'
         db_table = 'PQRS'
         
---------------------CATEGORIA------------------
+#--------------------CATEGORIA------------------
 
 class Categoria(models.Model):
     nombre_categoria = models.CharField(max_length=45)
@@ -231,7 +233,7 @@ class Categoria(models.Model):
         verbose_name = "Categoria"
         verbose_name_plural = "Categorias"
         
---------------------NUTRICION------------------
+#--------------------NUTRICION------------------
 
 class Nutricion(models.Model):
 
@@ -266,3 +268,69 @@ class Nutricion(models.Model):
         db_table = "Nutricion"
         verbose_name = "Nutricion"
         verbose_name_plural = "Nutriciones"
+        
+#------------RUTINA----------------
+
+class Rutina(models.Model):
+    tipo = models.CharField(max_length=50,
+        choices=[
+            ('FUERZA', 'Fuerza'),
+            ('CARDIO', 'Cardio'),
+            ('FUNCIONAL', 'Funcional'),
+        ],
+    )
+
+    disponibilidad = models.IntegerField()
+
+    distribucion = models.CharField(
+        max_length=30,
+        choices=[
+            ('SUPERIOR', 'Superior'),
+            ('INFERIOR', 'Inferior'),
+            ('COMPLETA', 'Cuerpo completo'),
+        ]
+    )
+
+    fk_imc = models.ForeignKey(Masa_corporal,on_delete=models.CASCADE)
+
+    class Meta:
+        verbose_name = 'Rutina'
+        verbose_name_plural = 'Rutinas'
+        db_table = 'rutina'
+
+    def __str__(self):
+        return self.id
+      
+#------------REGISTRO DE VISITANTES----------------
+    
+class Registro_Visitantes(models.Model):
+    fecha_registro = models.DateField(default=datetime.now)
+    fk_usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
+
+    def _str_(self):
+        return self.id
+
+    class Meta:
+        verbose_name = 'Registro_Visitante'
+        verbose_name_plural = 'Registro_Visitantes'
+        db_table = 'registro_Visitantes'
+
+#-----------TURNO DE ENTRENADORES----------------
+
+class Turno_Entrenadores(models.Model):
+    JORNADA_CHOICES = [
+    ('mañana', 'mañana'),
+    ('tarde', 'tarde'),
+    ]
+
+    fecha_turno_inicio = models.DateField(default=datetime.now)
+    fecha_turno_final = models.DateField(default=datetime.now)
+    jornada = models.CharField(max_length=10,choices=JORNADA_CHOICES)
+
+    def __str__(self):
+        return self.id
+
+class Meta:
+    verbose_name = "Turno Entrenador"
+    verbose_name_plural = "Turnos Entrenadores"
+    db_table = "turno_entrenadores"
