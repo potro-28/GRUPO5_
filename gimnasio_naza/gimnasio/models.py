@@ -7,7 +7,8 @@ class Asistencia(models.Model):
     fecha_asistencia = models.DateField(default=datetime.now, verbose_name='Fecha de Asistencia')
     hora_ingreso = models.DateTimeField(default=datetime.now, verbose_name='Hora de Ingreso')
     hora_salida = models.DateTimeField(null=True, blank=True, verbose_name='Hora de Salida')
-    fk_membresia = models.ForeignKey(Membresia, on_delete=models.CASCADE)
+    fk_membresia = models.ForeignKe
+    (Membresia, on_delete=models.CASCADE)
 
 
     def __str__(self):
