@@ -48,8 +48,8 @@ class Notificacion(models.Model):
     tipo_notificacion = models.CharField(max_length=120, choices=TIPO_NOTIFICACION, verbose_name='Tipo de Notificación')
     canal_notificacion = models.CharField(max_length=120, choices=CANAL_NOTIFICACION, verbose_name='Canal de Notificación')
     fk_membresia = models.ForeignKey('Membresia', on_delete=models.CASCADE, verbose_name='Membresía')
-    fk_asistencia = models.ForeignKey('Asistencia', on_delete=models.SET_NULL, null=True, blank=True, verbose_name='Asistencia')
-    fk_mantenimiento = models.ForeignKey('Mantenimiento', on_delete=models.SET_NULL, null=True, blank=True, verbose_name='Mantenimiento')
+    fk_asistencia = models.ForeignKey('Asistencia', on_delete=models.CASCADE, verbose_name='Asistencia')
+    fk_mantenimiento = models.ForeignKey('Mantenimiento', on_delete=models.CASCADE, verbose_name='Mantenimiento')
 
     def __str__(self):
         return self.id
