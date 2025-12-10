@@ -5,7 +5,6 @@ from decimal import Decimal
 # Create your models here.
 
 
-
 #---------------------------------MODELO USUARIO-----------------------------------------       
 class Usuario(models.Model):
     documento = models.CharField(max_length=45, unique=True)
