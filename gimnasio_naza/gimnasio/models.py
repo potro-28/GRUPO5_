@@ -12,7 +12,6 @@ class Asistencia(models.Model):
     (Membresia, on_delete=models.CASCADE)
 
 
-<<<<<<< HEAD
     def __str__(self):
         return self.id
 
@@ -64,10 +63,8 @@ class Notificacion(models.Model):
         
  #---------------------------------MODELO USUARIO-----------------------------------------       
  class Usuario(models.Model):
-=======
 #---------------------------------MODELO USUARIO-----------------------------------------       
 class Usuario(models.Model):
->>>>>>> 1b694ee (Configuracion de la plantilla base)
     documento = models.CharField(max_length=45, unique=True)
     nombre_usuario = models.CharField(max_length=45)
     apellido_usuario = models.CharField(max_length=45)
