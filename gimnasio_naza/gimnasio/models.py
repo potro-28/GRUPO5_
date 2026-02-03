@@ -12,7 +12,6 @@ class Asistencia(models.Model):
     fk_membresia = models.ForeignKe
     (Membresia, on_delete=models.CASCADE)
 
-
     def __str__(self):
         return self.id
 
