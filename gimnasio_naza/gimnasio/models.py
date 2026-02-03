@@ -1,6 +1,7 @@
 # core/models.py
 from django.db import models
 from datetime import datetime
+from decimal import Decimal  
 
 # Create your models here.
 #---------MODELO ASISTENCIA -----------------------------------------------------
@@ -241,8 +242,7 @@ class Encuesta(models.Model):
         db_table = 'encuesta'
    
  #--------------------------------Modulo Gestión de reportes y PQRS------------------------
-class Reportes_estadisticas(models.Model):
-    TIPO_REPORTE_CHOICES = [
+     TIPO_REPORTE_CHOICES = [
         ('membresia', 'Membresia'),
         ('asistencia', 'Asistencia'),
         ('elemento', 'Elemento'),
@@ -275,177 +275,3 @@ class Reportes_estadisticas(models.Model):
         verbose_name = 'PQRS'
         verbose_name_plural = 'PQRS'
         db_table = 'PQRS'
-        
-#--------------------CATEGORIA------------------
-
-class Categoria(models.Model):
-    nombre_categoria = models.CharField(max_length=45)
-    material = models.CharField(max_length=45)
-    peso_equipo = models.CharField(max_length=45)
-    descripcion = models.CharField(max_length=250)
-
-    def __str__(self):
-        return self.nombre_categoria
-    class Meta:
-        db_table = "Categoria"
-        verbose_name = "Categoria"
-        verbose_name_plural = "Categorias"
-        
-#--------------------NUTRICION------------------
-
-class Nutricion(models.Model):
-
-    NIVEL_ACTIVIDAD = [
-        ('bajo', 'Bajo'),
-        ('medio', 'Medio'),
-        ('alto', 'Alto'),
-    ]
-
-    TIPO_OBJETIVO = [
-        ('perder_peso', 'Perder Peso'),
-        ('mantener', 'Mantener'),
-        ('ganar_masa', 'Ganar Masa Muscular'),
-    ]
-
-    TIPO_DIETA = [
-        ('keto', 'Keto'),
-        ('balanceada', 'Balanceada'),
-        ('hiperproteica', 'Hiperproteica'),
-    ]
-
-    nivel_actividad = models.CharField(max_length=20, choices=NIVEL_ACTIVIDAD)
-    tipo_objetivo = models.CharField(max_length=20, choices=TIPO_OBJETIVO)
-    tipo_dieta = models.CharField(max_length=40, choices=TIPO_DIETA)
-
-    fk_Usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
-
-    def __str__(self):
-        return f"Nutrición de {self.fk_Usuario}"
-class Meta:
-        db_table = "Nutricion"
-        verbose_name = "Nutricion"
-        verbose_name_plural = "Nutriciones"
-        
-#------------RUTINA----------------
-
-class Rutina(models.Model):
-    tipo = models.CharField(max_length=50,
-        choices=[
-            ('FUERZA', 'Fuerza'),
-            ('CARDIO', 'Cardio'),
-            ('FUNCIONAL', 'Funcional'),
-        ],
-    )
-
-    disponibilidad = models.IntegerField()
-
-    distribucion = models.CharField(
-        max_length=30,
-        choices=[
-            ('SUPERIOR', 'Superior'),
-            ('INFERIOR', 'Inferior'),
-            ('COMPLETA', 'Cuerpo completo'),
-        ]
-    )
-
-    fk_imc = models.ForeignKey(Masa_corporal,on_delete=models.CASCADE)
-
-    class Meta:
-        verbose_name = 'Rutina'
-        verbose_name_plural = 'Rutinas'
-        db_table = 'rutina'
-
-    def __str__(self):
-        return self.id
-      
-#------------REGISTRO DE VISITANTES----------------
-    
-class Registro_Visitantes(models.Model):
-    fecha_registro = models.DateField(default=datetime.now)
-    fk_usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
-
-    def _str_(self):
-        return self.id
-
-    class Meta:
-        verbose_name = 'Registro_Visitante'
-        verbose_name_plural = 'Registro_Visitantes'
-        db_table = 'registro_Visitantes'
-
-#-----------TURNO DE ENTRENADORES----------------
-
-class Turno_Entrenadores(models.Model):
-    JORNADA_CHOICES = [
-    ('mañana', 'mañana'),
-    ('tarde', 'tarde'),
-    ]
-
-    fecha_turno_inicio = models.DateField(default=datetime.now)
-    fecha_turno_final = models.DateField(default=datetime.now)
-    jornada = models.CharField(max_length=10,choices=JORNADA_CHOICES)
-
-    def __str__(self):
-        return self.id
-
-class Meta:
-    verbose_name = "Turno Entrenador"
-    verbose_name_plural = "Turnos Entrenadores"
-    db_table = "turno_entrenadores"
-
-#-----------------IMC------------------------------
-
-class Masa_corporal (models.Model):
-    peso_cliente=models.DecimalField(max_digits=10, decimal_places=2)
-    fecha_control=models.DateField()
-    altura_cliente=models.DecimalField(max_digits=10, decimal_places=2)
-    fk_Nutricion=models.ForeignKey('Nutricion', on_delete=models.CASCADE ,verbose_name='Nutricion')
-   
-  def __str__(self):
-        return self.id
-  class meta:
-      db_table='Masa_corporal'
-      verbose_name='Masa_corporal'
-      verbose_name_plural='Masas_corporales'
-    
-'''----------certificaciones-----------'''
-
-class Certificacion_interna(models.Model):
-    descripcion_certificacion=models.CharField(max_length=500)
-    fecha_certifiacion=models.DateField(auto_now=False, auto_now_add=False)
-    fk_Asistencia=models.ForeignKey("Asistencia", on_delete=models.CASCADE, verbose_name='Asistencia')
-  def __str__(self):
-    return self.id
-  class meta:
-      db_table='Certifiacion_interna'
-      verbose_name='Certificaion_interna'
-      verbose_name_plural='Certificaiones_internas'
-
-'''---------sanciones----------'''
-
-class Sancion(models.Model):
-    
-    Tipo_sancion_chioce=[
-        ('leve','Leve'),
-        ('moderada','Moderada'),
-        ('grave','Grave')
-    ]
-    Estado_choice=[
-        ('activa','Activa')
-        ('inactiva','inactiva')
-        ('pendiente','Pendiente')
-    ]
-    motivo_sancion=models.CharField(max_length=350)
-    tipo_sancion=models.CharField(max_length=80,choices=Tipo_sancion_chioce)
-    fecha_inicio=models.DateField()
-    duracion_sancion=models.IntegerField(mas_digits=30)
-    fecha_fin=models.DateField()
-    estado=models.CharField(max_length=80,choice=Estado_choice)
-    fk_usuario=models.ForeignKey("Usuario", on_delete=models.CASCADE, verbose_name='Usuario')
-    
-  def __str__(self):
-    return self.id
-    
-  class meta:
-      db_table='Sancion'
-      verbose_name='Sancion'
-      verbose_name_plural='Sanciones'
