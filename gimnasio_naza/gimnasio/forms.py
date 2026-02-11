@@ -7,11 +7,3 @@ class AsistenciaForm(ModelForm):
     class Meta:
         model = Asistencia
         fields = '__all__'
-        widgets = {
-            'nombre': forms.TextInput(attrs={
-                'placeholder': 'Ingrese el nombre de la asistencia'}),
-            'descripcion': forms.Textarea(attrs={
-                    'placeholder': 'Ingrese la desc de la asistencia',
-                    'rows' : 12,
-                    'cols': 12})
-        }
