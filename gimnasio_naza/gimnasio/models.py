@@ -43,7 +43,7 @@ class Membresia(models.Model):
     fk_usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.id
+        return str(self.id)
 
     class Meta:
         verbose_name = 'Membresia'
@@ -60,7 +60,7 @@ class Asistencia(models.Model):
 
 
     def __str__(self):
-        return self.id
+        return str(self.id)
 
     class Meta:
         verbose_name = 'Asistencia'

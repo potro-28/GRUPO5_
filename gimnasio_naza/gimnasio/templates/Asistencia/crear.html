@@ -1,6 +1,7 @@
-{%extends 'body.html'%}
-{% load  widget_tweaks %}
-{% block contenido%}
+{% extends 'body.html' %}
+{% load widget_tweaks %}
+
+{% block contenido %}
 
 <form method="post" action=".">
     <div class="card card-default">
@@ -10,39 +11,54 @@
                 {{ titulo }}
             </h3>
         </div>
+
         <div class="card-body">
             {% csrf_token %}
+
             
-            <div class="alert alert-danger alert-dismissible"><button type="button" class="close" data-bs-dismiss="alert" aria-hidden="true">×</button>
-                {{ form.errors }}
-           <h5><i class="icon fas fa-ban"></i> Alert!</h5> se dañó pa
-          </div>
-            {% for field in form.visible_fields%}
-            <div class='form-group'></div>
-            <label for = 'name'> {{field.label}}: </label>
-            {{field|add_class:'form-control'|attr:'autocomplete:off' }}
+            {% if form.errors %}
+                <div class="alert alert-danger alert-dismissible">
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                    <h5><i class="icon fas fa-ban"></i> ¡Atención!</h5>
+                    <ul>
+                        {% for field in form %}
+                            {% for error in field.errors %}
+                                <li>{{ field.label }}: {{ error }}</li>
+                            {% endfor %}
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endif %}
+
+            
+            {% for field in form.visible_fields %}
+                <div class="form-group">
+                    <label for="{{ field.id_for_label }}">{{ field.label }}:</label>
+                    {{ field }}
+                </div>
+            {% endfor %}
         </div>
-        {% endfor %}
 
         <div class="card-footer">
-            <button type="submit" class="btn btn-primary btn-xs">
-                <i class="fas fa-plus"></i> Guardar registro
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-save"></i> Guardar registro
             </button>
+            <a href="{% url 'gimnasio:listar_asistencias' %}" class="btn btn-danger">
+                <i class="fas fa-times"></i> Cancelar
+            </a>
         </div>
     </div>
-    {% block js%}
-    <script>
-    Swal.fire({
-  title: "error",
-  text: "verificar campooos",
-  icon: "error"
-});
-    </script>
-    {%endblock js%}
 </form>
+{% endblock %}
 
-
-
-
-
+{% block js %}
+    {% if form.errors %}
+    <script>
+        Swal.fire({
+            title: "Error",
+            text: "Por favor, verifique los campos marcados en rojo.",
+            icon: "error",
+        });
+    </script>
+    {% endif %}
 {% endblock %}
