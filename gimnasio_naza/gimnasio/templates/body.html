@@ -4,6 +4,7 @@
 {% block body %}
 
 <body>
+
     <!-- Layout wrapper -->
     <div class="layout-wrapper layout-content-navbar">
         <div class="layout-container">
@@ -525,6 +526,7 @@
                                     aria-label="Search..." />
                             </div>
                         </div> 
+                        
                         <!-- /Search -->
 
                         <ul class="navbar-nav flex-row align-items-center ms-md-auto">
@@ -576,6 +578,7 @@
                                             <span>Settings</span>
                                         </a>
                                     </li>
+                                    
                                     <li>
                                         <a class="dropdown-item" href="#">
                                             <span class="d-flex align-items-center align-middle">
@@ -585,7 +588,8 @@
                                                 <span class="flex-shrink-0 badge rounded-pill bg-danger">4</span>
                                             </span>
                                         </a>
-                                    </li>
+                                    </li
+                                    >
                                     <li>
                                         <div class="dropdown-divider my-1"></div>
                                     </li>
@@ -594,27 +598,37 @@
                                             <a class="btn btn-danger d-flex" href="javascript:void(0);">
                                                 <small class="align-middle">Logout</small>
                                                 <i class="ri ri-logout-box-r-line ms-2 ri-xs"></i>
+                                                
                                             </a>
                                         </div>
                                     </li>
                                 </ul>
                             </li>
+                            
                             <!--/ User -->
                         </ul>
+
                     </div>
+
                 </nav>
+                {%block contenido%}
+{% endblock %}
 
                 <!-- / Navbar -->
             </div>
+            
             <!-- / Layout page -->
         </div>
+
 
         <!-- Overlay -->
         <div class="layout-overlay layout-menu-toggle"></div>
     </div>
+  
+    
     <!-- / Layout wrapper -->
 
-
+{% include "footer.html" %}
     <!-- Core JS -->
 
     <script src="{% static 'assets/vendor/libs/jquery/jquery.js' %}"></script>
@@ -641,7 +655,8 @@
 
     <!-- Place this tag before closing body tag for github widget button. -->
     <script async="async" defer="defer" src="https://buttons.github.io/buttons.js"></script>
+
+
 </body>
 
 {% endblock body %}
-
