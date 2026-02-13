@@ -11,8 +11,8 @@ from gimnasio.forms import usuarioForm
 # =============================
 class UsuarioListView(ListView):
     model = Usuario
-    template_name = 'usuarios/listar.html'
-    context_object_name = 'usuarios'
+    template_name = 'usuarios/listar2.html'
+    context_object_name = 'object_list'  # Cambiado de 'usuarios' para que coincida con el template
     ordering = ['-id']
 
     def get_queryset(self):
@@ -20,10 +20,8 @@ class UsuarioListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-
         context['titulo'] = 'Listado de Usuarios'
-        context['crear_url'] = reverse_lazy('gimnasio:crear_usuario')
-
+        context['crear2_url'] = reverse_lazy('gimnasio:crear_usuario')  # Sin el '2'
         return context
 
 
@@ -33,8 +31,13 @@ class UsuarioListView(ListView):
 class UsuarioCreateView(CreateView):
     model = Usuario
     form_class = usuarioForm
-    template_name = 'usuarios/crear.html'
-    success_url = reverse_lazy('gimnasio:listar_usuarios')
+    template_name = 'usuarios/crear2.html'
+    success_url = reverse_lazy('gimnasio:listar2_usuarios')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['titulo'] = 'Crear Usuario'
+        return context
 
     def form_valid(self, form):
         messages.success(self.request, "Usuario creado correctamente")
@@ -44,26 +47,30 @@ class UsuarioCreateView(CreateView):
 # =============================
 # ACTUALIZAR USUARIO
 # =============================
-
 class UsuarioUpdateView(UpdateView):
-
     model = Usuario
     form_class = usuarioForm
-    template_name = 'usuarios/editar.html'
-    success_url = reverse_lazy('gimnasio:listar_usuarios')
+    template_name = 'usuarios/crear2.html'  # Usa el mismo template que crear
+    success_url = reverse_lazy('gimnasio:listar2_usuarios')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['titulo'] = 'Editar Usuario'
+        return context
 
     def form_valid(self, form):
-
         usuario = form.save(commit=False)
-
-        # puedes hacer lógica extra aquí si deseas
-        if usuario.activo:
-            messages.success(self.request, "Usuario ACTIVADO correctamente")
+        
+        # Lógica extra si deseas
+        if hasattr(usuario, 'activo'):
+            if usuario.activo:
+                messages.success(self.request, "Usuario ACTIVADO correctamente")
+            else:
+                messages.warning(self.request, "Usuario INACTIVADO correctamente")
         else:
-            messages.warning(self.request, "Usuario INACTIVADO correctamente")
-
+            messages.success(self.request, "Usuario actualizado correctamente")
+        
         usuario.save()
-
         return super().form_valid(form)
 
 
@@ -72,9 +79,15 @@ class UsuarioUpdateView(UpdateView):
 # =============================
 class UsuarioDeleteView(DeleteView):
     model = Usuario
-    template_name = 'usuarios/eliminar.html'
-    success_url = reverse_lazy('gimnasio:listar_usuarios')
-    context_object_name = 'usuario'
+    template_name = 'usuarios/eliminar2.html'
+    success_url = reverse_lazy('gimnasio:listar2_usuarios')
+    context_object_name = 'object'  # Cambiado para que coincida con el template
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['titulo'] = 'Eliminar Usuario'
+        context['listar2_url'] = reverse_lazy('gimnasio:listar2_usuarios')
+        return context
 
     def delete(self, request, *args, **kwargs):
         messages.success(self.request, "Usuario eliminado correctamente")
@@ -89,6 +102,11 @@ class UsuarioRolUpdateView(UpdateView):
     form_class = usuarioForm
     template_name = 'usuarios/asignar_rol.html'
     success_url = reverse_lazy('gimnasio:listar_usuarios')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['titulo'] = 'Asignar Rol'
+        return context
 
     def form_valid(self, form):
         messages.success(self.request, "Rol asignado correctamente")

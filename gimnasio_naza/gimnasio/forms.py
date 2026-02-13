@@ -1,5 +1,5 @@
 from django import forms
-from gimnasio.models import Elemento
+from gimnasio.models import Elemento, Usuario
 
 class ElementoForm(forms.ModelForm):
     class Meta:
@@ -9,5 +9,5 @@ class ElementoForm(forms.ModelForm):
 
 class usuarioForm(forms.ModelForm):
     class Meta:
-        model = Elemento
+        model = Usuario
         fields = '__all__'
