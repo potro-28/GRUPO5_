@@ -29,7 +29,7 @@ class Usuario(models.Model):
     fecha_registro = models.DateField()
 
     def __str__(self):
-        return self.id
+        return str(self.id)
     
     class Meta:
         verbose_name = 'Usuario'
@@ -130,7 +130,7 @@ class Mantenimiento(models.Model):
     elemento = models.ForeignKey(Elemento, on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.id
+        return str(self.id)
     
     class Meta:
         verbose_name = 'Mantenimiento'
@@ -156,7 +156,7 @@ class Notificacion(models.Model):
     fk_mantenimiento = models.ForeignKey(Mantenimiento, on_delete=models.CASCADE)
     
     def __str__(self):
-        return self.id
+        return str(self.id)
       
     class Meta:
         verbose_name = 'Notificacion'
@@ -175,7 +175,7 @@ class Encuesta(models.Model):
        
       
     def __str__(self):
-        return self.id
+        return str(self.id)
       
     class Meta:
         verbose_name = 'Encuesta'
@@ -199,7 +199,7 @@ class Reportes_estadisticas(models.Model):
     fk_usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.id
+        return str(self.id)
 
     class Meta:
         verbose_name = 'Reporte'
@@ -228,7 +228,7 @@ class Soporte_PQRS(models.Model):
     fk_usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
     
     def __str__(self):
-      return self.id
+      return str(self.id)
         
     class Meta:   
         verbose_name = 'PQRS'
@@ -265,7 +265,7 @@ class Nutricion(models.Model):
     fk_Usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.id 
+        return str(self.id) 
     
     class Meta:
         db_table = "Nutricion"
@@ -280,7 +280,7 @@ class Registro_Visitantes(models.Model):
     fk_usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
 
     def _str_(self):
-        return self.id
+        return str(self.id)
 
     class Meta:
         verbose_name = 'Registro_Visitante'
@@ -300,7 +300,7 @@ class Turno_Entrenadores(models.Model):
     jornada = models.CharField(max_length=10,choices=JORNADA_CHOICES)
 
     def __str__(self):
-        return self.id
+        return str(self.id)
 
 class Meta:
     verbose_name = "Turno Entrenador"
@@ -316,7 +316,7 @@ class Masa_corporal (models.Model):
     fk_Nutricion=models.ForeignKey(Nutricion, on_delete=models.CASCADE ,verbose_name='Nutricion')
    
     def __str__(self):
-        return self.id
+        return str(self.id)
     class meta:
         db_table='Masa_corporal'
         verbose_name='Masa_corporal'

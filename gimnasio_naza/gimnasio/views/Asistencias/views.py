@@ -38,7 +38,7 @@ class AsistenciaListView(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['titulo'] = 'Listado de asistencias'
-        context['crear_url']= reverse_lazy('gimnasio:crear_asistencias')
+        context['crear_url']= reverse_lazy('gimnasio:crear_asistencia')
         return context
 
 
@@ -46,7 +46,7 @@ class AsistenciaCreateView(CreateView):
     model = Asistencia
     template_name = 'Asistencia/crear.html'
     form_class = AsistenciaForm
-    success_url = reverse_lazy('gimnasio:listar_asistencias')
+    success_url = reverse_lazy('gimnasio:listar_asistencia')
     #@method_decorator(csrf_exempt)
     
     def get_context_data(self, **kwargs):
@@ -57,24 +57,24 @@ class AsistenciaCreateView(CreateView):
 class AsistenciaUpdateView(UpdateView):
     model = Asistencia
     template_name = 'Asistencia/crear.html'
-    success_url = reverse_lazy('gimnasio:listar_asistencias')
+    success_url = reverse_lazy('gimnasio:listar_asistencia')
     form_class = AsistenciaForm
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['titulo'] = 'Editar Asistencia'
-        context['listar_url'] = reverse_lazy('gimnasio:listar_asistencias')
+        context['listar_url'] = reverse_lazy('gimnasio:listar_asistencia')
         return super().get_context_data(**kwargs)
 
 class AsistenciaDeleteView(DeleteView):
     model = Asistencia
     template_name = 'Asistencia/eliminar.html'
-    success_url = reverse_lazy('gimnasio:listar_asistencias')
+    success_url = reverse_lazy('gimnasio:listar_asistencia')
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['titulo'] = 'Eliminar Asistencia'
-        context['listar_url'] = reverse_lazy('gimnasio:listar_asistencias')
+        context['listar_url'] = reverse_lazy('gimnasio:listar_asistencia')
         return context
 
 

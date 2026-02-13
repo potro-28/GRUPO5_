@@ -8,7 +8,7 @@ from django.urls import reverse_lazy
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 from gimnasio.models import *
-from gimnasio.forms import MembresiaForm
+from gimnasio.forms import *
 
 #Listar membresias 
 def Listar_membresia(request):
@@ -20,7 +20,7 @@ def Listar_membresia(request):
 
 class MembresiaListView(ListView):
     model = Membresia
-    template_name = 'Membresias/listar.html'
+    template_name = 'Membresia/listar.html'
 
  
     # metodo dispatch
@@ -38,15 +38,15 @@ class MembresiaListView(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['titulo'] = 'Listado de membresias'
-        context['crear_url']= reverse_lazy('gimnasio:crear_membresias')
+        context['crear_url']= reverse_lazy('gimnasio:crear_membresia')
         return context
 
 
 class MembresiaCreateView(CreateView):
     model = Membresia
-    template_name = 'Membresias/crear.html'
+    template_name = 'Membresia/crear.html'
     form_class = MembresiaForm
-    success_url = reverse_lazy('gimnasio:listar_membresias')
+    success_url = reverse_lazy('gimnasio:listar_membresia')
     #@method_decorator(csrf_exempt)
     
     def get_context_data(self, **kwargs):
@@ -56,25 +56,25 @@ class MembresiaCreateView(CreateView):
     
 class MembresiaUpdateView(UpdateView):
     model = Membresia
-    template_name = 'Membresias/crear.html'
-    success_url = reverse_lazy('gimnasio:listar_membresias')
+    template_name = 'Membresia/crear.html'
+    success_url = reverse_lazy('gimnasio:listar_membresia')
     form_class = MembresiaForm
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['titulo'] = 'Editar membresia'
-        context['listar_url'] = reverse_lazy('gimnasio:listar_membresias')
+        context['listar_url'] = reverse_lazy('gimnasio:listar_membresia')
         return super().get_context_data(**kwargs)
 
 class MembresiaDeleteView(DeleteView):
     model = Membresia
-    template_name = 'Membresias/eliminar.html'
-    success_url = reverse_lazy('gimnasio:listar_membresias')
+    template_name = 'Membresia/eliminar.html'
+    success_url = reverse_lazy('gimnasio:listar_membresia')
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['titulo'] = 'Eliminar membresia'
-        context['listar_url'] = reverse_lazy('gimnasio:listar_membresias')
+        context['listar_url'] = reverse_lazy('gimnasio:listar_membresia')
         return context
 
 

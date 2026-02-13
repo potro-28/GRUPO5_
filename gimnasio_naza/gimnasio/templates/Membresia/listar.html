@@ -103,17 +103,16 @@
         </thead>
         <tbody>
           <tr>
-            {% for a in object_list %}
+            {% for me in object_list %}
             <tr>
             <td class="control" tabindex="0" style=""></td>
           <td class="dt-select"><input aria-label="Select row" class="form-check-input" type="checkbox"></td>
             
-            <td>{{a.id}}</td>
-            <td>{{a.fecha_inicio}}</td>
-            <td>{{a.fecha_fin}}</td>
-            <td>{{a.fk_membresia.nombre_usuario}} {{a.fk_membresia.apellido_usuario}}</td>
-          
-          <td>{{a.fk_membresia.fk_usuario.documento}}</td>
+            <td>{{me.id}}</td>
+            <td>{{me.fecha_inicio}}</td>
+            <td>{{me.fecha_fin}}</td>
+            <td>{{me.fk_usuario_id.nombre_usuario}} {{me.fk_usuario_id.apellido_usuario}}</td>
+            <td>{{me.fk_usuario_id.documento_usuario}}</td>
           
           
           
@@ -123,12 +122,12 @@
             </a>
             <ul class="dropdown-menu dropdown-menu-end m-0">
               <li>
-                <a href="{% url 'gimnasio:eliminar_asistencia' a.id %}" class="btn btn-primary">Delete</a>
+                <a href="{% url 'gimnasio:eliminar_membresia' me.id %}" class="btn btn-primary">Delete</a>
               </li>
             </ul>
           </div>
           <a href="javascript:;" class="btn btn-sm btn-text-secondary rounded-pill btn-icon item-edit">
-            <a href="{% url 'gimnasio:editar_asistencias' a.id %}" class="btn btn-primary">
+            <a href="{% url 'gimnasio:editar_membresia' me.id %}" class="btn btn-primary">
               <i class="icon-base ri ri-edit-box-line icon-22px"></i>
               </a>
             
