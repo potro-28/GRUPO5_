@@ -4,7 +4,6 @@ from gimnasio.views.Soporte_PQRS.views import *
 from gimnasio.views.Reportes_Estadisticas.views import *
 
 
-
 app_name = 'gimnasio'
 # Encuestas
 urlpatterns = [
