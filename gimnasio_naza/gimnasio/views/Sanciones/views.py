@@ -50,6 +50,7 @@ class SancionesCreateView(CreateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['titulo'] = 'Crear sancion'
+        context['listar_url'] = reverse_lazy('gimnasio:listar_sanciones_clas')
         return context
 class SancionesUpdateView(UpdateView):
     model = Sancion
