@@ -27,6 +27,17 @@ from gimnasio.views import *
 
 
 
+
+
+
+
+
+
+
+
+
+
+
 app_name = 'gimnasio'
 # Encuestas
 urlpatterns = [
