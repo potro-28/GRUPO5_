@@ -36,8 +36,6 @@ from gimnasio.views.Notificaciones.views import *
 
 
 
-
-
 app_name = 'gimnasio'
 urlpatterns = [
     path('listar_asistencia/', AsistenciaListView.as_view(), name='listar_asistencia'),
