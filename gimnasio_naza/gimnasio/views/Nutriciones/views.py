@@ -10,6 +10,8 @@ from django.utils.decorators import method_decorator
 from gimnasio.models import *
 from gimnasio.forms import NutricionForm
 
+
+
 #Listar nutriciones
 def listar_nutriciones(request):
     nombre ={
@@ -38,4 +40,42 @@ class nutricionListView(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['titulo'] = 'Listado de Nutriciones'
+        context['crear_url'] = reverse_lazy('gimnasio:crear_nutricion')
+        return context
+    
+#Crear categoria    
+class NutricionCreateView(CreateView):
+    model = Nutricion
+    template_name = 'categoria/crear.html'
+    form_class = NutricionForm
+    success_url = reverse_lazy('gimnasio:listar_nutriciones')
+    
+    
+    #@method_decorator(csrf_exempt)
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['titulo'] = 'Crear Nutricion'
+        return context
+    
+class NutricionUpdateView(UpdateView):
+    model = Nutricion
+    form_class = NutricionForm
+    template_name = 'nutricion/crear.html'
+    success_url = reverse_lazy('gimnasio:listar_nutriciones')
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['titulo'] = 'Editar Nutricion'
+        context['listar_url'] = reverse_lazy('gimnasio:listar_nutriciones')
+        return context
+    
+class NutricionDeleteView(DeleteView):
+    model = Nutricion
+    template_name = 'nutricion/eliminar.html'
+    success_url = reverse_lazy('gimnasio:listar_nutriciones')
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['titulo'] = 'Eliminar Nutricion'
+        context['listar_url'] = reverse_lazy('gimnasio:listar_nutriciones')
         return context

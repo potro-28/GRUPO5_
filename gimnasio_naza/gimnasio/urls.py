@@ -15,8 +15,16 @@ urlpatterns = [
     
     #Nutricion
     path('listar_nutriciones/', nutricionListView.as_view(), name='listar_nutriciones'),
+    path('crear_nutricion/', NutricionCreateView.as_view(), name='crear_nutricion'),
+    path('editar_nutricion/<int:pk>/', NutricionUpdateView.as_view(), name='editar_nutricion'),
+    path('eliminar_nutricion/<int:pk>/', NutricionDeleteView.as_view(), name='eliminar_nutricion'),
+    
     
     #Rutina
     path('listar_rutinas/', rutinaListView.as_view(), name='listar_rutinas'),
+    path('crear_rutinas/', RutinaCreateView.as_view(), name='crear_rutina'),
+    path('editar_rutinas/<int:pk>/', RutinaUpdateView.as_view(), name='editar_rutina'),
+    path('eliminar_rutinas/<int:pk>/', RutinaDeleteView.as_view(), name='eliminar_rutina'),
+    
 
 ]

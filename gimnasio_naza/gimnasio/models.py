@@ -29,7 +29,7 @@ class Usuario(models.Model):
     fecha_registro = models.DateField()
 
     def __str__(self):
-        return self.id
+        return self.nombre_usuario
     
     class Meta:
         verbose_name = 'Usuario'
@@ -76,7 +76,7 @@ class Categoria(models.Model):
     descripcion = models.CharField(max_length=250)
 
     def __str__(self):
-        return self.nombre_categoria
+        return str(self.nombre_categoria)
     class Meta:
         db_table = "Categoria"
         verbose_name = "Categoria"
@@ -265,7 +265,7 @@ class Nutricion(models.Model):
     fk_Usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.id 
+        return str(self.id) 
     
     class Meta:
         db_table = "Nutricion"
@@ -316,7 +316,7 @@ class Masa_corporal (models.Model):
     fk_Nutricion=models.ForeignKey(Nutricion, on_delete=models.CASCADE ,verbose_name='Nutricion')
    
     def __str__(self):
-        return self.id
+        return str(self.id)
     class meta:
         db_table='Masa_corporal'
         verbose_name='Masa_corporal'
@@ -352,7 +352,7 @@ class Rutina(models.Model):
         db_table = 'rutina'
 
     def __str__(self):
-        return self.id
+        return str(self.id)
     
 '''----------certificaciones-----------'''
 

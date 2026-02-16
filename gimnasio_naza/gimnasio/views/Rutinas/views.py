@@ -38,4 +38,43 @@ class rutinaListView(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['titulo'] = 'Listado de Rutinas'
+        context['crear_url'] = reverse_lazy('gimnasio:crear_rutina')
+
+        return context
+    
+#Crear categoria    
+class RutinaCreateView(CreateView):
+    model = Categoria
+    template_name = 'rutina/crear.html'
+    form_class = RutinaForm
+    success_url = reverse_lazy('gimnasio:listar_rutinas')
+    
+    
+    #@method_decorator(csrf_exempt)
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['titulo'] = 'Crear Rutina'
+        return context
+    
+class RutinaUpdateView(UpdateView):
+    model = Rutina
+    form_class = RutinaForm
+    template_name = 'rutina/crear.html'
+    success_url = reverse_lazy('gimnasio:listar_rutinas')
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['titulo'] = 'Editar Rutina'
+        context['listar_url'] = reverse_lazy('gimnasio:listar_rutinas')
+        return context
+    
+class RutinaDeleteView(DeleteView):
+    model = Rutina
+    template_name = 'rutina/eliminar.html'
+    success_url = reverse_lazy('gimnasio:listar_rutinas')
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['titulo'] = 'Eliminar Rutina'
+        context['listar_url'] = reverse_lazy('gimnasio:listar_rutinas')
         return context

@@ -2,7 +2,9 @@ from dataclasses import field
 from django.forms import ModelForm
 from gimnasio.models import Categoria
 from django import forms
-from .models import Nutricion
+from gimnasio.models import Nutricion
+from gimnasio.models import Rutina
+
 
 #Categoria
 class CategoriaForm(ModelForm):
@@ -26,7 +28,7 @@ class NutricionForm(ModelForm):
 #Rutina
 class RutinaForm(ModelForm):
     class Meta:
-        model = Nutricion
+        model = Rutina
         fields = '__all__'
         widgets = {
             'nombre' : forms.TextInput(attrs={
