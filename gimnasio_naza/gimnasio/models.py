@@ -29,7 +29,7 @@ class Usuario(models.Model):
     fecha_registro = models.DateField()
 
     def __str__(self):
-        return self.id
+        return str(self.id)
     
     class Meta:
         verbose_name = 'Usuario'
@@ -265,7 +265,7 @@ class Nutricion(models.Model):
     fk_Usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.id 
+        return str(self.id)
     
     class Meta:
         db_table = "Nutricion"
@@ -300,7 +300,7 @@ class Turno_Entrenadores(models.Model):
     jornada = models.CharField(max_length=10,choices=JORNADA_CHOICES)
 
     def __str__(self):
-        return self.id
+        return str(self.id)
 
 class Meta:
     verbose_name = "Turno Entrenador"

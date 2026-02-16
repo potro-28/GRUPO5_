@@ -8,20 +8,20 @@ from django.urls import reverse_lazy
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 from gimnasio.models import *
-from gimnasio.forms import Masa_muscularForm
+from gimnasio.forms import SancionesForm
 
 #Listar asistencia 
-def Listar_masa_corporal(request):
+def Listar_sanciones(request):
     nombre ={
-        'titulo':'Listado de Masa Muscular',
-        'masa_muscular': Masa_corporal.objects.all()
+        'titulo':'Listado de Sanciones',
+        'sanciones': Sancion.objects.all()
     }
-    return render(request,'Masa_muscular/listar.html', nombre)
+    return render(request,'Sanciones/listar.html', nombre)
 
-class Masa_corporalListView(ListView):
-    model = Masa_corporal
-    template_name = 'Masa_muscular/listar.html'
-    # metodo dispatch
+class SacionesListView(ListView):
+    model = Sancion
+    template_name = 'Sanciones/listar.html'
+    # metodo dispatch   
     #@method_decorator(login_required)
     def dispatch(self, request, *args, **kwargs):
         #if request.method == 'GET':
@@ -35,40 +35,40 @@ class Masa_corporalListView(ListView):
     #metodo context data 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['titulo'] = 'Listado de masa corporal'
-        context['crear_url']= reverse_lazy('gimnasio:crear_masa_corporal')
+        context['titulo'] = 'Listado de sanciones'
+        context['crear_url']= reverse_lazy('gimnasio:crear_sancion')
         return context
 
 
-class Masa_corporalCreateView(CreateView):
-    model = Masa_corporal
-    template_name = 'masa_muscular/crear.html'
-    form_class = Masa_muscularForm
-    success_url = reverse_lazy('gimnasio:listar_masa_corporal_clas')
+class SancionesCreateView(CreateView):
+    model = Sancion
+    template_name = 'Sanciones/crear.html'
+    form_class = SancionesForm
+    success_url = reverse_lazy('gimnasio:listar_sanciones_clas')
     #@method_decorator(csrf_exempt)
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['titulo'] = 'Crear masa corporal'
+        context['titulo'] = 'Crear sancion'
         return context
-class Masa_corporalUpdateView(UpdateView):
-    model = Masa_corporal
-    template_name = 'masa_muscular/crear.html'
-    form_class = Masa_muscularForm
-    success_url = reverse_lazy('gimnasio:listar_masa_corporal_clas')
+class SancionesUpdateView(UpdateView):
+    model = Sancion
+    template_name = 'Sanciones/crear.html'
+    form_class = SancionesForm
+    success_url = reverse_lazy('gimnasio:listar_sanciones_clas')
     #@method_decorator(csrf_exempt)
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['titulo'] = 'Actualizar masa corporal'
+        context['titulo'] = 'Actualizar sancion'
         return context
-class Masa_corporalDeleteView(DeleteView):
-    model = Masa_corporal
-    template_name = 'masa_muscular/eliminar.html'
-    success_url = reverse_lazy('gimnasio:listar_masa_corporal_clas')
+class SancionesDeleteView(DeleteView):
+    model = Sancion
+    template_name = 'Sanciones/eliminar.html'
+    success_url = reverse_lazy('gimnasio:listar_sanciones_clas')
     #@method_decorator(csrf_exempt)
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['titulo'] = 'Eliminar masa corporal'
+        context['titulo'] = 'Eliminar sancion'
         return context 
