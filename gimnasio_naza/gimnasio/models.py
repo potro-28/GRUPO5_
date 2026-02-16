@@ -29,7 +29,7 @@ class Usuario(models.Model):
     fecha_registro = models.DateField()
 
     def __str__(self):
-        return self.id
+        return str(self.nombre_usuario)
     
     class Meta:
         verbose_name = 'Usuario'
@@ -175,7 +175,8 @@ class Encuesta(models.Model):
        
       
     def __str__(self):
-        return self.id
+        return str(self.nombre)
+        
       
     class Meta:
         verbose_name = 'Encuesta'
