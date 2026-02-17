@@ -1,15 +1,23 @@
 from django.urls import path
+<<<<<<< HEAD
 from gimnasio.views.Asistencias.views import *
 from gimnasio.views.Membresias.views import *
 from gimnasio.views.Notificaciones.views import *
 from gimnasio.views.Encuestas.views import *
 from gimnasio.views.Soporte_PQRS.views import *
 from gimnasio.views.Reportes_Estadisticas.views import *
+=======
+from gimnasio.views.Categorias.views import *
+from gimnasio.views.Nutriciones.views import *
+from gimnasio.views.Rutinas.views import *
+
+>>>>>>> Daniela
 
 
 app_name = 'gimnasio'
 # Encuestas
 urlpatterns = [
+<<<<<<< HEAD
     path('listar_asistencia/', AsistenciaListView.as_view(), name='listar_asistencia'),
     path('crear_asistencia/', AsistenciaCreateView.as_view(), name='crear_asistencia'),
     path('editar_asistencia/<int:pk>/', AsistenciaUpdateView.as_view(), name='editar_asistencia'),
@@ -47,3 +55,26 @@ urlpatterns = [
     path('eliminar_Reportes_estadisticas/<int:pk>/', Reportes_estadisticasDeleteView.as_view(), name='eliminar_Reportes_estadisticas'),
 
 ]
+=======
+    #Categoria
+    path('listar_categorias/', categoriaListView.as_view(), name='listar_categorias'),
+    path('crear_categoria/', CategoriaCreateView.as_view(), name='crear_categoria'),
+    path('editar_categoria/<int:pk>/', CategoriaUpdateView.as_view(), name='editar_categoria'),
+    path('eliminar_categoria/<int:pk>/', CategoriaDeleteView.as_view(), name='eliminar_categoria'),
+    
+    #Nutricion
+    path('listar_nutriciones/', nutricionListView.as_view(), name='listar_nutriciones'),
+    path('crear_nutricion/', NutricionCreateView.as_view(), name='crear_nutricion'),
+    path('editar_nutricion/<int:pk>/', NutricionUpdateView.as_view(), name='editar_nutricion'),
+    path('eliminar_nutricion/<int:pk>/', NutricionDeleteView.as_view(), name='eliminar_nutricion'),
+    
+    
+    #Rutina
+    path('listar_rutinas/', rutinaListView.as_view(), name='listar_rutinas'),
+    path('crear_rutinas/', RutinaCreateView.as_view(), name='crear_rutina'),
+    path('editar_rutinas/<int:pk>/', RutinaUpdateView.as_view(), name='editar_rutina'),
+    path('eliminar_rutinas/<int:pk>/', RutinaDeleteView.as_view(), name='eliminar_rutina'),
+    
+
+]
+>>>>>>> Daniela
