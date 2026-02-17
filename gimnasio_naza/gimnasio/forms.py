@@ -11,6 +11,10 @@ from gimnasio.models import Categoria
 from django import forms
 from gimnasio.models import Nutricion
 from gimnasio.models import Rutina
+from django.forms import ModelForm
+from gimnasio.models import Masa_corporal
+from django.forms import ModelForm
+from gimnasio.models import Sancion
 
 class ElementoForm(forms.ModelForm):
     class Meta:
@@ -151,3 +155,14 @@ class RutinaForm(ModelForm):
             'nombre' : forms.TextInput(attrs={
                 'placeholder': 'Ingrese el nombre de la rutina'}),
         }
+
+
+class Masa_muscularForm(ModelForm):
+    class Meta:
+        model = Masa_corporal
+        fields = '__all__'
+
+class SancionesForm(ModelForm):
+    class Meta:
+        model = Sancion
+        fields = '__all__'
