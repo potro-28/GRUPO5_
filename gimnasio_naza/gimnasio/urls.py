@@ -1,23 +1,19 @@
 from django.urls import path
-<<<<<<< HEAD
 from gimnasio.views.Asistencias.views import *
 from gimnasio.views.Membresias.views import *
 from gimnasio.views.Notificaciones.views import *
 from gimnasio.views.Encuestas.views import *
 from gimnasio.views.Soporte_PQRS.views import *
 from gimnasio.views.Reportes_Estadisticas.views import *
-=======
 from gimnasio.views.Categorias.views import *
 from gimnasio.views.Nutriciones.views import *
 from gimnasio.views.Rutinas.views import *
 
->>>>>>> Daniela
 
 
 app_name = 'gimnasio'
 # Encuestas
 urlpatterns = [
-<<<<<<< HEAD
     path('listar_asistencia/', AsistenciaListView.as_view(), name='listar_asistencia'),
     path('crear_asistencia/', AsistenciaCreateView.as_view(), name='crear_asistencia'),
     path('editar_asistencia/<int:pk>/', AsistenciaUpdateView.as_view(), name='editar_asistencia'),
@@ -54,8 +50,7 @@ urlpatterns = [
     path('editar_Reportes_estadisticas/<int:pk>/', Reportes_estadisticasUpdateView.as_view(), name='editar_Reportes_estadisticas'),
     path('eliminar_Reportes_estadisticas/<int:pk>/', Reportes_estadisticasDeleteView.as_view(), name='eliminar_Reportes_estadisticas'),
 
-]
-=======
+
     #Categoria
     path('listar_categorias/', categoriaListView.as_view(), name='listar_categorias'),
     path('crear_categoria/', CategoriaCreateView.as_view(), name='crear_categoria'),
@@ -77,4 +72,3 @@ urlpatterns = [
     
 
 ]
->>>>>>> Daniela

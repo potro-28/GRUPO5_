@@ -29,11 +29,7 @@ class Usuario(models.Model):
     fecha_registro = models.DateField()
 
     def __str__(self):
-<<<<<<< HEAD
         return str(self.id)
-=======
-        return self.nombre_usuario
->>>>>>> Daniela
     
     class Meta:
         verbose_name = 'Usuario'

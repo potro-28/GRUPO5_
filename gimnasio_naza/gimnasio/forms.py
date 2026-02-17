@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 from dataclasses import fields
 from django.forms import ModelForm
 from gimnasio.models import Asistencia, Membresia, Notificacion
@@ -6,6 +5,10 @@ from django import forms
 from gimnasio.models import Encuesta
 from gimnasio.models import Soporte_PQRS
 from gimnasio.models import Reportes_estadisticas
+from gimnasio.models import Categoria
+from django import forms
+from gimnasio.models import Nutricion
+from gimnasio.models import Rutina
 
 class AsistenciaForm(ModelForm):
     class Meta:
@@ -99,13 +102,8 @@ class Reportes_estadisticasForm(ModelForm):
                 })      
         }
         
-=======
-from dataclasses import field
-from django.forms import ModelForm
-from gimnasio.models import Categoria
-from django import forms
-from gimnasio.models import Nutricion
-from gimnasio.models import Rutina
+
+
 
 
 #Categoria
@@ -136,4 +134,3 @@ class RutinaForm(ModelForm):
             'nombre' : forms.TextInput(attrs={
                 'placeholder': 'Ingrese el nombre de la rutina'}),
         }
->>>>>>> Daniela
