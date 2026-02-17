@@ -42,10 +42,24 @@ widgets = {
 
 
 class AsistenciaForm(ModelForm):
+    
+
     class Meta:
         model = Asistencia
         fields = '__all__'
-
+        widgets = {
+            'fecha_asistencia': forms.DateInput(attrs={ 
+                'class': 'form-control',
+                'type': 'date'
+            }),
+        }
+    def clean(self):
+        cleaned_data = super().clean()
+        hora_entrada = cleaned_data.get('hora_ingreso')
+        hora_salida = cleaned_data.get('hora_salida')
+        if hora_salida == hora_entrada:
+            raise forms.ValidationError('Daniel me la pelaste')
+        return cleaned_data
 class MembresiaForm(ModelForm):
     class Meta:
         model = Membresia
@@ -55,6 +69,7 @@ class NotificacionForm(ModelForm):
     class Meta:
         model = Notificacion
         fields = '__all__'
+
 
 
 class EncuestaForm(ModelForm):
