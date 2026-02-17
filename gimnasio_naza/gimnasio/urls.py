@@ -1,4 +1,6 @@
 from django.urls import path
+
+from gimnasio.views import *
 from gimnasio.views.Asistencias.views import *
 from gimnasio.views.Membresias.views import *
 from gimnasio.views.Notificaciones.views import *

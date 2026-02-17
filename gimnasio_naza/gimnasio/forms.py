@@ -1,3 +1,4 @@
+
 from dataclasses import fields
 from django.forms import ModelForm
 from gimnasio.models import Asistencia, Membresia, Notificacion
@@ -24,8 +25,6 @@ class NotificacionForm(ModelForm):
     class Meta:
         model = Notificacion
         fields = '__all__'
-
-
 
 
 class EncuestaForm(ModelForm):
@@ -102,10 +101,6 @@ class Reportes_estadisticasForm(ModelForm):
                 })      
         }
         
-
-
-
-
 #Categoria
 class CategoriaForm(ModelForm):
     class Meta:
