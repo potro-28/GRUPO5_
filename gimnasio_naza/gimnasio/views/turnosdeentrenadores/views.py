@@ -1,4 +1,4 @@
-from django.views.generic import ListView, CreateView, UpdateView
+from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
 from gimnasio.models import Turnosentrenadores
 from gimnasio.forms import TurnodeentrenadorForm
@@ -36,4 +36,15 @@ class TurnodeentrenadorUpdateView(UpdateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['titulo'] = 'Editar Turno Entrenadores'
+        return context
+
+class TurnodeentrenadorDeleteView(DeleteView):
+    model = Turnosentrenadores
+    template_name = 'turnodeentrenador/eliminar.html'
+    success_url = reverse_lazy('app:listar_turnodeentrenador')
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['titulo'] = 'Eliminar Turno Entrenadores'
+        context['listar_url'] = reverse_lazy('app:listar_turnodeentrenador')
         return context
