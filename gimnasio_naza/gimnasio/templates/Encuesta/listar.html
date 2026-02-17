@@ -1,0 +1,167 @@
+{% extends "body.html" %}
+{% load static %}
+{% block contenido %}
+
+<div id="DataTables_Table_0_wrapper" class="dt-container dt-bootstrap5 dt-empty-footer">
+  <div class="row card-header mx-0 px-2">
+    <div class="d-md-flex justify-content-between align-items-center dt-layout-start col-md-auto me-auto">
+      <h5 class="card-title mb-0">Listado de Encuesta</h5></div>
+      <div class="d-md-flex justify-content-between align-items-center dt-layout-end col-md-auto ms-auto">
+        <div class="dt-buttons btn-group flex-wrap">
+          <div class="btn-group">
+            <button class="btn buttons-collection btn-label-primary dropdown-toggle me-4 waves-effect border-none" aria-controls="DataTables_Table_0" type="button" tabindex="0" aria-haspopup="dialog" aria-expanded="false">
+              <span>
+                <span class="d-flex align-items-center gap-2"><i class="icon-base ri ri-external-link-line icon-18px"></i> 
+                  <span class="d-none d-sm-inline-block">Exportar</span>
+                </span>
+              </span>
+            </button>
+          </div> 
+          <button class="btn create-new btn-primary" aria-controls="DataTables_Table_0" type="button" tabindex="0">
+            <span>
+             
+              <span class="d-flex align-items-center">
+                <i class="icon-base ri ri-add-line icon-18px me-sm-1"></i>
+                <a href="{{crear_url}}" class="text-white"> 
+                  <span class="d-none d-sm-inline-block">Agregar nueva encuesta</span>
+                </a>
+              </span>
+            </span>
+          </button> 
+        </div>
+      </div>
+    </div>
+    <hr class="my-0">
+    <div class="row m-3 mx-2 my-0 justify-content-between">
+      <div class="d-md-flex justify-content-between align-items-center dt-layout-start col-md-auto me-auto">
+        <div class="dt-length">
+
+        </div>
+      </div>
+      <div class="d-md-flex justify-content-between align-items-center dt-layout-end col-md-auto ms-auto">
+        
+      </div>
+    </div>
+    <div class="justify-content-between dt-layout-table">
+      <div class="d-md-flex justify-content-between align-items-center dt-layout-full table-responsive">
+        <table class="datatables-basic table table-bordered table-responsive dataTable dtr-column collapsed" id="DataTables_Table_0" aria-describedby="DataTables_Table_0_info" style="width: 100%;">
+          <colgroup>
+            <col data-dt-column="0" style="width: 40px;">
+            <col data-dt-column="1" style="width: 58px;">
+            <col data-dt-column="3" style="width: 295.891px;">
+            <col data-dt-column="4" style="width: 283.453px;">
+            <col data-dt-column="5" style="width: 120.328px;">
+            <col data-dt-column="6" style="width: 119.047px;">
+            <col data-dt-column="7" style="width: 142.609px;">
+          </colgroup>
+          <thead>
+            <tr>
+              <th data-dt-column="0" class="control dt-orderable-none" rowspan="1" colspan="1" aria-label="" style="">
+                <span class="dt-column-title"></span>
+                <span class="dt-column-order"></span>
+              </th>
+              <th data-dt-column="1" rowspan="1" colspan="1" class="dt-select dt-orderable-none" aria-label="">
+                <span class="dt-column-title"></span>
+                <span class="dt-column-order"></span>
+                <input class="form-check-input" type="checkbox" aria-label="Select all rows">
+              </th>
+              <th data-dt-column="3" rowspan="1" colspan="1" class="dt-orderable-asc dt-orderable-desc" aria-label="Name: Activate to sort" tabindex="0">
+                <span class="dt-column-title" role="button"> ID </span>
+                <span class="dt-column-order"></span>
+              </th>
+              <th data-dt-column="4" rowspan="1" colspan="1" class="dt-orderable-asc dt-orderable-desc" aria-label="Email: Activate to sort" tabindex="0">
+                <span class="dt-column-title" role="button">Nombre</span>
+                <span class="dt-column-order"></span>
+              </th>
+              <th data-dt-column="5" rowspan="1" colspan="1" class="dt-orderable-asc dt-orderable-desc" aria-label="Date: Activate to sort" tabindex="0">
+                <span class="dt-column-title" role="button">Estado</span>
+                <span class="dt-column-order"></span>
+              </th>
+              <th data-dt-column="8" rowspan="1" colspan="1" class="dt-orderable-asc dt-orderable-desc" aria-label="Status: Activate to sort" tabindex="0">
+                <span class="dt-column-title" role="button">fk_Usuario</span>
+                <span class="dt-column-order"></span>
+              </th>
+              <th data-dt-column="9" rowspan="1" colspan="1" class="dt-orderable-asc dt-orderable-desc" aria-label="Status: Activate to sort" tabindex="0">
+                <span class="dt-column-title" role="button">ACCIONES</span>
+                <span class="dt-column-order"></span>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for e in object_list %}
+            <tr>
+              <td class="control" tabindex="0" style=""></td>
+              <td class="dt-select"><input aria-label="Select row" class="form-check-input" type="checkbox"></td>
+              <td>{{ e.id }}</td>
+              <td>{{ e.nombre }}</td>
+              <td>{{ e.estado }}</td>
+              <td>{{ e.fk_usuario_id }}</td>
+              <td class="d-flex align-items-center">
+                <div class="d-inline-block">
+                  <a href="javascript:;" class="btn btn-sm btn-text-secondary rounded-pill btn-icon dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
+                    <i class="icon-base ri ri-more-2-line icon-22px"></i>
+                  </a>
+                  <ul class="dropdown-menu dropdown-menu-end m-0">
+                    <li>
+                      <a href="{% url 'gimnasio:eliminar_encuesta' e.id %}" class="dropdown-item">Eliminar</a>
+                    </li>
+                  </ul>
+                </div>
+                <a href="{% url 'gimnasio:editar_encuesta' e.id %}" class="btn btn-primary btn-sm ms-2">
+                  <i class="icon-base ri ri-edit-box-line icon-22px"></i>
+                </a>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+          <tfoot></tfoot>
+        </table>
+      </div>
+    </div>
+    <div class="row mx-3 justify-content-between">
+      <div class="d-md-flex justify-content-between align-items-center dt-layout-start col-md-auto me-auto">
+        <div class="dt-info" aria-live="polite" id="DataTables_Table_0_info" role="status"></div>
+      </div>
+      <div class="d-md-flex justify-content-between align-items-center dt-layout-end col-md-auto ms-auto">
+        <div class="dt-paging" id="DataTables_Table_0_paginate"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block js %}
+<script src="{% static 'lib/jquery/jquery-3.6.0.min.js' %}"></script>
+<script src="{% static 'lib/datatables-1.10.20/js/jquery.dataTables.js' %}"></script>
+<script src="{% static 'lib/datatables-1.10.20/js/dataTables.bootstrap4.min.js' %}"></script>
+<script src="{% static 'lib/datatables-1.10.20/plugins/responsive-2.2.3/js/dataTables.responsive.min.js' %}"></script>
+<script src="{% static 'lib/datatables-1.10.20/plugins/responsive-2.2.3/js/responsive.bootstrap4.min.js' %}"></script>
+<script>
+  $(document).ready(function () {
+    $('#DataTables_Table_0').DataTable({
+      responsive: true,
+      autoWidth: false,
+      language: {
+        "sProcessing":     "Procesando...",
+        "sLengthMenu":     "Mostrar _MENU_ registros",
+        "sZeroRecords":    "No se encontraron resultados",
+        "sEmptyTable":     "Ningún dato disponible en esta tabla",
+        "sInfo":           "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+        "sInfoEmpty":      "Mostrando registros del 0 al 0 de un total de 0 registros",
+        "sInfoFiltered":   "(filtrado de un total de _MAX_ registros)",
+        "sSearch":         "Buscar:",
+        "oPaginate": {
+          "sFirst":    "Primero",
+          "sPrevious": "Anterior",
+          "sNext":     "Siguiente",
+          "sLast":     "Último"
+        }
+      }
+    });
+  });
+</script>
+{% endblock js %}
+
+
+script

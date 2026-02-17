@@ -103,16 +103,17 @@
         </thead>
         <tbody>
           <tr>
-            {% for me in object_list %}
+            {% for a in object_list %}
             <tr>
             <td class="control" tabindex="0" style=""></td>
-          <td class="dt-select"><input aria-label="Select row" class="form-check-input" type="checkbox"></td>
+          <td class="dt-\select"><input aria-label="Select row" class="form-check-input" type="checkbox"></td>
             
-            <td>{{me.id}}</td>
-            <td>{{me.fecha_inicio}}</td>
-            <td>{{me.fecha_fin}}</td>
-            <td>{{me.fk_usuario_id.nombre_usuario}} {{me.fk_usuario_id.apellido_usuario}}</td>
-            <td>{{me.fk_usuario_id.documento_usuario}}</td>
+            <td>{{a.id}}</td>
+            <td>{{a.fecha_inicio}}</td>
+            <td>{{a.fecha_fin}}</td>
+            <td>{{a.fk_membresia.nombre_usuario}} {{a.fk_membresia.apellido_usuario}}</td>
+          
+          <td>{{a.fk_membresia.fk_usuario.documento}}</td>
           
           
           

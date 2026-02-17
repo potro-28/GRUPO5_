@@ -1,0 +1,82 @@
+from django.shortcuts import render, redirect
+#from django.http import HttpResponse,JsonResponse
+from django.utils.decorators import method_decorator
+from django.contrib.auth.decorators import login_required
+from django.views.generic import ListView, CreateView, UpdateView, DeleteView
+from django.urls import reverse_lazy
+from django.views.decorators.csrf import csrf_exempt
+from django.utils.decorators import method_decorator
+
+from gimnasio.models import *
+from gimnasio.forms import EncuestaForm
+
+#Listar Encuestas
+def listar_Encuestas(request):
+    nombre ={
+        'titulo':'Listado de Encuestas',
+        'encuestas': Encuesta.objects.all()
+    }
+    return render(request,'Encuesta/listar.html', nombre)
+
+class EncuestaListView(ListView):
+    model = Encuesta
+    template_name = 'Encuesta/listar.html'
+    
+    #METODO DISPATCH
+    #@method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        #if request.method == 'GET':
+            #return redirect('app: listar_categorias')    
+        return super().dispatch(request, *args, **kwargs)
+    
+    #METODO POST
+    def post(self, request, *args, **kwargs ):
+        return super().post(request, *args, **kwargs)
+
+    
+    #METODO GET CONTEXT DATA
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['titulo'] = 'Listado de Encuestas'
+        context['crear_url'] = reverse_lazy('gimnasio:crear_encuesta')
+        return context
+
+#Crear Encuesta    
+class EncuestaCreateView(CreateView):
+    model = Encuesta
+    template_name = 'Encuesta/crear.html'
+    form_class = EncuestaForm
+    success_url = reverse_lazy('gimnasio:listar_encuestas')
+    
+    
+    #@method_decorator(csrf_exempt)
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['titulo'] = 'Crear Encuesta'
+        return context
+    
+class EncuestaUpdateView(UpdateView):
+    model = Encuesta
+    form_class = EncuestaForm
+    template_name = 'Encuesta/crear.html'
+    success_url = reverse_lazy('gimnasio:listar_encuestas')
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['titulo'] = 'Editar Encuesta'
+        context['listar_url'] = reverse_lazy('gimnasio:listar_encuestas')
+        return context
+
+
+# Eliminar Encuesta   
+class EncuestaDeleteView(DeleteView):
+    model = Encuesta
+    template_name = 'encuesta/eliminar.html'
+    success_url = reverse_lazy('gimnasio:listar_encuestas')
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['titulo'] = 'Eliminar Encuesta'
+        context['listar_url'] = reverse_lazy('gimnasio:listar_encuestas')
+        return context
+    
