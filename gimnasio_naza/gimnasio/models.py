@@ -76,7 +76,7 @@ class Categoria(models.Model):
     descripcion = models.CharField(max_length=250)
 
     def __str__(self):
-        return self.nombre_categoria
+        return str(self.nombre_categoria)
     class Meta:
         db_table = "Categoria"
         verbose_name = "Categoria"
@@ -352,7 +352,7 @@ class Rutina(models.Model):
         db_table = 'rutina'
 
     def __str__(self):
-        return self.id
+        return str(self.id)
     
 '''----------certificaciones-----------'''
 

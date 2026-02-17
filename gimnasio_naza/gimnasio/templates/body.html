@@ -23,8 +23,10 @@
                     
                 {% include 'nav.html' %}
                 </nav>
+                {%block contenido%}
+                {% endblock %}
 
-                {% block contenido %}{% endblock contenido %}
+ 
                 
                 <!-- / Navbar -->
             </div>
@@ -41,9 +43,8 @@
     
     <!-- / Layout wrapper -->
 
-{% include "footer.html" %}
-    <!-- Core JS -->
 
+    <!-- Core JS -->
     <script src="{% static 'assets/vendor/libs/jquery/jquery.js' %}"></script>
 
     <script src="{% static 'assets/vendor/libs/popper/popper.js'%}"></script>
@@ -68,7 +69,6 @@
 
     <!-- Place this tag before closing body tag for github widget button. -->
     <script async="async" defer="defer" src="https://buttons.github.io/buttons.js"></script>
-    
     
     {% block js %}{% endblock %}
     

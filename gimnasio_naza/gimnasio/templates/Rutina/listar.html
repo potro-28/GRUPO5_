@@ -2,19 +2,17 @@
 {% load static%}
 {% block contenido %}
 
-
-
 <div id="DataTables_Table_0_wrapper" class="dt-container dt-bootstrap5 dt-empty-footer">
   <div class="row card-header mx-0 px-2">
     <div class="d-md-flex justify-content-between align-items-center dt-layout-start col-md-auto me-auto">
-      <h5 class="card-title mb-0">DataTable with Buttons</h5></div>
+      <h5 class="card-title mb-0">Listar Rutinas</h5></div>
       <div class="d-md-flex justify-content-between align-items-center dt-layout-end col-md-auto ms-auto">
         <div class="dt-buttons btn-group flex-wrap">
           <div class="btn-group">
             <button class="btn buttons-collection btn-label-primary dropdown-toggle me-4 waves-effect border-none" aria-controls="DataTables_Table_0" type="button" tabindex="0" aria-haspopup="dialog" aria-expanded="false">
               <span>
                 <span class="d-flex align-items-center gap-2"><i class="icon-base ri ri-external-link-line icon-18px"></i> 
-                  <span class="d-none d-sm-inline-block">Export</span>
+                  <span class="d-none d-sm-inline-block">Exportar</span>
                 </span>
               </span>
             </button>
@@ -25,7 +23,7 @@
               <span class="d-flex align-items-center">
                 <i class="icon-base ri ri-add-line icon-18px me-sm-1"></i>
                    <a href="{{crear_url}}" class="btn btn-primary btn-xs"> 
-                <span class="d-none d-sm-inline-block">Agregar nueva membresia</span>
+                <span class="d-none d-sm-inline-block">Agregar nueva rutinas</span>
                 </a>
               </span>
             </span>
@@ -37,18 +35,18 @@
     <div class="row m-3 mx-2 my-0 justify-content-between">
       <div class="d-md-flex justify-content-between align-items-center dt-layout-start col-md-auto me-auto">
         <div class="dt-length">
-          <label for="dt-length-0">Show<select name="DataTables_Table_0_length" aria-controls="DataTables_Table_0" class="form-select form-select-sm" id="dt-length-0">
+          <label for="dt-length-0">Mostrar<select name="DataTables_Table_0_length" aria-controls="DataTables_Table_0" class="form-select form-select-sm" id="dt-length-0">
             <option value="7">7</option>
             <option value="10">10</option>
             <option value="25">25</option>
             <option value="50">50</option>
             <option value="100">100</option>
-          </select>entries</label>
+          </select>Registros</label>
         </div>
       </div>
       <div class="d-md-flex justify-content-between align-items-center dt-layout-end col-md-auto ms-auto">
         <div class="dt-search">
-          <label for="dt-search-0">Search:</label>
+          <label for="dt-search-0">Buscar:</label>
           <input type="search" class="form-control form-control-sm" id="dt-search-0" placeholder="Type search here" aria-controls="DataTables_Table_0">
         </div>
       </div>
@@ -77,69 +75,59 @@
               <input class="form-check-input" type="checkbox" aria-label="Select all rows">
             </th>
             <th data-dt-column="3" rowspan="1" colspan="1" class="dt-orderable-asc dt-orderable-desc" aria-label="Name: Activate to sort" tabindex="0">
-              <span class="dt-column-title" role="button"> ID </span>
+              <span class="dt-column-title" role="button"> Id </span>
               <span class="dt-column-order"></span>
             </th>
             <th data-dt-column="4" rowspan="1" colspan="1" class="dt-orderable-asc dt-orderable-desc" aria-label="Email: Activate to sort" tabindex="0">
-              <span class="dt-column-title" role="button">Fecha de inicio</span>
+              <span class="dt-column-title" role="button">Tipo</span>
               <span class="dt-column-order"></span>
             </th>
             <th data-dt-column="5" rowspan="1" colspan="1" class="dt-orderable-asc dt-orderable-desc" aria-label="Date: Activate to sort" tabindex="0">
-              <span class="dt-column-title" role="button">Fecha de fin</span>
+              <span class="dt-column-title" role="button">Disponibilidad</span>
               <span class="dt-column-order">
               </span>
             </th>
             <th data-dt-column="6" rowspan="1" colspan="1" class="dt-orderable-asc dt-orderable-desc dt-type-numeric" aria-label="Salary: Activate to sort" tabindex="0">
-              <span class="dt-column-title" role="button">Nombre de usuario</span><span class="dt-column-order"></span>
+              <span class="dt-column-title" role="button">Distribucion</span><span class="dt-column-order"></span>
             </th>
-            <th data-dt-column="6" rowspan="1" colspan="1" class="dt-orderable-asc dt-orderable-desc dt-type-numeric" aria-label="Salary: Activate to sort" tabindex="0">
-              <span class="dt-column-title" role="button">Documento del usuario</span><span class="dt-column-order"></span>
+            <th data-dt-column="7" rowspan="1" colspan="1" class="dt-orderable-asc dt-orderable-desc" aria-label="Status: Activate to sort" tabindex="0">
+              <span class="dt-column-title" role="button">Fk_IMC</span>
+              <span class="dt-column-order"></span>
             </th>
-            <th class="d-flex align-items-center dt-orderable-none dtr-hidden" data-dt-column="8" rowspan="1" colspan="1" aria-label="Actions" style="display: none;">
-              <span class="dt-column-title">Acciones</span>
+            <th data-dt-column="8" rowspan="1" colspan="1" class="dt-orderable-asc dt-orderable-desc" aria-label="Status: Activate to sort" tabindex="0">
+              <span class="dt-column-title" role="button">Acciones</span>
               <span class="dt-column-order"></span>
             </th>
           </tr>
         </thead>
         <tbody>
+          {% for r in object_list %}
           <tr>
-            {% for a in object_list %}
-            <tr>
             <td class="control" tabindex="0" style=""></td>
-          <td class="dt-\select"><input aria-label="Select row" class="form-check-input" type="checkbox"></td>
-            
-            <td>{{a.id}}</td>
-            <td>{{a.fecha_inicio}}</td>
-            <td>{{a.fecha_fin}}</td>
-            <td>{{a.fk_membresia.nombre_usuario}} {{a.fk_membresia.apellido_usuario}}</td>
-          
-          <td>{{a.fk_membresia.fk_usuario.documento}}</td>
-          
-          
-          
+          <td class="dt-select"><input aria-label="Select row" class="form-check-input" type="checkbox"></td>
+        
+
+
+            <td>{{ r.id }}</td>
+            <td>{{ r.tipo }}</td>
+            <td>{{ r.disponibilidad}}</td>
+            <td>{{ r.distribucion }}</td>
+            <td>{{ r.fk_imc_id }}</td>      
+        
           <td class="d-flex align-items-center dtr-hidden" style="display: none;">
             <div class="d-inline-block"><a href="javascript:;" class="btn btn-sm btn-text-secondary rounded-pill btn-icon dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
               <i class="icon-base ri ri-more-2-line icon-22px"></i>
             </a>
             <ul class="dropdown-menu dropdown-menu-end m-0">
               <li>
-                <a href="{% url 'gimnasio:eliminar_membresia' me.id %}" class="btn btn-primary">Delete</a>
+                <a href="{% url 'gimnasio:eliminar_rutina' r.id %}" class="btn btn-primary">Delete</a>
               </li>
             </ul>
           </div>
-          <a href="javascript:;" class="btn btn-sm btn-text-secondary rounded-pill btn-icon item-edit">
-            <a href="{% url 'gimnasio:editar_membresia' me.id %}" class="btn btn-primary">
+            </div>
+            <a href="{% url 'gimnasio:editar_rutina' r.id %}" class="btn btn-primary">
               <i class="icon-base ri ri-edit-box-line icon-22px"></i>
-              </a>
-            
-            </i></a></td></tr></tbody>
-            {% endfor %}
+            </a></td></tr></tbody>
+          {% endfor %}
       <tfoot></tfoot></table></div></div><div class="row mx-3 justify-content-between"><div class="d-md-flex justify-content-between align-items-center dt-layout-start col-md-auto me-auto"><div class="dt-info" aria-live="polite" id="DataTables_Table_0_info" role="status">Showing 1 to 7 of 100 entries</div></div><div class="d-md-flex justify-content-between align-items-center dt-layout-end col-md-auto ms-auto"><div class="dt-paging"><nav aria-label="pagination"><ul class="pagination"><li class="dt-paging-button page-item disabled"><button class="page-link first" role="link" type="button" aria-controls="DataTables_Table_0" aria-disabled="true" aria-label="First" data-dt-idx="first" tabindex="-1"><i class="icon-base ri ri-skip-back-mini-line scaleX-n1-rtl icon-22px"></i></button></li><li class="dt-paging-button page-item disabled"><button class="page-link previous" role="link" type="button" aria-controls="DataTables_Table_0" aria-disabled="true" aria-label="Previous" data-dt-idx="previous" tabindex="-1"><i class="icon-base ri ri-arrow-left-s-line scaleX-n1-rtl icon-22px"></i></button></li><li class="dt-paging-button page-item active"><button class="page-link" role="link" type="button" aria-controls="DataTables_Table_0" aria-current="page" data-dt-idx="0">1</button></li><li class="dt-paging-button page-item"><button class="page-link" role="link" type="button" aria-controls="DataTables_Table_0" data-dt-idx="1">2</button></li><li class="dt-paging-button page-item"><button class="page-link" role="link" type="button" aria-controls="DataTables_Table_0" data-dt-idx="2">3</button></li><li class="dt-paging-button page-item"><button class="page-link" role="link" type="button" aria-controls="DataTables_Table_0" data-dt-idx="3">4</button></li><li class="dt-paging-button page-item"><button class="page-link" role="link" type="button" aria-controls="DataTables_Table_0" data-dt-idx="4">5</button></li><li class="dt-paging-button page-item disabled"><button class="page-link ellipsis" role="link" type="button" aria-controls="DataTables_Table_0" aria-disabled="true" data-dt-idx="ellipsis" tabindex="-1">…</button></li><li class="dt-paging-button page-item"><button class="page-link" role="link" type="button" aria-controls="DataTables_Table_0" data-dt-idx="14">15</button></li><li class="dt-paging-button page-item"><button class="page-link next" role="link" type="button" aria-controls="DataTables_Table_0" aria-label="Next" data-dt-idx="next"><i class="icon-base ri ri-arrow-right-s-line scaleX-n1-rtl icon-22px"></i></button></li><li class="dt-paging-button page-item"><button class="page-link last" role="link" type="button" aria-controls="DataTables_Table_0" aria-label="Last" data-dt-idx="last"><i class="icon-base ri ri-skip-forward-mini-line scaleX-n1-rtl icon-22px"></i></button></li></ul></nav></div></div></div></div>
-            
-          
-  </tbody>
-</table>
-
-
 {% endblock %}
-
