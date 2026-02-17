@@ -62,6 +62,7 @@ class Masa_corporalUpdateView(UpdateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['titulo'] = 'Actualizar masa corporal'
+        context['listar_url'] = reverse_lazy('gimnasio:listar_masa_corporal_clas')
         return context
 class Masa_corporalDeleteView(DeleteView):
     model = Masa_corporal
@@ -72,4 +73,5 @@ class Masa_corporalDeleteView(DeleteView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['titulo'] = 'Eliminar masa corporal'
+        context['listar_url'] = reverse_lazy('gimnasio:listar_masa_corporal_clas')
         return context 
