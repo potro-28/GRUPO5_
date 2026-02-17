@@ -275,7 +275,7 @@ class Nutricion(models.Model):
 
 #------------REGISTRO DE VISITANTES----------------
     
-class Registro_Visitantes(models.Model):
+class Registrovisitantestemporales(models.Model):
     fecha_registro = models.DateField(default=datetime.now)
     fk_usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
 
@@ -289,7 +289,7 @@ class Registro_Visitantes(models.Model):
 
 #-----------TURNO DE ENTRENADORES----------------
 
-class Turno_Entrenadores(models.Model):
+class Turnosentrenadores(models.Model):
     JORNADA_CHOICES = [
     ('mañana', 'mañana'),
     ('tarde', 'tarde'),
