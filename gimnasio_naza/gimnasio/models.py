@@ -367,8 +367,7 @@ class Certificacion_interna(models.Model):
         verbose_name='Certificaion_interna'
         verbose_name_plural='Certificaiones_internas'
 
-'''---------sanciones----------'''
-
+#---------sanciones----------
 class Sancion(models.Model):
     
     Tipo_sancion_chioce=[
@@ -396,3 +395,5 @@ class Sancion(models.Model):
         db_table='Sancion'
         verbose_name='Sancion'
         verbose_name_plural='Sanciones'
+        
+

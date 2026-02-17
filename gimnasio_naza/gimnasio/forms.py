@@ -1,5 +1,6 @@
 
 from dataclasses import fields
+from gimnasio.models import Elemento, Usuario, Mantenimiento
 from django.forms import ModelForm
 from gimnasio.models import Asistencia, Membresia, Notificacion
 from django import forms
@@ -10,6 +11,27 @@ from gimnasio.models import Categoria
 from django import forms
 from gimnasio.models import Nutricion
 from gimnasio.models import Rutina
+
+class ElementoForm(forms.ModelForm):
+    class Meta:
+        model = Elemento
+        fields = '__all__'
+
+
+class usuarioForm(forms.ModelForm):
+    class Meta:
+        model = Usuario
+        fields = '__all__'
+
+class MantenimientoForm(forms.ModelForm):
+    class Meta:
+        model = Mantenimiento
+        fields = '__all__'
+widgets = {
+            'fecha_programada':forms.DateInput(attrs={'type': 'date'}),
+            'fecha_realizada': forms.DateInput(attrs={'type': 'date'}),
+        }
+
 
 class AsistenciaForm(ModelForm):
     class Meta:
