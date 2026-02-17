@@ -31,8 +31,6 @@ class AsistenciaListView(ListView):
         return super().dispatch(request, *args, **kwargs)
     
     # metodo post
-    def post(self, request, *args, **kwargs):
-        return super().post(request, *args, **kwargs)
     
     #metodo context data 
     def get_context_data(self, **kwargs):

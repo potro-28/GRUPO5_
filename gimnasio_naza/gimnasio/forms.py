@@ -1,8 +1,11 @@
-<<<<<<< HEAD
+
 from dataclasses import fields
 from django.forms import ModelForm
 from gimnasio.models import Asistencia, Membresia, Notificacion
 from django import forms
+from gimnasio.models import Encuesta
+from gimnasio.models import Soporte_PQRS
+from gimnasio.models import Reportes_estadisticas
 
 class AsistenciaForm(ModelForm):
     class Meta:
@@ -19,13 +22,6 @@ class NotificacionForm(ModelForm):
         model = Notificacion
         fields = '__all__'
 
-=======
-from dataclasses import field
-from django.forms import ModelForm
-from gimnasio.models import Encuesta
-from gimnasio.models import Soporte_PQRS
-from gimnasio.models import Reportes_estadisticas
-from django import forms 
 
 class EncuestaForm(ModelForm):
     class Meta:
@@ -101,4 +97,3 @@ class Reportes_estadisticasForm(ModelForm):
                 })      
         }
         
->>>>>>> Vanessa
