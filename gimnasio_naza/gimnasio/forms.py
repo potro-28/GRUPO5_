@@ -57,18 +57,49 @@ class AsistenciaForm(ModelForm):
         cleaned_data = super().clean()
         hora_entrada = cleaned_data.get('hora_ingreso')
         hora_salida = cleaned_data.get('hora_salida')
+
         if hora_salida == hora_entrada:
-            raise forms.ValidationError('Daniel me la pelaste')
+            raise forms.ValidationError('La hora de salida no puede ser igual a la hora de entrada')
+        if hora_salida < hora_entrada:
+            raise forms.ValidationError('La hora de salida no puede ser anterior a la hora de entrada')
+
         return cleaned_data
+    
 class MembresiaForm(ModelForm):
     class Meta:
         model = Membresia
         fields = '__all__'
+        widgets = {
+            'fecha_inicio': forms.DateInput(attrs={ 
+                'class': 'form-control',
+                'type': 'date'
+            }),
+            'fecha_fin': forms.DateInput(attrs={ 
+                'class': 'form-control',
+                'type': 'date'
+            }),
+        }
+        
+    def clean(self):
+        cleaned_data = super().clean()
+        fecha_inicio = cleaned_data.get('fecha_inicio')
+        fecha_fin = cleaned_data.get('fecha_fin')
+        fk_usuario = cleaned_data.get('fk_usuario')
+        if fecha_fin == fecha_inicio:
+            raise forms.ValidationError('La fecha de finalización no puede ser igual a la fecha de inicio')
+        if fecha_fin < fecha_inicio:
+            raise forms.ValidationError('La fecha de finalización no puede ser anterior a la fecha de inicio')
+        if fk_usuario.membresia_set.filter(fecha_inicio__month=fecha_inicio.month, fecha_inicio__year=fecha_inicio.year).exists():
+            raise forms.ValidationError('El usuario ya tuvo una membresia este mismo mes')
+        return cleaned_data
+    
+    
 
 class NotificacionForm(ModelForm):
     class Meta:
         model = Notificacion
         fields = '__all__'
+        
 
 
 
