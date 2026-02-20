@@ -7,12 +7,12 @@ from gimnasio.forms import MantenimientoForm
 # HISTORIAL DE MANTENIMIENTO 
 class MantenimientoListView(ListView):
     model = Mantenimiento
-    template_name = 'mantenimiento/listar3.html'
+    template_name = 'mantenimiento/listar.html'
     context_object_name = 'mantenimientos'
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["crear_url"] = reverse_lazy('gimnasio:crear3_mantenimiento')
+        context["crear_url"] = reverse_lazy('gimnasio:crear_mantenimiento')
         return context
     
 
@@ -20,20 +20,21 @@ class MantenimientoListView(ListView):
 class MantenimientoCreateView(CreateView):
     model = Mantenimiento
     form_class = MantenimientoForm
-    template_name = 'mantenimiento/crear3.html'
-    success_url = reverse_lazy('gimnasio:listar3_mantenimiento')
+    template_name = 'mantenimiento/crear.html'
+    success_url = reverse_lazy('gimnasio:listar_mantenimiento')
 
 
 # EDITAR
 class MantenimientoUpdateView(UpdateView):
     model = Mantenimiento
     form_class = MantenimientoForm
-    template_name = 'mantenimiento/crear3.html'
-    success_url = reverse_lazy('gimnasio:listar3_mantenimiento')
+    template_name = 'mantenimiento/crear.html'
+    success_url = reverse_lazy('gimnasio:listar_mantenimiento')
+
 
 
 # ELIMINAR
 class MantenimientoDeleteView(DeleteView):
     model = Mantenimiento
-    template_name = 'mantenimiento/eliminar3.html'
-    success_url = reverse_lazy('gimnasio:listar3_mantenimiento')
+    template_name = 'mantenimiento/eliminar.html'
+    success_url = reverse_lazy('gimnasio:listar_mantenimiento')

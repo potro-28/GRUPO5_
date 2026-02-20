@@ -3,6 +3,8 @@
 {% block contenido %}
 
 <div id="DataTables_Table_0_wrapper" class="dt-container dt-bootstrap5 dt-empty-footer">
+  
+  <!-- Header -->
   <div class="row card-header mx-0 px-2">
     <div class="d-md-flex justify-content-between align-items-center dt-layout-start col-md-auto me-auto">
       <h5 class="card-title mb-0">DataTable with Buttons</h5>
@@ -11,25 +13,25 @@
       <div class="dt-buttons btn-group flex-wrap">
         <button class="btn buttons-collection btn-label-primary dropdown-toggle me-4 waves-effect" type="button">
           <span class="d-flex align-items-center gap-2">
-            <i class="icon-base ri ri-external-link-line icon-18px"></i> 
+            <i class="icon-base ri ri-external-link-line icon-18px"></i>
             <span class="d-none d-sm-inline-block">Export</span>
           </span>
         </button>
-        
-        <a href="{% url 'gimnasio:crear_elemento' %}" class="btn btn-primary">
+        <a href="{% url 'gimnasio:crear_mantenimiento' %}" class="btn btn-primary">
           <i class="icon-base ri ri-add-line icon-18px me-sm-1"></i>
-          <span class="d-none d-sm-inline-block">Agregar nuevo elemento</span>
+          <span class="d-none d-sm-inline-block">Agregar nuevo mantenimiento</span>
         </a>
       </div>
     </div>
   </div>
-  
+
   <hr class="my-0">
-  
+
+  <!-- Controles de búsqueda y paginación -->
   <div class="row m-3 mx-2 my-0 justify-content-between">
     <div class="d-md-flex justify-content-between align-items-center dt-layout-start col-md-auto me-auto">
       <div class="dt-length">
-        <label for="dt-length-0">Show 
+        <label for="dt-length-0">Show
           <select name="DataTables_Table_0_length" class="form-select form-select-sm" id="dt-length-0">
             <option value="7">7</option>
             <option value="10">10</option>
@@ -47,52 +49,53 @@
       </div>
     </div>
   </div>
-  
+
+  <!-- Tabla -->
   <div class="justify-content-between dt-layout-table">
     <div class="d-md-flex justify-content-between align-items-center dt-layout-full table-responsive">
       <table class="datatables-basic table table-bordered dataTable" id="DataTables_Table_0">
+
         <thead>
           <tr>
             <th class="control"></th>
-            <th><input class="form-check-input" type="checkbox" aria-label="Select all rows"></th>
+            <th class="dt-select"><input class="form-check-input" type="checkbox"></th>
             <th>ID</th>
-            <th>Serial</th>
-            <th>Marca</th>
-            <th>Nombre del elemento</th>
-            <th>Tipo de elemento</th>
+            <th>Elemento_id</th>
+            <th>Tipo de mantenimiento</th>
+            <th>Fecha programada</th>
             <th>Estado</th>
-            <th>Fecha ingreso</th>
-            <th>Categoría</th>
             <th>Acciones</th>
           </tr>
         </thead>
+
         <tbody>
-          {% for e in object_list %}
+          {% for m in object_list %}
           <tr>
-            <td class="control"></td>
-            <td><input class="form-check-input" type="checkbox" aria-label="Select row"></td>
-            <td>{{e.id}}</td>
-            <td>{{e.serial}}</td>
-            <td>{{e.marca}}</td>
-            <td>{{e.nombre_elemento}}</td>
-            <td>{{e.tipo_elemento}}</td>
-            <td>{{e.estado}}</td>
-            <td>{{e.fecha_ingreso}}</td>
-            <td>{{e.categoria_id}}</td>
+            <td class="control" tabindex="0"></td>
+            <td class="dt-select">
+              <input class="form-check-input" type="checkbox" aria-label="Select row">
+            </td>
+            <td>{{ m.id }}</td>
+            <td>{{ m.elemento_id}}</td>
+            <td>{{ m.tipo_mantenimiento}}</td>
+            <td>{{ m.fecha_programada}}</td>
+            <td>{{ m.estado}}</td>
             <td>
-              <a href="{% url 'gimnasio:editar_elemento' e.id %}" class="btn btn-sm btn-primary">
+              <a href="{% url 'gimnasio:editar_mantenimiento' m.id %}" class="btn btn-sm btn-primary">
                 <i class="icon-base ri ri-edit-box-line"></i>
               </a>
-              <a href="{% url 'gimnasio:eliminar_elemento' e.id %}" class="btn btn-sm btn-danger">
+              <a href="{% url 'gimnasio:eliminar_mantenimiento' m.id %}" class="btn btn-sm btn-danger">
                 <i class="icon-base ri ri-delete-bin-line"></i>
               </a>
             </td>
           </tr>
           {% endfor %}
         </tbody>
+
       </table>
     </div>
   </div>
+
 </div>
 
 {% endblock %}
