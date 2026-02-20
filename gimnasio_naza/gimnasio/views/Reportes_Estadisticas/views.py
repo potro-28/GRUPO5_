@@ -6,6 +6,7 @@ from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
+from django.contrib import messages
 
 from gimnasio.models import *
 from gimnasio.forms import Reportes_estadisticasForm
@@ -55,6 +56,10 @@ class Reportes_estadisticasCreateView(CreateView):
         context['titulo'] = 'Crear Reportes y estadisticas'
         return context
     
+    def form_valid(self, form):
+        messages.success(self.request, "Reporte guardado correctamente")
+        return super().form_valid(form)
+    
 class Reportes_estadisticasUpdateView(UpdateView):
     model = Reportes_estadisticas
     form_class = Reportes_estadisticasForm
@@ -66,6 +71,10 @@ class Reportes_estadisticasUpdateView(UpdateView):
         context['titulo'] = 'Editar Reportes y estadisticas'
         context['listar_url'] = reverse_lazy('gimnasio:listar_Reportes_estadisticas')
         return context
+    
+    def form_valid(self, form):
+        messages.success(self.request, "Reporte editado correctamente")
+        return super().form_valid(form)
 
 
 # Eliminar Reportes_estadisticas
@@ -79,6 +88,10 @@ class Reportes_estadisticasDeleteView(DeleteView):
         context['titulo'] = 'Eliminar Reportes y estadisticas'
         context['listar_url'] = reverse_lazy('gimnasio:listar_Reportes_estadisticas')
         return context
+    
+    def form_valid(self, form):
+        messages.success(self.request, "Reporte eliminado correctamente")
+        return super().form_valid(form)
     
 
 

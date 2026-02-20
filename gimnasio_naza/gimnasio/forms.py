@@ -19,6 +19,7 @@ from django.forms import ModelForm
 from gimnasio.models import Registrovisitantestemporales
 from gimnasio.models import Turnosentrenadores
 from gimnasio.models import Certificacion_interna
+import re
 
 class ElementoForm(forms.ModelForm):
     class Meta:
@@ -64,8 +65,10 @@ class EncuestaForm(ModelForm):
         widgets = {
             'nombre' : forms.TextInput(attrs={ 
                 'class':'form-control',
+                
                                            
                 'placeholder': 'Ingrese el nombre de la encuesta'}),
+            
             'estado':
                 forms.Select(attrs={
                 'class':'form-control',  
@@ -77,7 +80,15 @@ class EncuestaForm(ModelForm):
                     'class':'form-control',
                 })      
         }
-        
+
+    
+    
+    def clean_nombre(self):
+        nombre = self.cleaned_data.get('nombre')
+        if not re.match(r'^[a-zA-Z\s]+$',nombre):
+            raise forms.ValidationError('El nombre solo puede contener letras')
+        return self.cleaned_data
+    
 class Soporte_PQRSForm(ModelForm):
     class Meta:
         model = Soporte_PQRS
@@ -106,6 +117,15 @@ class Soporte_PQRSForm(ModelForm):
                     'class':'form-control',
                 })      
         }
+    
+    #validacion descripcion minimo 10 caracteres   
+    def clean_descripcion(self):
+        descripcion = self.cleaned_data['descripcion']
+
+        if len(descripcion) < 10:
+            raise forms.ValidationError("La descripción debe tener mínimo 10 caracteres")
+
+        return descripcion
         
 class Reportes_estadisticasForm(ModelForm):
     class Meta:

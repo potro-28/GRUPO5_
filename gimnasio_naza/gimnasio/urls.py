@@ -60,14 +60,14 @@ urlpatterns = [
     path('editar_encuesta/<int:pk>/', EncuestaUpdateView.as_view(), name='editar_encuesta'),
     path('eliminar_encuesta/<int:pk>/', EncuestaDeleteView.as_view(), name='eliminar_encuesta'),
 
-# Soporte_PQRS
+    # Soporte_PQRS
 
     path('listar_Soporte_PQRS/', Soporte_PQRSListView.as_view(), name='listar_Soporte_PQRS'),
     path('crear_Soporte_PQRS/', Soporte_PQRSCreateView.as_view(), name='crear_Soporte_PQRS'),
     path('editar_Soporte_PQRS/<int:pk>/', Soporte_PQRSUpdateView.as_view(), name='editar_Soporte_PQRS'),
     path('eliminar_Soporte_PQRS/<int:pk>/', Soporte_PQRSDeleteView.as_view(), name='eliminar_Soporte_PQRS'),
 
-# Reportes_estadisticas
+    # Reportes_estadisticas
 
     path('listar_Reportes_estadisticas/', Reportes_estadisticasListView.as_view(), name='listar_Reportes_estadisticas'),
     path('crear_Reportes_estadisticas/', Reportes_estadisticasCreateView.as_view(), name='crear_Reportes_estadisticas'),

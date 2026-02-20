@@ -169,7 +169,7 @@ class Encuesta(models.Model):
         ('I', 'Inactiva'),
     ]
 
-    nombre = models.CharField(max_length=100)
+    nombre = models.CharField(max_length=100,unique=True)
     estado = models.CharField(max_length=1,choices=ESTADO_CHOICES,default='A')
     fk_usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
        

@@ -6,6 +6,7 @@ from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
+from django.contrib import messages
 
 from gimnasio.models import *
 from gimnasio.forms import Soporte_PQRSForm
@@ -55,6 +56,10 @@ class Soporte_PQRSCreateView(CreateView):
         context['titulo'] = 'Crear Soporte y PQRS'
         return context
     
+    def form_valid(self, form):
+        messages.success(self.request, "Soporte guardado correctamente")
+        return super().form_valid(form)
+    
 class Soporte_PQRSUpdateView(UpdateView):
     model = Soporte_PQRS
     form_class = Soporte_PQRSForm
@@ -66,6 +71,10 @@ class Soporte_PQRSUpdateView(UpdateView):
         context['titulo'] = 'Editar Soporte y PQRS'
         context['listar_url'] = reverse_lazy('gimnasio:listar_Soporte_PQRS')
         return context
+    
+    def form_valid(self, form):
+        messages.success(self.request, "Soporte editado correctamente")
+        return super().form_valid(form)
 
 
 # Eliminar Soporte_PQRS  
@@ -79,5 +88,9 @@ class Soporte_PQRSDeleteView(DeleteView):
         context['titulo'] = 'Eliminar Soporte yPQRS'
         context['listar_url'] = reverse_lazy('gimnasio:listar_Soporte_PQRS')
         return context
+    
+    def form_valid(self, form):
+        messages.success(self.request, "Soporte eliminado correctamente")
+        return super().form_valid(form)
     
 
