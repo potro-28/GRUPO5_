@@ -19,6 +19,8 @@ from django.forms import ModelForm
 from gimnasio.models import Registrovisitantestemporales
 from gimnasio.models import Turnosentrenadores
 from gimnasio.models import Certificacion_interna
+from django.contrib import messages
+import re
 
 class ElementoForm(forms.ModelForm):
     class Meta:
@@ -130,16 +132,55 @@ class Reportes_estadisticasForm(ModelForm):
                     'class':'form-control',
                 })      
         }
-        
-#Categoria
+ #categoria       
 class CategoriaForm(ModelForm):
+
     class Meta:
         model = Categoria
         fields = '__all__'
         widgets = {
-            'nombre' : forms.TextInput(attrs={
-                'placeholder': 'Ingrese el nombre de la categoria'}),
+            'nombre_categoria': forms.TextInput(attrs={
+                'class': 'form_control',
+                'placeholder': 'Ingrese el nombre de la categoria'
+            }),
         }
+
+    #  Validar nombre_categoria
+    def clean_nombre_categoria(self):
+        nombre = self.cleaned_data.get('nombre_categoria')
+        if nombre and not nombre.isalpha():
+            raise forms.ValidationError("El Nombre no puede contener números")
+        return nombre
+
+    # Validar material
+    def clean_material(self):
+        material = self.cleaned_data.get('material')
+        if material and not material.isalpha():
+            raise forms.ValidationError("El Material no puede contener números")
+        return material
+
+    #  Validar peso_equipo
+    def clean_peso_equipo(self):
+        peso = self.cleaned_data.get('peso_equipo')
+        if peso and not str(peso).isdigit():
+            raise forms.ValidationError("El Peso_Equipo solo puede contener números")
+        return peso
+
+    # Validar descripcion
+    def clean_descripcion(self):
+        descripcion = self.cleaned_data.get('descripcion')
+        if descripcion:
+            if len(descripcion) < 10:
+                raise forms.ValidationError("La descripción debe tener al menos 10 caracteres")
+            if len(descripcion) > 250:
+                raise forms.ValidationError("La descripción no puede tener más de 250 caracteres")
+        return descripcion
+    
+    
+    
+
+
+    
 #Nutricion        
 class NutricionForm(ModelForm):
     class Meta:
@@ -148,18 +189,33 @@ class NutricionForm(ModelForm):
         widgets = {
             'nombre' : forms.TextInput(attrs={
                 'placeholder': 'Ingrese el nombre de la nutricion'}),
+            
         }
         
-#Rutina
+
+# ---------------- RUTINA ----------------
 class RutinaForm(ModelForm):
     class Meta:
         model = Rutina
         fields = '__all__'
         widgets = {
-            'nombre' : forms.TextInput(attrs={
-                'placeholder': 'Ingrese el nombre de la rutina'}),
+            'tipo': forms.Select(attrs={
+                'class': 'form-control'
+            }),
+            'disponibilidad': forms.NumberInput(attrs={
+                'class': 'form-control',
+                'min': 1,
+                'max': 7
+            }),
         }
 
+    # Validación real del sistema
+    def clean_disponibilidad(self):
+        disponibilidad = self.cleaned_data.get('disponibilidad')
+        if disponibilidad < 1 or disponibilidad > 7:
+            self.add_error('disponibilidad', "La disponibilidad debe ser un número entre 1 y 7.")
+        return disponibilidad
+ #--------------------------------------------------------------------------   
 
 class Masa_muscularForm(ModelForm):
     class Meta:

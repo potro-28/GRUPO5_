@@ -6,6 +6,7 @@ from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
+from django.contrib import messages
 
 from gimnasio.models import *
 from gimnasio.forms import CategoriaForm
@@ -45,28 +46,36 @@ class categoriaListView(ListView):
 #Crear categoria    
 class CategoriaCreateView(CreateView):
     model = Categoria
-    template_name = 'categoria/crear.html'
+    template_name = 'Categoria/crear.html'
     form_class = CategoriaForm
     success_url = reverse_lazy('gimnasio:listar_categorias')
-    
-    
-    #@method_decorator(csrf_exempt)
+
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['titulo'] = 'Crear Categoria'
-        return context
+        return super().get_context_data(**kwargs)
+    
+    def form_valid(self, form):
+        messages.success(self.request, "La categoría se guardó correctamente")
+        return super().form_valid(form)
+    
     
 class CategoriaUpdateView(UpdateView):
     model = Categoria
     form_class = CategoriaForm
-    template_name = 'categoria/crear.html'
+    template_name = 'Categoria/crear.html'
     success_url = reverse_lazy('gimnasio:listar_categorias')
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['titulo'] = 'Editar Categoria'
+        context['titulo'] = 'editar Categoria'
         context['listar_url'] = reverse_lazy('gimnasio:listar_categorias')
         return context
+    
+    def form_valid(self, form):
+        messages.success(self.request, "La categoría se editó correctamente")
+        return super().form_valid(form)
     
 class CategoriaDeleteView(DeleteView):
     model = Categoria
@@ -78,3 +87,7 @@ class CategoriaDeleteView(DeleteView):
         context['titulo'] = 'Eliminar Categoria'
         context['listar_url'] = reverse_lazy('gimnasio:listar_categorias')
         return context
+    
+    def form_valid(self, form):
+        messages.success(self.request, "La categoría se eliminó correctamente")
+        return super().form_valid(form)
