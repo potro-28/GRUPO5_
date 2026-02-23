@@ -21,11 +21,6 @@
                     <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
                     <h5><i class="icon fas fa-ban"></i> ¡Atención!</h5>
                     <ul>
-                        {% for field in form %}
-                            {% for error in field.errors %}
-                                <li>{{ field.label }}: {{ error }}</li>
-                            {% endfor %}
-                        {% endfor %}
                     </ul>
                 </div>
             {% endif %}
@@ -35,7 +30,13 @@
                 <div class="form-group">
                     <label for="{{ field.id_for_label }}">{{ field.label }}:</label>
                     {{ field }}
-                </div>
+                    {% if field.errors %}
+                        <div class="text-danger">
+                            {% for error in field.errors %}
+                                <small>{{ error }}</small>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
             {% endfor %}
         </div>
 
@@ -54,11 +55,13 @@
 {% block js %}
     {% if form.errors %}
     <script>
-        Swal.fire({
-            title: "Error",
-            text: "Por favor, verifique los campos marcados en rojo.",
-            icon: "error",
-        });
+        {% for label, errors in form.errors.items %}
+            Swal.fire({
+                title: "Error",
+                text: "{{ errors|join:', ' }}",
+                icon: "error",
+            });
+        {% endfor %}
     </script>
     {% endif %}
 {% endblock %}

@@ -54,7 +54,7 @@ class Membresia(models.Model):
 #---------MODELO ASISTENCIA -----------------------------------------------------
 class Asistencia(models.Model):
     fecha_asistencia = models.DateField(default=datetime.now, verbose_name='Fecha de Asistencia')
-    hora_ingreso = models.TimeField(default=datetime.now, verbose_name='Hora de Ingreso')
+    hora_ingreso = models.TimeField(null=True, blank=True, verbose_name='Hora de Ingreso')
     hora_salida = models.TimeField(null=True, blank=True, verbose_name='Hora de Salida')
     fk_membresia = models.ForeignKey(Membresia, on_delete=models.CASCADE)
 
