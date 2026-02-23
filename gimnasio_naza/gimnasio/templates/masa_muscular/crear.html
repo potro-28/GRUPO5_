@@ -2,9 +2,9 @@
 {% load widget_tweaks %}
 
 {% block contenido %}
-
 <form method="post" action=".">
     <div class="card card-default">
+
         <div class="card-header">
             <h3 class="card-title">
                 <i class="fas fa-search"></i>
@@ -15,50 +15,63 @@
         <div class="card-body">
             {% csrf_token %}
 
-            
+            {# Mostrar errores generales del formulario #}
             {% if form.errors %}
-                <div class="alert alert-danger alert-dismissible">
-                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-                    <h5><i class="icon fas fa-ban"></i> ¡Atención!</h5>
-                    <ul>
-                        {% for field in form %}
-                            {% for error in field.errors %}
-                                <li>{{ field.label }}: {{ error }}</li>
-                            {% endfor %}
-                        {% endfor %}
-                    </ul>
-                </div>
+            <div class="alert alert-danger alert-dismissible">
+                <button type="button" class="close" data-bs-dismiss="alert">×</button>
+                <h5><i class="icon fas fa-ban"></i> Error! Verifica los siguientes campos.</h5>
+
+                {% if form.non_field_errors %}
+                <ul class="mb-0">
+                    {% for error in form.non_field_errors %}
+                    <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+            </div>
             {% endif %}
 
-            
             {% for field in form.visible_fields %}
-                <div class="form-group">
-                    <label for="{{ field.id_for_label }}">{{ field.label }}:</label>
-                    {{ field }}
-                </div>
+            <div class="form-group">
+                <label for="{{ field.id_for_label }}">{{ field.label }}:</label>
+
+                {% if field.errors %}
+                    {{ field|add_class:'form-control is-invalid'|attr:'autocomplete:off' }}
+                    <div class="invalid-feedback d-block">
+                        {% for error in field.errors %}
+                        <div>{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ field|add_class:'form-control'|attr:'autocomplete:off' }}
+                {% endif %}
+            </div>
             {% endfor %}
+
         </div>
 
         <div class="card-footer">
             <button type="submit" class="btn btn-primary">
                 <i class="fas fa-save"></i> Guardar registro
             </button>
-            <a href="{{listar_url}}" class="btn btn-danger">
+
+            <a href="{% url 'gimnasio:listar_masa_corporal_clas' %}" class="btn btn-danger">
                 <i class="fas fa-times"></i> Cancelar
             </a>
         </div>
+
     </div>
 </form>
 {% endblock %}
 
 {% block js %}
-    {% if form.errors %}
-    <script>
-        Swal.fire({
-            title: "Error",
-            text: "Por favor, verifique los campos marcados en rojo.",
-            icon: "error",
-        });
-    </script>
-    {% endif %}
+{% if form.errors %}
+<script>
+Swal.fire({
+    title: "Error!",
+    text: "Verifica los campos ingresados",
+    icon: "error"
+});
+</script>
+{% endif %}
 {% endblock %}

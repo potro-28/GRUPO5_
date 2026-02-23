@@ -317,7 +317,7 @@ class Masa_corporal (models.Model):
    
     def __str__(self):
         return str(self.id)
-    class meta:
+    class Meta:
         db_table='Masa_corporal'
         verbose_name='Masa_corporal'
         verbose_name_plural='Masas_corporales'
@@ -362,7 +362,7 @@ class Certificacion_interna(models.Model):
     fk_Asistencia=models.ForeignKey(Asistencia, on_delete=models.CASCADE, verbose_name='Asistencia')
     def __str__(self):
         return self.id
-    class meta:
+    class Meta:
         db_table='Certifiacion_interna'
         verbose_name='Certificaion_interna'
         verbose_name_plural='Certificaiones_internas'
@@ -391,7 +391,7 @@ class Sancion(models.Model):
     def __str__(self):
         return self.id
     
-    class meta:
+    class Meta:
         db_table='Sancion'
         verbose_name='Sancion'
         verbose_name_plural='Sanciones'

@@ -19,6 +19,9 @@ from django.forms import ModelForm
 from gimnasio.models import Registrovisitantestemporales
 from gimnasio.models import Turnosentrenadores
 from gimnasio.models import Certificacion_interna
+from django.core.exceptions import ValidationError
+from django.core.exceptions import ValidationError
+from datetime import date
 
 class ElementoForm(forms.ModelForm):
     class Meta:
@@ -166,10 +169,125 @@ class Masa_muscularForm(ModelForm):
         model = Masa_corporal
         fields = '__all__'
 
+    def clean_peso_cliente(self):
+        peso = self.cleaned_data.get('peso_cliente')
+
+        if peso <= 0:
+            raise ValidationError("El peso debe ser mayor que 0.")
+
+        if peso < 30 or peso > 300:
+            raise ValidationError("El peso debe estar entre 30kg y 300kg.")
+
+        return peso
+
+    def clean_altura_cliente(self):
+        altura = self.cleaned_data.get('altura_cliente')
+
+        if altura <= 0:
+            raise ValidationError("La altura debe ser mayor que 0.")
+
+        if altura < 0.5 or altura > 2.5:
+            raise ValidationError("La altura debe estar entre 0.5m y 2.5m.")
+
+        return altura
+
+    def clean_fecha_control(self):
+        fecha = self.cleaned_data.get('fecha_control')
+
+        if fecha > date.today():
+            raise ValidationError("La fecha no puede ser futura.")
+
+        return fecha
+
+    def clean(self):
+        cleaned_data = super().clean()
+        fk_nutricion = cleaned_data.get('fk_Nutricion')
+        fecha = cleaned_data.get('fecha_control')
+
+        if fk_nutricion and fecha:
+            queryset = Masa_corporal.objects.filter(
+                fk_Nutricion=fk_nutricion,
+                fecha_control=fecha
+            )
+
+            if self.instance.pk:
+                queryset = queryset.exclude(pk=self.instance.pk)
+
+            if queryset.exists():
+                raise ValidationError(
+                    "Ya existe un control para esta nutrición en esa fecha."
+                )
+
+        return cleaned_data
+
 class SancionesForm(ModelForm):
     class Meta:
         model = Sancion
         fields = '__all__'
+
+
+    def clean_motivo_sancion(self):
+        motivo = self.cleaned_data.get('motivo_sancion')
+
+        if not motivo or len(motivo.strip()) < 5:
+            raise ValidationError("El motivo debe tener al menos 5 caracteres.")
+
+        return motivo
+
+    
+    def clean_fecha_inicio(self):
+        fecha_inicio = self.cleaned_data.get('fecha_inicio')
+
+        if fecha_inicio > date.today():
+            raise ValidationError("La fecha de inicio no puede ser futura.")
+
+        return fecha_inicio
+
+    
+    def clean_duracion_sancion(self):
+        duracion = self.cleaned_data.get('duracion_sancion')
+
+        if duracion <= 0:
+            raise ValidationError("La duración debe ser mayor que 0 días.")
+
+        if duracion > 365:
+            raise ValidationError("La duración no puede ser mayor a 365 días.")
+
+        return duracion
+
+    
+    def clean(self):
+        cleaned_data = super().clean()
+
+        fecha_inicio = cleaned_data.get('fecha_inicio')
+        fecha_fin = cleaned_data.get('fecha_fin')
+        usuario = cleaned_data.get('fk_usuario')
+        tipo = cleaned_data.get('tipo_sancion')
+        estado = cleaned_data.get('estado')
+
+        
+        if fecha_inicio and fecha_fin:
+            if fecha_fin <= fecha_inicio:
+                raise ValidationError(
+                    "La fecha de fin debe ser mayor que la fecha de inicio."
+                )
+
+        if usuario and tipo and estado == 'activa':
+            queryset = Sancion.objects.filter(
+                fk_usuario=usuario,
+                tipo_sancion=tipo,
+                estado='activa'
+            )
+
+            if self.instance.pk:
+                queryset = queryset.exclude(pk=self.instance.pk)
+
+            if queryset.exists():
+                raise ValidationError(
+                    "Este usuario ya tiene una sanción activa de este tipo."
+                )
+
+        return cleaned_data
 
 
 class RegistrovisitantetemporalForm(ModelForm):
