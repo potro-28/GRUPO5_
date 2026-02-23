@@ -81,13 +81,25 @@ class EncuestaForm(ModelForm):
                 })      
         }
 
-    
-    
     def clean_nombre(self):
+
         nombre = self.cleaned_data.get('nombre')
-        if not re.match(r'^[a-zA-Z\s]+$',nombre):
-            raise forms.ValidationError('El nombre solo puede contener letras')
-        return self.cleaned_data
+        if not nombre:
+            raise forms.ValidationError("El nombre es obligatorio")
+
+        if not re.match(r'^[a-zA-Z\s]+$', nombre):
+            raise forms.ValidationError(
+                'El nombre solo puede contener letras'
+            )
+        existe = Encuesta.objects.filter(nombre=nombre)
+
+        if self.instance.pk:
+            existe = existe.exclude(pk=self.instance.pk)
+        if existe.exists():
+            raise forms.ValidationError(
+                'Ya existe una encuesta con ese nombre'
+            )
+        return nombre
     
 class Soporte_PQRSForm(ModelForm):
     class Meta:

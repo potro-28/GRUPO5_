@@ -175,7 +175,7 @@ class Encuesta(models.Model):
        
       
     def __str__(self):
-        return str(self.id)
+        return str(self.nombre)
       
     class Meta:
         verbose_name = 'Encuesta'

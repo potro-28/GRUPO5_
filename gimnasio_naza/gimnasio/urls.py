@@ -54,7 +54,8 @@ urlpatterns = [
     path('crear_notificacion/', NotificacionCreateView.as_view(), name='crear_notificacion'),
     path('editar_notificacion/<int:pk>/', NotificacionUpdateView.as_view(), name='editar_notificacion'),
     path('eliminar_notificacion/<int:pk>/', NotificacionDeleteView.as_view(), name='eliminar_notificacion'),
-    #path('listar_encuestas/', listar_encuestas, name='listar_encuestas'),
+    
+    # Encuesta
     path('listar_encuestas/', EncuestaListView.as_view(), name='listar_encuestas'),
     path('crear_encuesta/', EncuestaCreateView.as_view(), name='crear_encuesta'),
     path('editar_encuesta/<int:pk>/', EncuestaUpdateView.as_view(), name='editar_encuesta'),
