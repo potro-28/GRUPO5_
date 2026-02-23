@@ -6,6 +6,7 @@ from gimnasio.models import Asistencia, Membresia, Notificacion
 from gimnasio.models import Encuesta, Soporte_PQRS, Reportes_estadisticas, Categoria, Nutricion, Rutina
 from django import forms
 from django.utils import timezone
+from datetime import date
 
 
 class ElementoForm(forms.ModelForm):
@@ -116,8 +117,21 @@ class UsuarioForm(forms.ModelForm):
         return correo
     def clean_fecha_nacimiento(self):
         fecha_nacimiento = self.cleaned_data.get('fecha_nacimiento')
-        if fecha_nacimiento and fecha_nacimiento > timezone.now().date():
-            raise forms.ValidationError('La fecha de nacimiento no puede ser futura.')
+        if fecha_nacimiento is None:
+            raise forms.ValidationError("Por favor ingresa una fecha de nacimiento.")
+        hoy = date.today()
+        if fecha_nacimiento >= hoy:
+            raise forms.ValidationError("La fecha de nacimiento no puede ser hoy ni una fecha futura.")
+    
+    # ❌ Año mínimo
+        if fecha_nacimiento.year < 1900:
+            raise forms.ValidationError("La fecha de nacimiento debe ser posterior al año 1900.")
+    
+    # ✅ NUEVO: Edad mínima de 5 años (evita datos absurdos)
+        edad_minima = hoy.replace(year=hoy.year - 5)
+        if fecha_nacimiento > edad_minima:
+            raise forms.ValidationError("La fecha de nacimiento no es válida, verifica el año ingresado.")
+    
         return fecha_nacimiento
     
 
