@@ -19,6 +19,7 @@ from django.forms import ModelForm
 from gimnasio.models import Registrovisitantestemporales
 from gimnasio.models import Turnosentrenadores
 from gimnasio.models import Certificacion_interna
+from django.utils import timezone
 
 class ElementoForm(forms.ModelForm):
     class Meta:
@@ -64,7 +65,6 @@ class EncuestaForm(ModelForm):
         widgets = {
             'nombre' : forms.TextInput(attrs={ 
                 'class':'form-control',
-                                           
                 'placeholder': 'Ingrese el nombre de la encuesta'}),
             'estado':
                 forms.Select(attrs={
@@ -85,11 +85,10 @@ class Soporte_PQRSForm(ModelForm):
         widgets = {
             'tipo' : forms.Select(attrs={ 
                 'class':'form-control',
-                                           
                 'placeholder': 'Ingrese el tipo de soporte pqr'}),
             'descripcion' : forms.TextInput(attrs={ 
                 'class':'form-control',
-                                           
+                
                 'placeholder': 'Ingrese la descripcion del soporte pqr'}),
             'fecha_ingreso': forms.DateInput(attrs={ 
                 'class': 'form-control',
@@ -176,13 +175,58 @@ class RegistrovisitantetemporalForm(ModelForm):
     class Meta:
         model = Registrovisitantestemporales
         fields = '__all__'
+        widgets = {
+            'fecha_registro': forms.DateInput(attrs={
+                'class': 'form-control',
+                'type': 'date'
+            }),
+            'fk_usuario': forms.Select(attrs={
+                'class': 'form-control',
+            }),
+        }
+    def clean_fecha_registro(self):
+        fecha_registro = self.cleaned_data['fecha_registro']
+        if fecha_registro < timezone.now().date():
+            raise forms.ValidationError("La fecha de registro no puede ser en el pasado.")
+        return fecha_registro
         
 class TurnodeentrenadorForm(ModelForm):
     class Meta:
         model = Turnosentrenadores
         fields = '__all__'
+        widgets = {
+            'fecha_turno_inicio': forms.DateInput(attrs={
+                'class': 'form-control',
+                'type': 'date'
+            }),
+            'fecha_turno_final': forms.DateInput(attrs={
+                'class': 'form-control',
+                'type': 'date'
+            }),
+            'jornada': forms.Select(attrs={
+                'class': 'form-control',
+            }),
+        }
         
 class CertificacioninternaForm(ModelForm):
     class Meta:
         model = Certificacion_interna
         fields = '__all__'
+        widgets = {
+            'fecha_certificacion': forms.DateInput(attrs={
+                'class': 'form-control',
+                'type': 'date'
+            }),
+            'descripcion_certificacion': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Ingrese la descripcion de la certificacion interna'
+            }),
+            'fk_Asistencia': forms.Select(attrs={
+                'class': 'form-control',
+            }),
+        }
+    def clean_descripcion_certificacion(self):
+        descripcion_certificacion = self.cleaned_data['descripcion_certificacion']
+        if len(descripcion_certificacion) < 10:
+            raise forms.ValidationError("La descripcion de la certificacion interna debe tener al menos 10 caracteres.")
+        return descripcion_certificacion
