@@ -47,8 +47,8 @@
       </a>
     </li>
 
-    <li class="menu-item">
-      <a href="#" class="menu-link">
+     <li class="menu-item">
+      <a href="{% url 'gimnasio:listar_usuario' %}" class="listar_usuario menu-link">
         <i class="menu-icon icon-base ri ri-user-settings-line"></i>
         <div data-i18n="Usuarios">Usuarios</div>
       </a>
@@ -94,14 +94,14 @@
     <li class="menu-header mt-7"><span class="menu-header-text">Administración</span></li>
 
     <li class="menu-item">
-      <a href="#" class="menu-link">
+      <a href="{% url 'gimnasio:listar_elementos' %}" class="listar_elementos menu-link">
         <i class="menu-icon icon-base ri ri-stack-line"></i>
         <div data-i18n="Elementos">Elementos</div>
       </a>
     </li>
 
     <li class="menu-item">
-      <a href="#" class="menu-link">
+      <a href="{% url 'gimnasio:listar_mantenimiento' %}" class="listar_mantenimiento menu-link">
         <i class="menu-icon icon-base ri ri-tools-line"></i>
         <div data-i18n="Mantenimiento">Mantenimiento</div>
       </a>
