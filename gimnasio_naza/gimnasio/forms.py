@@ -21,7 +21,7 @@ from gimnasio.models import Turnosentrenadores
 from gimnasio.models import Certificacion_interna
 from django.core.exceptions import ValidationError
 from django.core.exceptions import ValidationError
-from datetime import date
+from datetime import date , timedelta
 
 class ElementoForm(forms.ModelForm):
     class Meta:
@@ -168,6 +168,11 @@ class Masa_muscularForm(ModelForm):
     class Meta:
         model = Masa_corporal
         fields = '__all__'
+        widgets = {
+            'fecha_control': forms.DateInput(attrs={
+                'type': 'date'
+            }),
+        }
 
     def clean_peso_cliente(self):
         peso = self.cleaned_data.get('peso_cliente')
@@ -193,10 +198,10 @@ class Masa_muscularForm(ModelForm):
 
     def clean_fecha_control(self):
         fecha = self.cleaned_data.get('fecha_control')
-
         if fecha > date.today():
             raise ValidationError("La fecha no puede ser futura.")
-
+        if fecha < date(1950, 1, 1):
+            raise ValidationError("La fecha no puede ser anterior al 1 de enero de 1950.")
         return fecha
 
     def clean(self):
@@ -220,30 +225,30 @@ class Masa_muscularForm(ModelForm):
 
         return cleaned_data
 
-class SancionesForm(ModelForm):
+class SancionesForm(forms.ModelForm):
     class Meta:
         model = Sancion
         fields = '__all__'
+        widgets = {
+            'fecha_inicio': forms.DateInput(attrs={'type': 'date'}),
+            'fecha_fin': forms.DateInput(attrs={'type': 'date'}),
+        }
 
-
+    # 🔹 Validar que el motivo empiece con letra
     def clean_motivo_sancion(self):
         motivo = self.cleaned_data.get('motivo_sancion')
 
         if not motivo or len(motivo.strip()) < 5:
             raise ValidationError("El motivo debe tener al menos 5 caracteres.")
 
+        motivo = motivo.strip()
+
+        if not motivo[0].isalpha():
+            raise ValidationError("La descripción debe iniciar obligatoriamente con una letra.")
+
         return motivo
 
-    
-    def clean_fecha_inicio(self):
-        fecha_inicio = self.cleaned_data.get('fecha_inicio')
-
-        if fecha_inicio > date.today():
-            raise ValidationError("La fecha de inicio no puede ser futura.")
-
-        return fecha_inicio
-
-    
+    # 🔹 Validar duración
     def clean_duracion_sancion(self):
         duracion = self.cleaned_data.get('duracion_sancion')
 
@@ -255,7 +260,43 @@ class SancionesForm(ModelForm):
 
         return duracion
 
-    
+    # 🔥 AQUÍ HACEMOS LA MAGIA
+    def clean(self):
+        cleaned_data = super().clean()
+
+        duracion = cleaned_data.get('duracion_sancion')
+        usuario = cleaned_data.get('fk_usuario')
+        tipo = cleaned_data.get('tipo_sancion')
+        estado = cleaned_data.get('estado')
+
+        # 🔹 Forzar fecha_inicio como HOY
+        fecha_inicio = date.today()
+        cleaned_data['fecha_inicio'] = fecha_inicio
+
+        # 🔹 Calcular fecha_fin automáticamente
+        if duracion:
+            fecha_fin = fecha_inicio + timedelta(days=duracion)
+            cleaned_data['fecha_fin'] = fecha_fin
+
+        # 🔹 Evitar sanciones activas duplicadas
+        if usuario and tipo and estado == 'activa':
+            queryset = Sancion.objects.filter(
+                fk_usuario=usuario,
+                tipo_sancion=tipo,
+                estado='activa'
+            )
+
+            if self.instance.pk:
+                queryset = queryset.exclude(pk=self.instance.pk)
+
+            if queryset.exists():
+                raise ValidationError(
+                    "Este usuario ya tiene una sanción activa de este tipo."
+                )
+
+        return cleaned_data
+
+    # 🔹 Validaciones generales
     def clean(self):
         cleaned_data = super().clean()
 
@@ -265,13 +306,14 @@ class SancionesForm(ModelForm):
         tipo = cleaned_data.get('tipo_sancion')
         estado = cleaned_data.get('estado')
 
-        
+        # Validar fechas
         if fecha_inicio and fecha_fin:
             if fecha_fin <= fecha_inicio:
                 raise ValidationError(
                     "La fecha de fin debe ser mayor que la fecha de inicio."
                 )
 
+        # Evitar sanciones activas duplicadas
         if usuario and tipo and estado == 'activa':
             queryset = Sancion.objects.filter(
                 fk_usuario=usuario,
