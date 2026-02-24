@@ -20,6 +20,7 @@ from gimnasio.models import Registrovisitantestemporales
 from gimnasio.models import Turnosentrenadores
 from gimnasio.models import Certificacion_interna
 import re
+from datetime import date
 
 class ElementoForm(forms.ModelForm):
     class Meta:
@@ -64,9 +65,7 @@ class EncuestaForm(ModelForm):
         fields = '__all__'
         widgets = {
             'nombre' : forms.TextInput(attrs={ 
-                'class':'form-control',
-                
-                                           
+                'class':'form-control',     
                 'placeholder': 'Ingrese el nombre de la encuesta'}),
             
             'estado':
@@ -82,7 +81,6 @@ class EncuestaForm(ModelForm):
         }
 
     def clean_nombre(self):
-
         nombre = self.cleaned_data.get('nombre')
         if not nombre:
             raise forms.ValidationError("El nombre es obligatorio")
@@ -138,6 +136,13 @@ class Soporte_PQRSForm(ModelForm):
             raise forms.ValidationError("La descripción debe tener mínimo 10 caracteres")
 
         return descripcion
+    
+    #Validacion fecha de ingreso
+    def clean_fecha_ingreso(self):
+        fecha_ingreso = self.cleaned_data['fecha_ingreso']
+        if fecha_ingreso < date.today():
+            raise forms.ValidationError('La fecha de ingreso no puede ser anterior a la de hoy')
+        return fecha_ingreso
         
 class Reportes_estadisticasForm(ModelForm):
     class Meta:
@@ -162,6 +167,14 @@ class Reportes_estadisticasForm(ModelForm):
                     'class':'form-control',
                 })      
         }
+    
+    def clean_fecha_generacion(self):
+        fecha_generacion = self.cleaned_data.get('fecha_generacion')
+        if fecha_generacion > date.today():
+            raise forms.ValidationError("La fecha no puede ser futura.")
+        if fecha_generacion < date(2025, 1, 1):
+            raise forms.ValidationError("La fecha no puede ser anterior al 1 de enero de 2025.")
+        return fecha_generacion
         
 #Categoria
 class CategoriaForm(ModelForm):

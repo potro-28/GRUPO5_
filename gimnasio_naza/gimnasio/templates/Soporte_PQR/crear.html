@@ -15,7 +15,7 @@
         <div class="card-body">
             {% csrf_token %}
 
-            {# Mostrar errores generales del formulario #}
+            
             {% if form.errors %}
             <div class="alert alert-danger alert-dismissible">
                 <button type="button" class="close" data-bs-dismiss="alert">×</button>
@@ -31,7 +31,7 @@
             </div>
             {% endif %}
 
-            {# Iterar campos del formulario con validación visual #}
+            
             {% for field in form.visible_fields %}
             <div class="form-group">
                 <label for="{{ field.id_for_label }}">{{ field.label }}:</label>
