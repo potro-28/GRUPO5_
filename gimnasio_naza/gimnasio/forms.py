@@ -85,7 +85,7 @@ class EncuestaForm(ModelForm):
         if not nombre:
             raise forms.ValidationError("El nombre es obligatorio")
 
-        if not re.match(r'^[a-zA-Z\s]+$', nombre):
+        if not re.match(r'^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$', nombre):
             raise forms.ValidationError(
                 'El nombre solo puede contener letras'
             )
@@ -134,6 +134,8 @@ class Soporte_PQRSForm(ModelForm):
 
         if len(descripcion) < 10:
             raise forms.ValidationError("La descripción debe tener mínimo 10 caracteres")
+        if len(descripcion) > 200:
+            raise forms.ValidationError("La descripcion  no debe tener mas de 200 caracteres")
 
         return descripcion
     
