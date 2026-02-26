@@ -1,4 +1,4 @@
-{% load static %}
+*el aside enrutado*{% load static %}
 <aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
   <div class="app-brand demo">
     <a href="index.html" class="app-brand-link">
@@ -27,28 +27,28 @@
     <li class="menu-header mt-7"><span class="menu-header-text">Gestión Operativa</span></li>
 
     <li class="menu-item">
-      <a href="#" class="menu-link">
+      <a href="{% url 'gimnasio:listar_asistencia' %}" class="listar_asistencia menu-link">
         <i class="menu-icon icon-base ri ri-calendar-check-line"></i>
         <div data-i18n="Asistencia">Asistencia</div>
       </a>
     </li>
 
     <li class="menu-item">
-      <a href="#" class="menu-link">
+      <a href="{% url 'gimnasio:listar_membresia' %}" class="listar_membresia menu-link">
         <i class="menu-icon icon-base ri ri-vip-crown-line"></i>
         <div data-i18n="Membresía">Membresía</div>
       </a>
     </li>
 
     <li class="menu-item">
-      <a href="#" class="menu-link">
+      <a href="{% url 'gimnasio:listar_notificacion' %}" class="listar_notificacion menu-link">
         <i class="menu-icon icon-base ri ri-notification-3-line"></i>
         <div data-i18n="Notificaciones">Notificaciones</div>
       </a>
     </li>
 
     <li class="menu-item">
-      <a href="#" class="menu-link">
+      <a href="{% url 'gimnasio:listar_usuario' %}" class="listar_usuario menu-link">
         <i class="menu-icon icon-base ri ri-user-settings-line"></i>
         <div data-i18n="Usuarios">Usuarios</div>
       </a>
@@ -64,21 +64,21 @@
     <li class="menu-header mt-7"><span class="menu-header-text">Entrenamiento y Salud</span></li>
 
     <li class="menu-item">
-      <a href="#" class="menu-link">
+      <a href="{% url 'gimnasio:listar_nutriciones' %}" class="listar_nutriciones menu-link">
         <i class="menu-icon icon-base ri ri-restaurant-2-line"></i>
         <div data-i18n="Nutrición">Nutrición</div>
       </a>
     </li>
 
     <li class="menu-item">
-      <a href="#" class="menu-link">
+      <a href="{% url 'gimnasio:listar_rutinas' %}" class="listar_rutinas menu-link">
         <i class="menu-icon icon-base ri ri-armchair-line"></i>
         <div data-i18n="Rutinas">Rutinas</div>
       </a>
     </li>
 
     <li class="menu-item">
-      <a href="{% url 'gimnasio:listar_masa_corporal_clas' %}" class="menu-link">
+      <a href="#" class="menu-link">
         <i class="menu-icon icon-base ri ri-scales-3-line"></i>
         <div data-i18n="Masa Corporal">Masa Corporal</div>
       </a>
@@ -94,35 +94,35 @@
     <li class="menu-header mt-7"><span class="menu-header-text">Administración</span></li>
 
     <li class="menu-item">
-      <a href="#" class="menu-link">
+      <a href="{% url 'gimnasio:listar_elemento' %}" class="listar_elemento menu-link">
         <i class="menu-icon icon-base ri ri-stack-line"></i>
         <div data-i18n="Elementos">Elementos</div>
       </a>
     </li>
 
     <li class="menu-item">
-      <a href="#" class="menu-link">
+      <a href="{% url 'gimnasio:listar_mantenimiento' %}" class="listar_mantenimiento menu-link">
         <i class="menu-icon icon-base ri ri-tools-line"></i>
         <div data-i18n="Mantenimiento">Mantenimiento</div>
       </a>
     </li>
 
     <li class="menu-item">
-      <a href="#" class="menu-link">
+      <a href="{% url 'gimnasio:listar_Reportes_estadisticas' %}" class="listar_Reportes_estadisticas menu-link">
         <i class="menu-icon icon-base ri ri-bar-chart-2-line"></i>
         <div data-i18n="Reportes">Reportes y Estadísticas</div>
       </a>
     </li>
 
     <li class="menu-item">
-      <a href="#" class="menu-link">
+      <a href="{% url 'gimnasio:listar_categorias' %}" class="listar_categoria menu-link">
         <i class="menu-icon icon-base ri ri-price-tag-3-line"></i>
         <div data-i18n="Categoría">Categoría</div>
       </a>
     </li>
 
     <li class="menu-item">
-      <a href="#" class="menu-link">
+      <a href="#" class=" menu-link">
         <i class="menu-icon icon-base ri ri-time-line"></i>
         <div data-i18n="Turnos">Turno de Entrenadores</div>
       </a>
@@ -131,21 +131,21 @@
     <li class="menu-header mt-7"><span class="menu-header-text">Soporte y Control</span></li>
 
     <li class="menu-item">
-      <a href="#" class="menu-link">
+      <a href="{% url 'gimnasio:listar_encuestas' %}" class="listar_encuestas menu-link">
         <i class="menu-icon icon-base ri ri-questionnaire-line"></i>
         <div data-i18n="Encuesta">Encuesta</div>
       </a>
     </li>
 
     <li class="menu-item">
-      <a href="#" class="menu-link">
+      <a href="{% url 'gimnasio:listar_Soporte_PQRS' %}" class="listar_soporte menu-link">
         <i class="menu-icon icon-base ri ri-customer-service-2-line"></i>
         <div data-i18n="Soporte">Soporte y PQRS</div>
       </a>
     </li>
 
     <li class="menu-item">
-      <a href="{% url 'gimnasio:listar_sanciones_clas' %}" class="s menu-link text-danger">
+      <a href="#" class="s menu-link text-danger">
         <i class="menu-icon icon-base ri ri-error-warning-line"></i>
         <div data-i18n="Sanciones">Sanciones</div>
       </a>
