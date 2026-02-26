@@ -361,7 +361,7 @@ class Certificacion_interna(models.Model):
     fecha_certificacion=models.DateField(auto_now=False, auto_now_add=False)
     fk_Asistencia=models.ForeignKey(Asistencia, on_delete=models.CASCADE, verbose_name='Asistencia')
     def __str__(self):
-        return self.id
+        return str(self.id) 
     class Meta:
         db_table='Certificacion_interna'
         verbose_name='Certificacion_interna'

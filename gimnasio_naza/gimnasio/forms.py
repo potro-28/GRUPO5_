@@ -208,6 +208,22 @@ class TurnodeentrenadorForm(ModelForm):
             }),
         }
         
+    def clean_fecha_turno_inicio(self):
+        fecha_turno_inicio = self.cleaned_data['fecha_turno_inicio']
+        if fecha_turno_inicio < timezone.now().date():
+            raise forms.ValidationError("La fecha de inicio del turno no puede ser en el pasado.")
+        return fecha_turno_inicio
+    
+    def clean_fecha_turno_final(self):
+        fecha_turno_inicio = self.cleaned_data.get('fecha_turno_inicio')
+        fecha_turno_final = self.cleaned_data['fecha_turno_final']
+        if fecha_turno_final < timezone.now().date():
+            raise forms.ValidationError("La fecha de finalización del turno no puede ser en el pasado.")
+        if fecha_turno_inicio and fecha_turno_final < fecha_turno_inicio:
+            raise forms.ValidationError("La fecha de finalización del turno no puede ser anterior a la fecha de inicio.")
+        return fecha_turno_final
+        
+
 class CertificacioninternaForm(ModelForm):
     class Meta:
         model = Certificacion_interna
@@ -229,4 +245,19 @@ class CertificacioninternaForm(ModelForm):
         descripcion_certificacion = self.cleaned_data['descripcion_certificacion']
         if len(descripcion_certificacion) < 10:
             raise forms.ValidationError("La descripcion de la certificacion interna debe tener al menos 10 caracteres.")
+        if descripcion_certificacion.isdigit():
+            raise forms.ValidationError("La descripcion de la certificacion interna no puede ser solo números.")
         return descripcion_certificacion
+    
+    def clean_fecha_certificacion(self):
+        fecha_certificacion = self.cleaned_data['fecha_certificacion']
+        hoy = timezone.now().date()
+        if fecha_certificacion < hoy:
+            raise forms.ValidationError(
+            "La fecha de certificación no puede ser una fecha pasada."
+        )
+        if fecha_certificacion > hoy:
+            raise forms.ValidationError(
+            "La fecha de certificación no puede ser una fecha futura."
+        )
+        return fecha_certificacion    
