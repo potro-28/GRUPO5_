@@ -46,19 +46,118 @@ widgets = {
 
 
 class AsistenciaForm(ModelForm):
+    
+
     class Meta:
         model = Asistencia
         fields = '__all__'
+        widgets = {
+            'fecha_asistencia': forms.DateInput(attrs={ 
+                'class': 'form-control',
+                'type': 'date'
+            }),
+             'hora_ingreso': forms.TimeInput(attrs={ 
+                'class': 'form-control',
+                'type': 'time'
+            }),
+              'hora_salida': forms.TimeInput(attrs={ 
+                'class': 'form-control',
+                'type': 'time'
+            }),
+        }
+    def clean(self):
+        cleaned_data = super().clean()
+        fecha_asistencia = cleaned_data.get('fecha_asistencia')
+        hora_ingreso = cleaned_data.get('hora_ingreso')
+        hora_salida = cleaned_data.get('hora_salida')
 
+        if fecha_asistencia > forms.fields.datetime.date.today():
+            raise forms.ValidationError('La fecha de asistencia no puede ser futura')
+        if fecha_asistencia < forms.fields.datetime.date.today():
+            raise forms.ValidationError('La fecha de asistencia no puede ser anterior al día de hoy')
+        if hora_salida == hora_ingreso:
+            raise forms.ValidationError('La hora de salida no puede ser igual a la hora de entrada')
+        if hora_salida < hora_ingreso:
+            raise forms.ValidationError('La hora de salida no puede ser anterior a la hora de entrada')
+
+        return cleaned_data
+    
 class MembresiaForm(ModelForm):
     class Meta:
         model = Membresia
         fields = '__all__'
+        widgets = {
+            'fecha_inicio': forms.DateInput(attrs={ 
+                'class': 'form-control',
+                'type': 'date'
+            }),
+            'fecha_fin': forms.DateInput(attrs={ 
+                'class': 'form-control',
+                'type': 'date'
+            }),
+        }
+        
+    def clean(self):
+        cleaned_data = super().clean()
+        fecha_inicio = cleaned_data.get('fecha_inicio')
+        fecha_fin = cleaned_data.get('fecha_fin')
+        fk_usuario = cleaned_data.get('fk_usuario')
+        
+        if fecha_inicio > forms.fields.datetime.date.today():
+            raise forms.ValidationError('La fecha de inicio no puede ser futura')
+        if fecha_inicio < forms.fields.datetime.date.today():
+            raise forms.ValidationError('La fecha de inicio no puede ser anterior al día de hoy')
+        if fecha_fin > forms.fields.datetime.date.today() + forms.fields.datetime.timedelta(days=30):
+            raise forms.ValidationError('La fecha de finalización no puede ser mayor a un mes')
+        if fecha_fin < forms.fields.datetime.date.today() + forms.fields.datetime.timedelta(days=30):
+            raise forms.ValidationError('La fecha de finalización no puede ser menor a un mes')
+        if fecha_fin < forms.fields.datetime.date.today():
+            raise forms.ValidationError('La fecha de finalización no puede ser anterior al día de hoy')
+        if fecha_fin == fecha_inicio:
+            raise forms.ValidationError('La fecha de finalización no puede ser igual a la fecha de inicio')
+        if fecha_fin < fecha_inicio:
+            raise forms.ValidationError('La fecha de finalización no puede ser anterior a la fecha de inicio')
+        if fk_usuario and Membresia.objects.filter(fk_usuario=fk_usuario, fecha_inicio__month=fecha_inicio.month).exists():
+            raise forms.ValidationError('El usuario ya tuvo una membresia este mismo mes')
+        return cleaned_data
+    
+    
 
 class NotificacionForm(ModelForm):
     class Meta:
         model = Notificacion
         fields = '__all__'
+        widgets ={
+            'tipo_notificacion': forms.Select(attrs={
+                'class': 'form-control',
+            }),
+            'canal_notificacion': forms.Select(attrs={
+                'class': 'form-control',
+            }),
+            'fk_membresia': forms.Select(attrs={
+                'class': 'form-control',
+            }),
+            'fk_asistencia': forms.Select(attrs={
+                'class': 'form-control',
+            }),
+            'fk_mantenimiento': forms.Select(attrs={
+                'class': 'form-control',
+            }),
+        }
+    
+    def clean(self):
+        cleaned_data = super().clean()
+        tipo_notificacion = cleaned_data.get('tipo_notificacion')
+        canal_notificacion = cleaned_data.get('canal_notificacion')
+        exist_notificacion = Notificacion.objects.filter(tipo_notificacion=tipo_notificacion).exclude(pk=self.instance.pk).exists()
+        exit_canal = Notificacion.objects.filter(canal_notificacion=canal_notificacion).exclude(pk=self.instance.pk).exists()
+        if exist_notificacion and exit_canal:
+            self.add_error('tipo_notificacion', 'Ya existe una notificación con este tipo y canal')
+        return cleaned_data
+        
+        
+        
+
 
 
 class EncuestaForm(ModelForm):

@@ -54,7 +54,7 @@ class Membresia(models.Model):
 #---------MODELO ASISTENCIA -----------------------------------------------------
 class Asistencia(models.Model):
     fecha_asistencia = models.DateField(default=datetime.now, verbose_name='Fecha de Asistencia')
-    hora_ingreso = models.TimeField(default=datetime.now, verbose_name='Hora de Ingreso')
+    hora_ingreso = models.TimeField(null=True, blank=True, verbose_name='Hora de Ingreso')
     hora_salida = models.TimeField(null=True, blank=True, verbose_name='Hora de Salida')
     fk_membresia = models.ForeignKey(Membresia, on_delete=models.CASCADE)
 
@@ -151,10 +151,9 @@ CANAL_NOTIFICACION = [
 class Notificacion(models.Model):
     tipo_notificacion = models.CharField(max_length=120, choices=TIPO_NOTIFICACION, verbose_name='Tipo de Notificacion')
     canal_notificacion = models.CharField(max_length=120, choices=CANAL_NOTIFICACION, verbose_name='Canal de Notificacion')
-    fk_membresia = models.ForeignKey(Membresia, on_delete=models.CASCADE)
-    fk_asistencia = models.ForeignKey(Asistencia, on_delete=models.CASCADE)
-    fk_mantenimiento = models.ForeignKey(Mantenimiento, on_delete=models.CASCADE)
-    
+    fk_membresia = models.ForeignKey(Membresia, null=True, blank=True, on_delete=models.CASCADE)
+    fk_asistencia = models.ForeignKey(Asistencia, null=True, blank=True, on_delete=models.CASCADE)
+    fk_mantenimiento = models.ForeignKey(Mantenimiento, null=True, blank=True, on_delete=models.CASCADE)
     def __str__(self):
         return str(self.id)
       
