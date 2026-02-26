@@ -6,6 +6,8 @@ from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
+from django.contrib import messages
+
 
 from gimnasio.models import *
 from gimnasio.forms import NutricionForm
@@ -55,7 +57,12 @@ class NutricionCreateView(CreateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['titulo'] = 'Crear Nutricion'
-        return context
+        return super().get_context_data(**kwargs)
+    
+    def form_valid(self, form):
+        messages.success(self.request, "Nutricion guardada correctamente")
+        return super().form_valid(form)
+    
     
 class NutricionUpdateView(UpdateView):
     model = Nutricion
@@ -69,6 +76,11 @@ class NutricionUpdateView(UpdateView):
         context['listar_url'] = reverse_lazy('gimnasio:listar_nutriciones')
         return context
     
+    def form_valid(self, form):
+        messages.success(self.request, "La nutricion se editó correctamente")
+        return super().form_valid(form)
+    
+    
 class NutricionDeleteView(DeleteView):
     model = Nutricion
     template_name = 'nutricion/eliminar.html'
@@ -79,3 +91,7 @@ class NutricionDeleteView(DeleteView):
         context['titulo'] = 'Eliminar Nutricion'
         context['listar_url'] = reverse_lazy('gimnasio:listar_nutriciones')
         return context
+
+    def form_valid(self, form):
+        messages.success(self.request, "La nutricion se eliminó correctamente")
+        return super().form_valid(form)

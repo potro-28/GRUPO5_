@@ -64,14 +64,14 @@
     <li class="menu-header mt-7"><span class="menu-header-text">Entrenamiento y Salud</span></li>
 
     <li class="menu-item">
-      <a href="#" class="menu-link">
+      <a href="{% url 'gimnasio:listar_nutriciones' %}" class="listar_nutriciones menu-link">
         <i class="menu-icon icon-base ri ri-restaurant-2-line"></i>
         <div data-i18n="Nutrición">Nutrición</div>
       </a>
     </li>
 
     <li class="menu-item">
-      <a href="#" class="menu-link">
+      <a href="{% url 'gimnasio:listar_rutinas' %}" class="listar_rutinas menu-link">
         <i class="menu-icon icon-base ri ri-armchair-line"></i>
         <div data-i18n="Rutinas">Rutinas</div>
       </a>
@@ -115,10 +115,10 @@
     </li>
 
     <li class="menu-item">
-      <a href="#" class="menu-link">
-        <i class="menu-icon icon-base ri ri-price-tag-3-line"></i>
-        <div data-i18n="Categoría">Categoría</div>
-      </a>
+          <a href="{% url 'gimnasio:listar_categorias' %}" class="listar_categoria menu-link">
+            <i class="menu-icon icon-base ri ri-price-tag-3-line"></i>
+            <div data-i18n="Categoría">Categoría</div>
+          </a>
     </li>
 
     <li class="menu-item">

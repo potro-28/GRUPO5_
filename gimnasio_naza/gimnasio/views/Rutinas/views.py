@@ -6,6 +6,8 @@ from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
+from django.contrib import messages
+
 
 from gimnasio.models import *
 from gimnasio.forms import RutinaForm
@@ -42,9 +44,9 @@ class rutinaListView(ListView):
 
         return context
     
-#Crear categoria    
+#Crear rutina   
 class RutinaCreateView(CreateView):
-    model = Categoria
+    model = Rutina
     template_name = 'rutina/crear.html'
     form_class = RutinaForm
     success_url = reverse_lazy('gimnasio:listar_rutinas')
@@ -54,7 +56,11 @@ class RutinaCreateView(CreateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['titulo'] = 'Crear Rutina'
-        return context
+        return super().get_context_data(**kwargs)
+    
+    def form_valid(self, form):
+        messages.success(self.request, "Rutina guardada correctamente")
+        return super().form_valid(form)
     
 class RutinaUpdateView(UpdateView):
     model = Rutina
@@ -67,6 +73,11 @@ class RutinaUpdateView(UpdateView):
         context['titulo'] = 'Editar Rutina'
         context['listar_url'] = reverse_lazy('gimnasio:listar_rutinas')
         return context
+
+    def form_valid(self, form):
+        messages.success(self.request, "La rutina se editó correctamente")
+        return super().form_valid(form)
+    
     
 class RutinaDeleteView(DeleteView):
     model = Rutina
@@ -78,3 +89,7 @@ class RutinaDeleteView(DeleteView):
         context['titulo'] = 'Eliminar Rutina'
         context['listar_url'] = reverse_lazy('gimnasio:listar_rutinas')
         return context
+    
+    def form_valid(self, form):
+        messages.success(self.request, "La rutina se eliminó correctamente")
+        return super().form_valid(form)
