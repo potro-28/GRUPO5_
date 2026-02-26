@@ -9,6 +9,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 from gimnasio.models import *
 from gimnasio.forms import SancionesForm
+from django.contrib import messages
 
 #Listar asistencia 
 def Listar_sanciones(request):
@@ -28,6 +29,7 @@ class SacionesListView(ListView):
             #return redirect('app:listar_categorias')
         return super().dispatch(request, *args, **kwargs)
     
+    
     # metodo post
     def post(self, request, *args, **kwargs):
         return super().post(request, *args, **kwargs)
@@ -45,8 +47,11 @@ class SancionesCreateView(CreateView):
     template_name = 'Sanciones/crear.html'
     form_class = SancionesForm
     success_url = reverse_lazy('gimnasio:listar_sanciones_clas')
-    #@method_decorator(csrf_exempt)
-    
+
+    def form_valid(self, form):
+        messages.success(self.request, "La sanción se registró correctamente.")
+        return super().form_valid(form)
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['titulo'] = 'Crear sancion'

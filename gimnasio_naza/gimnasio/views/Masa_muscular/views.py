@@ -9,6 +9,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 from gimnasio.models import *
 from gimnasio.forms import Masa_muscularForm
+from django.contrib import messages
 
 #Listar asistencia 
 def Listar_masa_corporal(request):
@@ -36,17 +37,20 @@ class Masa_corporalListView(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['titulo'] = 'Listado de masa corporal'
-        context['crear_url']= reverse_lazy('gimnasio:crear_masa_corporal')
+        context['crear_url'] = reverse_lazy('gimnasio:crear_masa_corporal')
         return context
 
 
 class Masa_corporalCreateView(CreateView):
     model = Masa_corporal
-    template_name = 'masa_muscular/crear.html'
+    template_name = 'Masa_muscular/crear.html'
     form_class = Masa_muscularForm
     success_url = reverse_lazy('gimnasio:listar_masa_corporal_clas')
-    #@method_decorator(csrf_exempt)
-    
+
+    def form_valid(self, form):
+        messages.success(self.request, "El registro de masa corporal se guardó correctamente.")
+        return super().form_valid(form)
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['titulo'] = 'Crear masa corporal'
@@ -54,11 +58,10 @@ class Masa_corporalCreateView(CreateView):
         return context
 class Masa_corporalUpdateView(UpdateView):
     model = Masa_corporal
-    template_name = 'masa_muscular/crear.html'
+    template_name = 'Masa_muscular/crear.html'
     form_class = Masa_muscularForm
     success_url = reverse_lazy('gimnasio:listar_masa_corporal_clas')
-    #@method_decorator(csrf_exempt)
-    
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['titulo'] = 'Actualizar masa corporal'

@@ -1,152 +1,106 @@
 {% extends "body.html" %}
-{% load static%}
+{% load static %}
+
 {% block contenido %}
+<link rel="stylesheet" href="{% static 'lib/datatables-1.10.20/css/dataTables.bootstrap4.min.css' %}">
+<link rel="stylesheet"
+    href="{% static 'lib/datatables-1.10.20/plugins/responsive-2.2.3/css/responsive.bootstrap4.min.css' %}">
 
-<div id="DataTables_Table_0_wrapper" class="dt-container dt-bootstrap5 dt-empty-footer">
-  <div class="row card-header mx-0 px-2">
-    <div class="d-md-flex justify-content-between align-items-center dt-layout-start col-md-auto me-auto">
-      <h5 class="card-title mb-0">Listar masa corporal</h5></div>
-      <div class="d-md-flex justify-content-between align-items-center dt-layout-end col-md-auto ms-auto">
-        <div class="dt-buttons btn-group flex-wrap">
-          <div class="btn-group">
-            <button class="btn buttons-collection btn-label-primary dropdown-toggle me-4 waves-effect border-none" aria-controls="DataTables_Table_0" type="button" tabindex="0" aria-haspopup="dialog" aria-expanded="false">
-              <span>
-                <span class="d-flex align-items-center gap-2"><i class="icon-base ri ri-external-link-line icon-18px"></i> 
-                  <span class="d-none d-sm-inline-block">Exportar</span>
-                </span>
-              </span>
-            </button>
-          </div> 
-          <button class="btn create-new btn-primary" aria-controls="DataTables_Table_0" type="button" tabindex="0">
-            <span>
-             
-              <span class="d-flex align-items-center">
-                <i class="icon-base ri ri-add-line icon-18px me-sm-1"></i>
-                   <a href="{{crear_url}}" class="btn btn-primary btn-xs"> 
-                <span class="d-none d-sm-inline-block">Agregar nueva masa corporal</span>
-                </a>
-              </span>
-            </span>
-          </button> 
-        </div>
-      </div>
-    </div>
-    <hr class="my-0">
-    <div class="row m-3 mx-2 my-0 justify-content-between">
-      <div class="d-md-flex justify-content-between align-items-center dt-layout-start col-md-auto me-auto">
-        <div class="dt-length">
-          <label for="dt-length-0">Mostrar<select name="DataTables_Table_0_length" aria-controls="DataTables_Table_0" class="form-select form-select-sm" id="dt-length-0">
-            <option value="7">7</option>
-            <option value="10">10</option>
-            <option value="25">25</option>
-            <option value="50">50</option>
-            <option value="100">100</option>
-          </select>Registros</label>
-        </div>
-      </div>
-      <div class="d-md-flex justify-content-between align-items-center dt-layout-end col-md-auto ms-auto">
-        <div class="dt-search">
-          <label for="dt-search-0">Buscar:</label>
-          <input type="search" class="form-control form-control-sm" id="dt-search-0" placeholder="Type search here" aria-controls="DataTables_Table_0">
-        </div>
-      </div>
-    </div>
-    <div class="justify-content-between dt-layout-table">
-      <div class="d-md-flex justify-content-between align-items-center dt-layout-full table-responsive">
-        <table class="datatables-basic table table-bordered table-responsive dataTable dtr-column collapsed" id="DataTables_Table_0" aria-describedby="DataTables_Table_0_info" style="width: 100%;">
-          <colgroup>
-            <col data-dt-column="0" style="width: 40px;">
-            <col data-dt-column="1" style="width: 58px;">
-            <col data-dt-column="3" style="width: 295.891px;">
-            <col data-dt-column="4" style="width: 283.453px;">
-            <col data-dt-column="5" style="width: 120.328px;">
-            <col data-dt-column="6" style="width: 119.047px;">
-            <col data-dt-column="7" style="width: 142.609px;">
-            <col data-dt-column="8" style="width: 120.328px;">
-            <col data-dt-column="9" style="width: 120.328px;">
-          </colgroup>
-        <thead>
-          <tr>
-            <th data-dt-column="0" class="control dt-orderable-none" rowspan="1" colspan="1" aria-label="" style="">
-              <span class="dt-column-title"></span>
-              <span class="dt-column-order"></span>
-            </th>
-            <th data-dt-column="1" rowspan="1" colspan="1" class="dt-select dt-orderable-none" aria-label="">
-              <span class="dt-column-title"></span>
-              <span class="dt-column-order"></span>
-              <input class="form-check-input" type="checkbox" aria-label="Select all rows">
-            </th>
-            <th data-dt-column="2" rowspan="1" colspan="1" class="dt-orderable-asc dt-orderable-desc" aria-label="Name: Activate to sort" tabindex="0">
-              <span class="dt-column-title" role="button"> Id </span>
-              <span class="dt-column-order"></span>
-            </th>
-            <th data-dt-column="3" rowspan="1" colspan="1" class="dt-orderable-asc dt-orderable-desc" aria-label="Email: Activate to sort" tabindex="0">
-              <span class="dt-column-title" role="button">motivo_sancion</span>
-              <span class="dt-column-order"></span>
-            </th>
-            <th data-dt-column="4" rowspan="1" colspan="1" class="dt-orderable-asc dt-orderable-desc" aria-label="Date: Activate to sort" tabindex="0">
-              <span class="dt-column-title" role="button">Tipo_sancion</span>
-              <span class="dt-column-order">
-              </span>
-            </th>
-            <th data-dt-column="5" rowspan="1" colspan="1" class="dt-orderable-asc dt-orderable-desc dt-type-numeric" aria-label="Salary: Activate to sort" tabindex="0">
-              <span class="dt-column-title" role="button">fecha_inicio</span><span class="dt-column-order"></span>
-            </th>
-            <th data-dt-column="6" rowspan="1" colspan="1" class="dt-orderable-asc dt-orderable-desc" aria-label="Status: Activate to sort" tabindex="0">
-              <span class="dt-column-title" role="button">duracion_sancion</span>
-              <span class="dt-column-order"></span>
-            </th>
-            <th data-dt-column="7" rowspan="1" colspan="1" class="dt-orderable-asc dt-orderable-desc" aria-label="Status: Activate to sort" tabindex="0">
-              <span class="dt-column-title" role="button">fecha_fin</span>
-              <span class="dt-column-order"></span>
-            </th>
-            <th data-dt-column="8" rowspan="1" colspan="1" class="dt-orderable-asc dt-orderable-desc" aria-label="Status: Activate to sort" tabindex="0">
-              <span class="dt-column-title" role="button">estado</span>
-              <span class="dt-column-order"></span>
-            </th>
-            <th data-dt-column="9" rowspan="1" colspan="1" class="dt-orderable-asc dt-orderable-desc" aria-label="Status: Activate to sort" tabindex="0">
-              <span class="dt-column-title" role="button">Nombre Usuario</span>
-              <span class="dt-column-order"></span>
-            <th class="d-flex align-items-center dt-orderable-none dtr-hidden" data-dt-column="8" rowspan="1" colspan="1" aria-label="Actions" style="display: none;">
-              <span class="dt-column-title">Acciones</span>
-              <span class="dt-column-order"></span>
-            </th>
-            
-          </tr>
-        </thead>
-        <tbody>
-          {% for s in object_list %}
-          <tr>
-            <td class="control" tabindex="0" style=""></td>
-          <td class="dt-select"><input aria-label="Select row" class="form-check-input" type="checkbox"></td>
-        
-
-            <td>{{ s.id }}</td>
-            <td>{{ s.motivo_sancion }}</td>
-            <td>{{ s.tipo_sancion }}</td>
-            <td>{{ s.fecha_inicio }}</td>
-            <td>{{ s.duracion_sancion }}</td>
-            <td>{{ s.fecha_fin }}</td>  
-            <td>{{ s.estado }}</td>  
-            <td>{{ s.fk_Usuario.nombre_usuario }}</td>
-                
-        
-          <td class="d-flex align-items-center dtr-hidden" style="display: none;">
-            <div class="d-inline-block"><a href="javascript:;" class="btn btn-sm btn-text-secondary rounded-pill btn-icon dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
-              <i class="icon-base ri ri-more-2-line icon-22px"></i>
+<div class="container-xxl flex-grow-1 container-p-y">
+    <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Listado de Sanciones</h5>
+            <a href="{{ crear_url }}" class="btn btn-primary">
+                <i class="icon-base ri ri-add-line icon-18px me-1"></i>Agregar sanción
             </a>
-            <ul class="dropdown-menu dropdown-menu-end m-0">
-              <li>
-                <a href="{% url 'gimnasio:eliminar_sancion' s.id %}" class="btn btn-primary">Delete</a>
-              </li>
-            </ul>
-          </div>
-          <a href="javascript:;" class="btn btn-sm btn-text-secondary rounded-pill btn-icon item-edit">
-            <a href="{% url 'gimnasio:editar_sancion' s.id %}" class="btn btn-primary">
-              <i class="icon-base ri ri-edit-box-line icon-22px"></i>
-              </a>
+        </div>
+
+        <div class="card-body">
+            <div class="table-responsive">
+                <table id="tabla-sanciones" class="table table-bordered table-striped w-100">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>motivo_sancion</th>
+                            <th>tipo_sancion</th>
+                            <th>fecha_inicio</th>
+                            <th>duracion_sancion</th>
+                            <th>fecha_fin</th>
+                            <th>estado</th>
+                            <th>Usuario</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for s in object_list %}
+                        <tr>
+                        <td>{{ s.id }}</td>
+                        <td>{{ s.motivo_sancion }}</td>
+                        <td>{{ s.tipo_sancion }}</td>
+                        <td>{{ s.fecha_inicio }}</td>
+                        <td>{{ s.duracion_sancion }}</td>
+                        <td>{{ s.fecha_fin }}</td>
+                        <td>{{ s.estado }}</td>
+                        <td>{{ s.fk_usuario.nombre_usuario }}</td>
+                            <td>
+                               
+<a href="{% url 'gimnasio:editar_sancion' s.id %}"
+                                                class="btn btn-sm btn-text-secondary rounded-pill btn-icon item-edit">
+                                                <i class="icon-base ri ri-edit-box-line icon-22px"></i>
+                                            </a>
+                                       
+                                            <a href="{% url 'gimnasio:eliminar_sancion' s.id %}"
+                              class="btn btn-sm btn-text-secondary rounded-pill btn-icon item-trash">
+                                                <i class="icon-base ri ri-delete-bin-line icon-22px">                                      </li>
+                                    
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="5" class="text-center">No hay sanciones registradas.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
             </div>
-            </a></td></tr></tbody>
-          {% endfor %}
-      <tfoot></tfoot></table></div></div><div class="row mx-3 justify-content-between"><div class="d-md-flex justify-content-between align-items-center dt-layout-start col-md-auto me-auto"><div class="dt-info" aria-live="polite" id="DataTables_Table_0_info" role="status">Showing 1 to 7 of 100 entries</div></div><div class="d-md-flex justify-content-between align-items-center dt-layout-end col-md-auto ms-auto"><div class="dt-paging"><nav aria-label="pagination"><ul class="pagination"><li class="dt-paging-button page-item disabled"><button class="page-link first" role="link" type="button" aria-controls="DataTables_Table_0" aria-disabled="true" aria-label="First" data-dt-idx="first" tabindex="-1"><i class="icon-base ri ri-skip-back-mini-line scaleX-n1-rtl icon-22px"></i></button></li><li class="dt-paging-button page-item disabled"><button class="page-link previous" role="link" type="button" aria-controls="DataTables_Table_0" aria-disabled="true" aria-label="Previous" data-dt-idx="previous" tabindex="-1"><i class="icon-base ri ri-arrow-left-s-line scaleX-n1-rtl icon-22px"></i></button></li><li class="dt-paging-button page-item active"><button class="page-link" role="link" type="button" aria-controls="DataTables_Table_0" aria-current="page" data-dt-idx="0">1</button></li><li class="dt-paging-button page-item"><button class="page-link" role="link" type="button" aria-controls="DataTables_Table_0" data-dt-idx="1">2</button></li><li class="dt-paging-button page-item"><button class="page-link" role="link" type="button" aria-controls="DataTables_Table_0" data-dt-idx="2">3</button></li><li class="dt-paging-button page-item"><button class="page-link" role="link" type="button" aria-controls="DataTables_Table_0" data-dt-idx="3">4</button></li><li class="dt-paging-button page-item"><button class="page-link" role="link" type="button" aria-controls="DataTables_Table_0" data-dt-idx="4">5</button></li><li class="dt-paging-button page-item disabled"><button class="page-link ellipsis" role="link" type="button" aria-controls="DataTables_Table_0" aria-disabled="true" data-dt-idx="ellipsis" tabindex="-1">…</button></li><li class="dt-paging-button page-item"><button class="page-link" role="link" type="button" aria-controls="DataTables_Table_0" data-dt-idx="14">15</button></li><li class="dt-paging-button page-item"><button class="page-link next" role="link" type="button" aria-controls="DataTables_Table_0" aria-label="Next" data-dt-idx="next"><i class="icon-base ri ri-arrow-right-s-line scaleX-n1-rtl icon-22px"></i></button></li><li class="dt-paging-button page-item"><button class="page-link last" role="link" type="button" aria-controls="DataTables_Table_0" aria-label="Last" data-dt-idx="last"><i class="icon-base ri ri-skip-forward-mini-line scaleX-n1-rtl icon-22px"></i></button></li></ul></nav></div></div></div></div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block js %}
+<script src="{% static 'lib/datatables-1.10.20/js/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'lib/datatables-1.10.20/js/dataTables.bootstrap4.min.js' %}"></script>
+<script src="{% static 'lib/datatables-1.10.20/plugins/responsive-2.2.3/js/dataTables.responsive.min.js' %}"></script>
+<script src="{% static 'lib/datatables-1.10.20/plugins/responsive-2.2.3/js/responsive.bootstrap4.min.js' %}"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+    $(function () {
+        $('#tabla-sanciones').DataTable({
+            responsive: true,
+            autoWidth: false,
+            language: {
+                url: "{% static 'lib/datatables-1.10.20/spanish.txt' %}"
+            },
+            columnDefs: [
+                { orderable: false, targets: 7 }
+            ]
+        });
+    });
+
+    {% if messages %}
+        {% for message in messages %}
+            Swal.fire({
+                title: "Correcto",
+                text: "{{ message }}",
+                icon: "success",
+                confirmButtonText: "OK"
+            });
+        {% endfor %}
+    {% endif %}
+</script>
+
+
 {% endblock %}
