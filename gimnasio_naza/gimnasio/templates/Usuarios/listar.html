@@ -9,47 +9,55 @@
 <div class="container-xxl flex-grow-1 container-p-y">
     <div class="card">
         <div class="card-header d-flex justify-content-between align-items-center">
-            <h5 class="mb-0">Listado de Elementos</h5>
-           <a href="{% url 'gimnasio:crear_elemento' %}" class="btn btn-primary">
-                <i class="icon-base ri ri-add-line icon-18px me-1"></i>Agregar elemento
+            <h5 class="mb-0">Listado de Usuarios</h5>
+            <a href="{% url 'gimnasio:crear_usuario' %}" class="btn btn-primary">
+                <i class="icon-base ri ri-add-line icon-18px me-1"></i>Agregar usuario
             </a>
         </div>
 
         <div class="card-body">
             <div class="table-responsive">
-                <table id="tabla-elementos" class="table table-bordered table-striped w-100">
+                <table id="tabla-usuarios" class="table table-bordered table-striped w-100">
                     <thead>
                         <tr>
                             <th>ID</th>
-                            <th>Serial</th>
-                            <th>Marca</th>
-                            <th>Nombre del elemento</th>
-                            <th>Tipo de elemento</th>
-                            <th>Estado</th>
-                            <th>Fecha ingreso</th>
-                            <th>Categoría</th>
+                            <th>documento</th>
+                            <th>nombre del usuario</th>
+                            <th>apellido del usuario</th>
+                            <th>fecha de nacimiento</th>
+                            <th>telefono del usuario</th>
+                            <th>correo del usuario</th>
+                            <th>peso del usuario</th>
+                            <th>altura del usuario</th>
+                            <th>rol del usuario</th>
+                            <th>estado</th>
+                            <th>fecha de registro</th>
                             <th>Acciones</th>
-                          </tr>
+                        </tr>
                     </thead>
                     <tbody>
-                        {% for e in object_list %}
+                        {% for u in object_list %}
                         <tr>
-                             <td>{{e.id}}</td>
-                            <td>{{e.serial}}</td>
-                            <td>{{e.marca}}</td>
-                            <td>{{e.nombre_elemento}}</td>
-                            <td>{{e.tipo_elemento}}</td>
-                            <td>{{e.estado}}</td>
-                            <td>{{e.fecha_ingreso}}</td>
-                            <td>{{e.categoria_id}}</td>
+                            <td>{{u.id}}</td>
+                            <td>{{u.documento}}</td>
+                            <td>{{u.nombre_usuario}}</td>
+                            <td>{{u.apellido_usuario}}</td>
+                            <td>{{u.fecha_nacimiento}}</td>
+                            <td>{{u.telefono_usuario}}</td>
+                            <td>{{u.correo_usuario}}</td>
+                            <td>{{u.peso_usuario}}</td>
+                            <td>{{u.altura_usuario}}</td>
+                            <td>{{u.rol}}</td>
+                            <td>{{u.estado}}</td>
+                            <td>{{u.fecha_registro}}</td>
                             <td class="text-nowrap">
                                
-              <a href="{% url 'gimnasio:editar_elemento' e.id %}" 
+<a href="{% url 'gimnasio:editar_usuario' u.id %}"
                                                 class="btn btn-sm btn-text-secondary rounded-pill btn-icon item-edit">
                                                 <i class="icon-base ri ri-edit-box-line icon-22px"></i>
                                             </a>
                                        
-                                           <a href="{% url 'gimnasio:eliminar_elemento' e.id %}"
+                                            <a href="{% url 'gimnasio:eliminar_usuario' u.id %}"
                               class="btn btn-sm btn-text-secondary rounded-pill btn-icon item-trash">
                                                 <i class="icon-base ri ri-delete-bin-line icon-22px">                                      </li>
                                     
@@ -57,7 +65,7 @@
                         </tr>
                         {% empty %}
                         <tr>
-                            <td colspan="5" class="text-center">No hay elementos registrados                .</td>
+                            <td colspan="5" class="text-center">No hay usuarios registrados.</td>
                         </tr>
                         {% endfor %}
                     </tbody>
@@ -78,7 +86,7 @@
 
 <script>
     $(function () {
-        $('#tabla-elementos').DataTable({
+        $('#tabla-usuarios').DataTable({
             responsive: true,
             autoWidth: false,
             language: {

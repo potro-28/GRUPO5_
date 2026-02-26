@@ -3,7 +3,7 @@ from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
 from django.contrib import messages
 from gimnasio.models import Usuario
-from gimnasio.forms import usuarioForm
+from gimnasio.forms import UsuarioForm
 
 
 # =============================
@@ -11,7 +11,7 @@ from gimnasio.forms import usuarioForm
 # =============================
 class UsuarioListView(ListView):
     model = Usuario
-    template_name = 'usuarios/listar2.html'
+    template_name = 'usuarios/listar.html'
     context_object_name = 'object_list'  # Cambiado de 'usuarios' para que coincida con el template
     ordering = ['-id']
 
@@ -21,7 +21,7 @@ class UsuarioListView(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['titulo'] = 'Listado de Usuarios'
-        context['crear2_url'] = reverse_lazy('gimnasio:crear_usuario')  # Sin el '2'
+        context['crear_url'] = reverse_lazy('gimnasio:crear_usuario')  # Sin el '2'
         return context
 
 
@@ -30,9 +30,9 @@ class UsuarioListView(ListView):
 # =============================
 class UsuarioCreateView(CreateView):
     model = Usuario
-    form_class = usuarioForm
-    template_name = 'usuarios/crear2.html'
-    success_url = reverse_lazy('gimnasio:listar2_usuarios')
+    form_class = UsuarioForm
+    template_name = 'usuarios/crear.html'
+    success_url = reverse_lazy('gimnasio:listar_usuario')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -49,9 +49,9 @@ class UsuarioCreateView(CreateView):
 # =============================
 class UsuarioUpdateView(UpdateView):
     model = Usuario
-    form_class = usuarioForm
-    template_name = 'usuarios/crear2.html'  # Usa el mismo template que crear
-    success_url = reverse_lazy('gimnasio:listar2_usuarios')
+    form_class = UsuarioForm
+    template_name = 'usuarios/crear.html'  # Usa el mismo template que crear
+    success_url = reverse_lazy('gimnasio:listar_usuario')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -79,14 +79,14 @@ class UsuarioUpdateView(UpdateView):
 # =============================
 class UsuarioDeleteView(DeleteView):
     model = Usuario
-    template_name = 'usuarios/eliminar2.html'
-    success_url = reverse_lazy('gimnasio:listar2_usuarios')
+    template_name = 'usuarios/eliminar.html'
+    success_url = reverse_lazy('gimnasio:listar_usuario')
     context_object_name = 'object'  # Cambiado para que coincida con el template
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['titulo'] = 'Eliminar Usuario'
-        context['listar2_url'] = reverse_lazy('gimnasio:listar2_usuarios')
+        context['listar_url'] = reverse_lazy('gimnasio:listar_usuario')
         return context
 
     def delete(self, request, *args, **kwargs):
@@ -99,9 +99,9 @@ class UsuarioDeleteView(DeleteView):
 # =============================
 class UsuarioRolUpdateView(UpdateView):
     model = Usuario
-    form_class = usuarioForm
+    form_class = UsuarioForm
     template_name = 'usuarios/asignar_rol.html'
-    success_url = reverse_lazy('gimnasio:listar_usuarios')
+    success_url = reverse_lazy('gimnasio:listar_usuario')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

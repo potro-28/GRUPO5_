@@ -32,7 +32,7 @@ class ElementoCreateView(CreateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['titulo'] = 'Registrar Elemento'
-        context['list_url'] = reverse_lazy('gimnasio:listar_elementos')
+        context['list_url'] = reverse_lazy('gimnasio:listar_elemento')
         return context
 
 
@@ -48,7 +48,7 @@ class ElementoUpdateView(UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['titulo'] = 'editar_elementoo'
+        context['titulo'] = 'Editar Elemento'
         context['list_url'] = reverse_lazy('gimnasio:listar_elementos')
         return context
 
@@ -67,6 +67,3 @@ class ElementoDeleteView(DeleteView):
         context['titulo'] = 'Eliminar Elemento'
         context['list_url'] = reverse_lazy('gimnasio:listar_elementos')
         return context
-#=============================
-#GESTION DE USUARIOS
-#=============================

@@ -64,11 +64,15 @@
 {% block js %}
     {% if form.errors %}
     <script>
-        Swal.fire({
-            title: "Error",
-            text: "Por favor, verifique los campos marcados en rojo.",
-            icon: "error",
-        });
+        {% for field, errors in form.errors.items %}
+            {% for error in errors %}
+                Swal.fire({
+                    title: "Error",
+                    text: "{{ error }}",
+                    icon: "error",
+                });
+            {% endfor %}
+        {% endfor %}
     </script>
     {% endif %}
 {% endblock %}
