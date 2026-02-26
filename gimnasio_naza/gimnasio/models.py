@@ -357,14 +357,14 @@ class Rutina(models.Model):
 
 class Certificacion_interna(models.Model):
     descripcion_certificacion=models.CharField(max_length=500)
-    fecha_certifiacion=models.DateField(auto_now=False, auto_now_add=False)
+    fecha_certificacion=models.DateField(auto_now=False, auto_now_add=False)
     fk_Asistencia=models.ForeignKey(Asistencia, on_delete=models.CASCADE, verbose_name='Asistencia')
     def __str__(self):
-        return self.id
+        return str(self.id) 
     class Meta:
-        db_table='Certifiacion_interna'
-        verbose_name='Certificaion_interna'
-        verbose_name_plural='Certificaiones_internas'
+        db_table='Certificacion_interna'
+        verbose_name='Certificacion_interna'
+        verbose_name_plural='Certificaciones_internas'
 
 #---------sanciones----------
 class Sancion(models.Model):

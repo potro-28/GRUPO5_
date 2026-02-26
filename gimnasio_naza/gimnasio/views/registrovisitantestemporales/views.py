@@ -2,7 +2,7 @@ from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
 from gimnasio.models import Registrovisitantestemporales
 from gimnasio.forms import RegistrovisitantetemporalForm
-
+from django.contrib import messages
 
 class RegistrovisitantetemporalListView(ListView):
     model = Registrovisitantestemporales
@@ -25,6 +25,11 @@ class RegistrovisitantestemporalCreateView(CreateView):
         context = super().get_context_data(**kwargs)
         context['titulo'] = 'Crear registro visitante'
         return context
+    
+    def form_valid(self, form):
+        messages.success(self.request, 'Registro de visitante creado correctamente')
+        return super().form_valid(form)
+
 
 
 class RegistrovisitantetemporalUpdateView(UpdateView):
@@ -37,6 +42,10 @@ class RegistrovisitantetemporalUpdateView(UpdateView):
         context = super().get_context_data(**kwargs)
         context['titulo'] = 'Editar registro visitante'
         return context
+    
+    def form_valid(self, form):
+        messages.success(self.request, 'Actualizacion de registro visitante actualizado correctamente')
+        return super().form_valid(form)
     
 class RegistrovisitantetemporalDeleteView(DeleteView):
     model = Registrovisitantestemporales

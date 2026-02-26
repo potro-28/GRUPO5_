@@ -2,7 +2,7 @@ from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
 from gimnasio.models import Turnosentrenadores
 from gimnasio.forms import TurnodeentrenadorForm
-
+from django.contrib import messages
 
 class TurnodeentrenadorListView(ListView):
     model = Turnosentrenadores
@@ -26,7 +26,10 @@ class TurnodeentrenadorCreateView(CreateView):
         context['titulo'] = 'Crear Turno Entrenadores'
         return context
 
-
+    def form_valid(self, form):
+        messages.success(self.request, 'Registro de turno de entrenador creado correctamente')
+        return super().form_valid(form)
+    
 class TurnodeentrenadorUpdateView(UpdateView):
     model = Turnosentrenadores
     form_class = TurnodeentrenadorForm
@@ -37,6 +40,10 @@ class TurnodeentrenadorUpdateView(UpdateView):
         context = super().get_context_data(**kwargs)
         context['titulo'] = 'Editar Turno Entrenadores'
         return context
+    
+    def form_valid(self, form):
+        messages.success(self.request, 'Actualizacion de turno de entrenador actualizado correctamente')
+        return super().form_valid(form)
 
 class TurnodeentrenadorDeleteView(DeleteView):
     model = Turnosentrenadores
