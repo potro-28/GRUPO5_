@@ -44,11 +44,11 @@ class ElementoForm(forms.ModelForm):
         nombre_elemento = cleaned_data.get('nombre_elemento')
         fecha_ingreso = cleaned_data.get('fecha_ingreso')
 
-        # Validar que la fecha no sea futura
+      
         if fecha_ingreso and fecha_ingreso > timezone.now().date():
             raise forms.ValidationError('La fecha de ingreso no puede ser futura.')
 
-        # Validar unicidad
+    
         qs = Elemento.objects.all()
         if self.instance and self.instance.pk:
             qs = qs.exclude(pk=self.instance.pk)
@@ -94,14 +94,14 @@ class UsuarioForm(forms.ModelForm):
         fecha_inicio = cleaned_data.get('fecha_inicio')
         fecha_registro = cleaned_data.get('fecha_registro')
 
-        # Validar rango de fechas
+
         if fecha_inicio and fecha_registro:
             if fecha_registro == fecha_inicio:
                 raise forms.ValidationError('La fecha de registro no puede ser igual a la fecha de inicio.')
             if fecha_registro < fecha_inicio:
                 raise forms.ValidationError('La fecha de registro no puede ser anterior a la fecha de inicio.')
 
-        # Validar unicidad
+     
         qs = Usuario.objects.all()
         if self.instance and self.instance.pk:
             qs = qs.exclude(pk=self.instance.pk)
@@ -143,11 +143,10 @@ class UsuarioForm(forms.ModelForm):
         if fecha_nacimiento >= hoy:
             raise forms.ValidationError("La fecha de nacimiento no puede ser hoy ni una fecha futura.")
     
-    # ❌ Año mínimo
+   
         if fecha_nacimiento.year < 1900:
             raise forms.ValidationError("La fecha de nacimiento debe ser posterior al año 1900.")
     
-    # ✅ NUEVO: Edad mínima de 5 años (evita datos absurdos)
         edad_minima = hoy.replace(year=hoy.year - 5)
         if fecha_nacimiento > edad_minima:
             raise forms.ValidationError("La fecha de nacimiento no es válida, verifica el año ingresado.")
@@ -169,7 +168,6 @@ class MantenimientoForm(forms.ModelForm):
         fecha_programada = cleaned_data.get('fecha_programada')
         elemento = cleaned_data.get('Elemento')
 
-        # Validar unicidad de mantenimiento por elemento y fecha
         if elemento and fecha_programada:
             qs = Mantenimiento.objects.filter(Elemento=elemento)
             if self.instance and self.instance.pk:
@@ -361,7 +359,6 @@ class Soporte_PQRSForm(ModelForm):
                 })      
         }
     
-    #validacion descripcion minimo 10 caracteres   
     def clean_descripcion(self):
         descripcion = self.cleaned_data['descripcion']
 
@@ -372,7 +369,6 @@ class Soporte_PQRSForm(ModelForm):
 
         return descripcion
     
-    #Validacion fecha de ingreso
     def clean_fecha_ingreso(self):
         fecha_ingreso = self.cleaned_data['fecha_ingreso']
         if fecha_ingreso < date.today():
@@ -411,7 +407,6 @@ class Reportes_estadisticasForm(forms.ModelForm):
             raise forms.ValidationError("La fecha no puede ser anterior al 1 de enero de 2025.")
         return fecha_generacion
         
-#Categoria
 class CategoriaForm(forms.ModelForm):
     class Meta:
         model = Categoria
@@ -423,28 +418,24 @@ class CategoriaForm(forms.ModelForm):
             }),
         }
 
-    #  Validar nombre_categoria
     def clean_nombre_categoria(self):
         nombre = self.cleaned_data.get('nombre_categoria')
         if nombre and not nombre.isalpha():
             raise forms.ValidationError("El Nombre no puede contener números")
         return nombre
 
-    # Validar material
     def clean_material(self):
         material = self.cleaned_data.get('material')
         if material and not material.isalpha():
             raise forms.ValidationError("El Material no puede contener números")
         return material
 
-    #  Validar peso_equipo
     def clean_peso_equipo(self):
         peso = self.cleaned_data.get('peso_equipo')
         if peso and not str(peso).isdigit():
             raise forms.ValidationError("El Peso_Equipo solo puede contener números")
         return peso
 
-    # Validar descripcion
     def clean_descripcion(self):
         descripcion = self.cleaned_data.get('descripcion')
         if descripcion:
@@ -459,7 +450,6 @@ class CategoriaForm(forms.ModelForm):
 
 
     
-#Nutricion        
 class NutricionForm(forms.ModelForm):
     class Meta:
         model = Nutricion
@@ -471,7 +461,6 @@ class NutricionForm(forms.ModelForm):
         }
         
 
-# ---------------- RUTINA ----------------
 class RutinaForm(ModelForm):
     class Meta:
         model = Rutina
@@ -487,13 +476,11 @@ class RutinaForm(ModelForm):
             }),
         }
 
-    # Validación real del sistema
     def clean_disponibilidad(self):
         disponibilidad = self.cleaned_data.get('disponibilidad')
         if disponibilidad < 1 or disponibilidad > 7:
             self.add_error('disponibilidad', "La disponibilidad debe ser un número entre 1 y 7.")
         return disponibilidad
- #--------------------------------------------------------------------------   
 
 class Masa_muscularForm(ModelForm):
     class Meta:
@@ -565,7 +552,6 @@ class SancionesForm(forms.ModelForm):
             'fecha_fin': forms.DateInput(attrs={'type': 'date'}),
         }
 
-    # 🔹 Validar que el motivo empiece con letra
     def clean_motivo_sancion(self):
         motivo = self.cleaned_data.get('motivo_sancion')
 
@@ -579,7 +565,6 @@ class SancionesForm(forms.ModelForm):
 
         return motivo
 
-    # 🔹 Validar duración
     def clean_duracion_sancion(self):
         duracion = self.cleaned_data.get('duracion_sancion')
 
@@ -591,7 +576,6 @@ class SancionesForm(forms.ModelForm):
 
         return duracion
 
-    # 🔥 AQUÍ HACEMOS LA MAGIA
     def clean(self):
         cleaned_data = super().clean()
 
@@ -600,16 +584,13 @@ class SancionesForm(forms.ModelForm):
         tipo = cleaned_data.get('tipo_sancion')
         estado = cleaned_data.get('estado')
 
-        # 🔹 Forzar fecha_inicio como HOY
         fecha_inicio = date.today()
         cleaned_data['fecha_inicio'] = fecha_inicio
 
-        # 🔹 Calcular fecha_fin automáticamente
         if duracion:
             fecha_fin = fecha_inicio + timedelta(days=duracion)
             cleaned_data['fecha_fin'] = fecha_fin
 
-        # 🔹 Evitar sanciones activas duplicadas
         if usuario and tipo and estado == 'activa':
             queryset = Sancion.objects.filter(
                 fk_usuario=usuario,
@@ -627,7 +608,6 @@ class SancionesForm(forms.ModelForm):
 
         return cleaned_data
 
-    # 🔹 Validaciones generales
     def clean(self):
         cleaned_data = super().clean()
 
@@ -637,14 +617,12 @@ class SancionesForm(forms.ModelForm):
         tipo = cleaned_data.get('tipo_sancion')
         estado = cleaned_data.get('estado')
 
-        # Validar fechas
         if fecha_inicio and fecha_fin:
             if fecha_fin <= fecha_inicio:
                 raise ValidationError(
                     "La fecha de fin debe ser mayor que la fecha de inicio."
                 )
 
-        # Evitar sanciones activas duplicadas
         if usuario and tipo and estado == 'activa':
             queryset = Sancion.objects.filter(
                 fk_usuario=usuario,
