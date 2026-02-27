@@ -29,6 +29,7 @@ class CertificacioninternaCreateView(CreateView):
         return context
 
     def form_valid(self, form):
+        print('Aqui')
         messages.success(self.request, 'Certificacion creada correctamente')
         return super().form_valid(form)
 
