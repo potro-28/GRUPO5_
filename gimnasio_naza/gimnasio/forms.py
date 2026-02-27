@@ -23,7 +23,6 @@ from gimnasio.models import Certificacion_interna
 import re
 from datetime import date
 from django.contrib import messages
-
 from django.core.exceptions import ValidationError
 from django.core.exceptions import ValidationError
 from datetime import date , timedelta
@@ -739,8 +738,11 @@ class CertificacioninternaForm(ModelForm):
             raise forms.ValidationError("La descripcion de la certificacion interna debe tener al menos 10 caracteres.")
         if descripcion_certificacion.isdigit():
             raise forms.ValidationError("La descripcion de la certificacion interna no puede ser solo números.")
+        if not re.match(r'^[A-Za-zÁÉÍÓÚáéíóúÑñ]{2,}', descripcion_certificacion):
+            raise forms.ValidationError(
+                "La descripción debe comenzar con una palabra válida (no números ni símbolos)."
+            )
         return descripcion_certificacion
-    
     def clean_fecha_certificacion(self):
         fecha_certificacion = self.cleaned_data['fecha_certificacion']
         hoy = timezone.now().date()
