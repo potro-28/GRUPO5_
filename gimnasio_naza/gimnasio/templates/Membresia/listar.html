@@ -3,15 +3,14 @@
 
 {% block contenido %}
 <link rel="stylesheet" href="{% static 'lib/datatables-1.10.20/css/dataTables.bootstrap4.min.css' %}">
-<link rel="stylesheet"
-    href="{% static 'lib/datatables-1.10.20/plugins/responsive-2.2.3/css/responsive.bootstrap4.min.css' %}">
+<link rel="stylesheet" href="{% static 'lib/datatables-1.10.20/plugins/responsive-2.2.3/css/responsive.bootstrap4.min.css' %}">
 
 <div class="container-xxl flex-grow-1 container-p-y">
     <div class="card">
         <div class="card-header d-flex justify-content-between align-items-center">
-            <h5 class="mb-0">Listado de Asistencias</h5>
+            <h5 class="mb-0">Listado de membresias</h5>
             <a href="{{ crear_url }}" class="btn btn-primary">
-                <i class="icon-base ri ri-add-line icon-18px me-1"></i>Agregar asistencia
+                <i class="icon-base ri ri-add-line icon-18px me-1"></i>Agregar membresias
             </a>
         </div>
 
@@ -23,29 +22,27 @@
                             <th>id</th>
                             <th>fecha inicio</th>
                             <th>Fecha de fin</th>
-                            <th>Hora de salida</th>
                             <th>Membresia</th>
                             <th>Documento de usuario</th>
                             <th>Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {% for a in object_list %}
+                        {% for membresia in object_list %}
                         <tr>
-                            <td>{{ a.id }}</td>
-                            <td>{{ a.fecha_asistencia }}</td>
-                            <td>{{ a.hora_ingreso }}</td>
-                            <td>{{ a.hora_salida }}</td>
+                            <td>{{ membresia.id }}</td>
+                            <td>{{ membresia.fecha_inicio }}</td>
+                            <td>{{ membresia.fecha_fin }}</td>
                             <td>{{ a.fk_membresia.fk_usuario.nombre_usuario}} {{ a.fk_membresia.fk_usuario.apellido_usuario}}</td>
                             <td>{{ a.fk_membresia.fk_usuario.documento }}</td>
                             <td class="text-nowrap">
                                
-                            <a href="{% url 'gimnasio:editar_asistencia' a.id %}"
+                            <a href="{% url 'gimnasio:editar_membresia' membresia.id %}"
                                                 class="btn btn-sm btn-text-secondary rounded-pill btn-icon item-edit">
                                                 <i class="icon-base ri ri-edit-box-line icon-22px"></i>
                                             </a>
                                        
-                                            <a href="{% url 'gimnasio:eliminar_asistencia' a.id %}"
+                                            <a href="{% url 'gimnasio:eliminar_membresia' membresia.id %}"
                               class="btn btn-sm btn-text-secondary rounded-pill btn-icon item-trash">
                                                 <i class="icon-base ri ri-delete-bin-line icon-22px">                                      </li>
                                     

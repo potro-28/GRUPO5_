@@ -143,11 +143,8 @@ class UsuarioForm(forms.ModelForm):
         if fecha_nacimiento >= hoy:
             raise forms.ValidationError("La fecha de nacimiento no puede ser hoy ni una fecha futura.")
     
-    # ❌ Año mínimo
         if fecha_nacimiento.year < 1900:
-            raise forms.ValidationError("La fecha de nacimiento debe ser posterior al año 1900.")
-    
-    # ✅ NUEVO: Edad mínima de 5 años (evita datos absurdos)
+            raise forms.ValidationError("La fecha de nacimiento debe ser posterior al año 1900.")    
         edad_minima = hoy.replace(year=hoy.year - 5)
         if fecha_nacimiento > edad_minima:
             raise forms.ValidationError("La fecha de nacimiento no es válida, verifica el año ingresado.")
@@ -565,7 +562,7 @@ class SancionesForm(forms.ModelForm):
             'fecha_fin': forms.DateInput(attrs={'type': 'date'}),
         }
 
-    # 🔹 Validar que el motivo empiece con letra
+
     def clean_motivo_sancion(self):
         motivo = self.cleaned_data.get('motivo_sancion')
 
@@ -579,7 +576,7 @@ class SancionesForm(forms.ModelForm):
 
         return motivo
 
-    # 🔹 Validar duración
+
     def clean_duracion_sancion(self):
         duracion = self.cleaned_data.get('duracion_sancion')
 
@@ -591,7 +588,7 @@ class SancionesForm(forms.ModelForm):
 
         return duracion
 
-    # 🔥 AQUÍ HACEMOS LA MAGIA
+
     def clean(self):
         cleaned_data = super().clean()
 
@@ -600,16 +597,15 @@ class SancionesForm(forms.ModelForm):
         tipo = cleaned_data.get('tipo_sancion')
         estado = cleaned_data.get('estado')
 
-        # 🔹 Forzar fecha_inicio como HOY
         fecha_inicio = date.today()
         cleaned_data['fecha_inicio'] = fecha_inicio
 
-        # 🔹 Calcular fecha_fin automáticamente
+    
         if duracion:
             fecha_fin = fecha_inicio + timedelta(days=duracion)
             cleaned_data['fecha_fin'] = fecha_fin
 
-        # 🔹 Evitar sanciones activas duplicadas
+ 
         if usuario and tipo and estado == 'activa':
             queryset = Sancion.objects.filter(
                 fk_usuario=usuario,
@@ -627,7 +623,7 @@ class SancionesForm(forms.ModelForm):
 
         return cleaned_data
 
-    # 🔹 Validaciones generales
+
     def clean(self):
         cleaned_data = super().clean()
 

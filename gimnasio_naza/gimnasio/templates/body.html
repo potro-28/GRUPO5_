@@ -1,52 +1,52 @@
-{% extends "home.html" %}
+
+{% extends 'home.html' %}
 {% load static %}
-
 {% block body %}
-
-<body>
-
-    <!-- Layout wrapper -->
-    <div class="layout-wrapper layout-content-navbar">  
-        <div class="layout-container">
-            
-            <!-- Menu -->
-
-            {% include 'aside.html' %}
-            <!-- / Menu -->
-
-            <!-- Layout container -->
-            <div class="layout-page">
-
-
-                <nav class="layout-navbar container-xxl navbar-detached navbar navbar-expand-xl align-items-center bg-navbar-theme"
-                    id="layout-navbar">
-                    
-                {% include 'nav.html' %}
-                </nav>
-
-
-                {%block contenido%}
-                {% endblock %}
-
- 
-                
-                <!-- / Navbar -->
-            </div>
-            
-            <!-- / Layout page -->
-        </div>
-        
-
-        <!-- Overlay -->
-        <div class="layout-overlay layout-menu-toggle"></div>
-        
-    </div>
-  
+  <body>
     
-    <!-- / Layout wrapper -->
+    
+    {% include 'header.html' %}
+        <div class="main-container">
+        
+        {% include "aside.html" %}
 
+        <main class="content-area">
+            {% block contenido %}
+            {% endblock contenido %}
+        </main>
+    </div>
 
-    <!-- Core JS -->
+    <script>
+      // Toggle de Barra Lateral Animada
+      document.getElementById('menuToggle').addEventListener('click', function () {
+        if (window.innerWidth > 768) {
+          document.body.classList.toggle('sidebar-collapsed')
+          // Al contraer en desktop, asegurarnos de que el menú en acordeón se cierre
+          document.querySelectorAll('.has-submenu').forEach((item) => item.classList.remove('open'))
+        } else {
+          document.getElementById('sidebar').classList.toggle('mobile-active')
+        }
+      })
+      
+      // Toggle Submenu (Acordeón)
+      document.querySelectorAll('.submenu-toggle').forEach((toggle) => {
+        toggle.addEventListener('click', function (e) {
+          e.preventDefault()
+          if (!document.body.classList.contains('sidebar-collapsed')) {
+            const parentLi = this.parentElement
+            parentLi.classList.toggle('open')
+      
+            const icon = this.querySelector('.arrow-icon')
+            if (parentLi.classList.contains('open')) {
+              icon.classList.replace('fa-chevron-right', 'fa-chevron-down')
+            } else {
+              icon.classList.replace('fa-chevron-down', 'fa-chevron-right')
+            }
+          }
+        })
+      })
+    
+    </script>
     <script src="{% static 'assets/vendor/libs/jquery/jquery.js' %}"></script>
 
     <script src="{% static 'assets/vendor/libs/popper/popper.js'%}"></script>
@@ -68,14 +68,12 @@
 
     <!-- Page JS -->
     <script src="{% static 'assets/js/dashboards-analytics.js'%}"></script>
-
-    <!-- Place this tag before closing body tag for github widget button. -->
     <script async="async" defer="defer" src="https://buttons.github.io/buttons.js"></script>
     <script src="{% static 'lib/sweetalert2/sweetalert2.all.min.js'%}"></script>
-    
+
     {% block js %}{% endblock %}
     
-</body>
+    
 
-
+  </body>
 {% endblock body %}

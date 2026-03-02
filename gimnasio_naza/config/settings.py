@@ -40,7 +40,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'widget_tweaks',
-    #login 
     'login',
     #-----------------
     'gimnasio',
@@ -130,7 +129,7 @@ os.path.join(BASE_DIR/'static/')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-LOGIN_REDIRECT_URL = 'gimnasio:listar_certificacioninterna'
+LOGIN_REDIRECT_URL = 'gimnasio:listar_asistencia'
 LOGOUT_REDIRECT_URL = 'login:login'
 LOGIN_URL = 'login:login'
 LOGOUT_URL = 'login:logout'
