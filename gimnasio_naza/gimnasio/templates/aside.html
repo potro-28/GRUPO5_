@@ -1,34 +1,169 @@
- {% load static %}       
-        <aside class="sidebar" id="sidebar">
-            <div class="user-panel">
-                <div class="profile-img-wrapper">
-                    <img src="https://i.pravatar.cc/150?img=11" alt="Nick Gonzalez">
-                    <div class="status-dot"></div>
-                </div>
-                <h3>Nick Gonzalez</h3>
-                <div class="badge-plan">Plan Silver</div>
-            </div>
-            
-            <ul class="nav-menu">
-                <li><a href="#"><div class="icon-circle"><i class="fas fa-home"></i></div><span>Resumen</span></a></li>
-                <li><a href="#"><div class="icon-circle"><i class="fas fa-chart-pie"></i></div><span>Mis Reportes</span></a></li>
-                <li><a href="#"><div class="icon-circle"><i class="fas fa-clipboard-list"></i></div><span>Mi Plan de Entrenamiento</span></a></li>
-                <li><a href="#"><div class="icon-circle"><i class="fas fa-utensils"></i></div><span>Mi Plan de Dieta</span></a></li>
-                <li class="active"><a href="#"><div class="icon-circle"><i class="fas fa-users"></i></div><span>Entrenadores</span></a></li>
-                <li><a href="#"><div class="icon-circle"><i class="fas fa-user-circle"></i></div><span>Perfil del Entrenador</span></a></li>
-                
-                <li class="has-submenu">
-                    <a href="#" class="submenu-toggle">
-                        <div class="icon-circle"><i class="fas fa-users-cog"></i></div>
-                        <span>Miembros</span>
-                        <i class="fas fa-chevron-right arrow-icon"></i>
-                    </a>
-                    <ul class="submenu">
-                        <li><a href="#">Ver Miembros</a></li>
-                        <li><a href="#">Tarjetas de Miembros</a></li>
-                        <li><a href="#">Agregar Miembro</a></li>
-                        <li><a href="#">Editar Detalles del Miembro</a></li>
-                    </ul>
-                </li>
-            </ul>
-        </aside>
+{% load static %}
+
+<aside class="sidebar" id="sidebar">
+  <div class="user-panel">
+    <div class="profile-img-wrapper">
+      <img src="{% static 'img/img_usuario.png' %}" alt="Usuario" />
+    </div>
+    <h3>Administrador</h3>
+    <div class="badge-plan">Gym Nazareth</div>
+  </div>
+
+  <ul class="nav-menu">
+
+    <li>
+      <a href="{% url 'gimnasio:listar_asistencia' %}">
+        <div class="icon-circle">
+          <i class="fas fa-calendar-check"></i>
+        </div>
+        <span>Asistencia</span>
+      </a>
+    </li>
+
+    <li>
+      <a href="{% url 'gimnasio:listar_membresia' %}">
+        <div class="icon-circle">
+          <i class="fas fa-crown"></i>
+        </div>
+        <span>Membresía</span>
+      </a>
+    </li>
+
+    <li>
+      <a href="{% url 'gimnasio:listar_notificacion' %}">
+        <div class="icon-circle">
+          <i class="fas fa-bell"></i>
+        </div>
+        <span>Notificaciones</span>
+      </a>
+    </li>
+
+    <li>
+      <a href="{% url 'gimnasio:listar_usuario' %}">
+        <div class="icon-circle">
+          <i class="fas fa-users"></i>
+        </div>
+        <span>Usuarios</span>
+      </a>
+    </li>
+
+    <li>
+      <a href="{% url 'gimnasio:listar_registrovisitante' %}">
+        <div class="icon-circle">
+          <i class="fas fa-walking"></i>
+        </div>
+        <span>Registro Visitantes</span>
+      </a>
+    </li>
+
+
+    <li>
+      <a href="{% url 'gimnasio:listar_nutriciones' %}">
+        <div class="icon-circle">
+          <i class="fas fa-utensils"></i>
+        </div>
+        <span>Nutrición</span>
+      </a>
+    </li>
+
+    <li>
+      <a href="{% url 'gimnasio:listar_rutinas' %}">
+        <div class="icon-circle">
+          <i class="fas fa-dumbbell"></i>
+        </div>
+        <span>Rutinas</span>
+      </a>
+    </li>
+
+    <li>
+      <a href="{% url 'gimnasio:listar_masa_corporal_clas' %}">
+        <div class="icon-circle">
+          <i class="fas fa-weight"></i>
+        </div>
+        <span>Masa Corporal</span>
+      </a>
+    </li>
+
+    <li>
+      <a href="{% url 'gimnasio:listar_certificacioninterna' %}">
+        <div class="icon-circle">
+          <i class="fas fa-medal"></i>
+        </div>
+        <span>Certificaciones</span>
+      </a>
+    </li>
+
+    <li>
+      <a href="{% url 'gimnasio:listar_elementos' %}">
+        <div class="icon-circle">
+          <i class="fas fa-box"></i>
+        </div>
+        <span>Elementos</span>
+      </a>
+    </li>
+
+    <li>
+      <a href="{% url 'gimnasio:listar_mantenimiento' %}">
+        <div class="icon-circle">
+          <i class="fas fa-tools"></i>
+        </div>
+        <span>Mantenimiento</span>
+      </a>
+    </li>
+
+    <li>
+      <a href="{% url 'gimnasio:listar_Reportes_estadisticas' %}">
+        <div class="icon-circle">
+          <i class="fas fa-chart-bar"></i>
+        </div>
+        <span>Reportes</span>
+      </a>
+    </li>
+
+    <li>
+      <a href="{% url 'gimnasio:listar_categorias' %}">
+        <div class="icon-circle">
+          <i class="fas fa-tags"></i>
+        </div>
+        <span>Categoría</span>
+      </a>
+    </li>
+
+    <li>
+      <a href="{% url 'gimnasio:listar_turnodeentrenador' %}">
+        <div class="icon-circle">
+          <i class="fas fa-clock"></i>
+        </div>
+        <span>Turnos Entrenadores</span>
+      </a>
+    </li>
+
+    <li>
+      <a href="{% url 'gimnasio:listar_encuestas' %}">
+        <div class="icon-circle">
+          <i class="fas fa-question-circle"></i>
+        </div>
+        <span>Encuestas</span>
+      </a>
+    </li>
+
+    <li>
+      <a href="{% url 'gimnasio:listar_Soporte_PQRS' %}">
+        <div class="icon-circle">
+          <i class="fas fa-headset"></i>
+        </div>
+        <span>Soporte PQRS</span>
+      </a>
+    </li>
+
+    <li>
+      <a href="{% url 'gimnasio:listar_sanciones_clas' %}">
+        <div class="icon-circle">
+          <i class="fas fa-exclamation-triangle"></i>
+        </div>
+        <span>Sanciones</span>
+      </a>
+    </li>
+
+  </ul>
+</aside>
