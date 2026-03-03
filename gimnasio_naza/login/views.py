@@ -6,7 +6,7 @@ from django.contrib.auth.views import LoginView, LogoutView
 class LoginFormView(LoginView):
     template_name = 'login/login.html'
     redirect_authenticated_user = True
-    success_url = reverse_lazy('gimnasio:listar_asistencia')
+    success_url = reverse_lazy('gimnasio:dashboard')
     
 class logoutFormView(LogoutView):
     next_page = reverse_lazy('login:login')
