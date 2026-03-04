@@ -1,5 +1,5 @@
 from django.db import models
-from datetime import datetime
+from datetime import *
 from decimal import Decimal  
 
 # Create your models here.
@@ -53,7 +53,7 @@ class Membresia(models.Model):
 
 #---------MODELO ASISTENCIA -----------------------------------------------------
 class Asistencia(models.Model):
-    fecha_asistencia = models.DateField(default=datetime.now, verbose_name='Fecha de Asistencia')
+    fecha_asistencia = models.DateField(default=date.today, verbose_name='Fecha de Asistencia')
     hora_ingreso = models.TimeField(null=True, blank=True, verbose_name='Hora de Ingreso')
     hora_salida = models.TimeField(null=True, blank=True, verbose_name='Hora de Salida')
     fk_membresia = models.ForeignKey(Membresia, on_delete=models.CASCADE)
@@ -70,10 +70,17 @@ class Asistencia(models.Model):
 #--------------------CATEGORIA------------------
 
 class Categoria(models.Model):
+    
+    UNIDADES_PESO = (
+        
+        ('kg', 'Kilogramos'),
+        ('lb', 'Libras'),
+    )
     nombre_categoria = models.CharField(max_length=45)
     material = models.CharField(max_length=45)
     peso_equipo = models.CharField(max_length=45)
     descripcion = models.CharField(max_length=250)
+    unidad_peso = models.CharField(max_length=2, choices=UNIDADES_PESO)
 
     def __str__(self):
         return str(self.nombre_categoria)
@@ -148,12 +155,16 @@ CANAL_NOTIFICACION = [
     ('SMS', 'SMS'),
     ('CORREO', 'Correo'),
 ]
+ESTADO_NOTFIFICACION = [
+    ('ASIGNADA', 'Asignada'),
+    ('NO ASIGNADA', 'No asignada')
+]
 class Notificacion(models.Model):
     tipo_notificacion = models.CharField(max_length=120, choices=TIPO_NOTIFICACION, verbose_name='Tipo de Notificacion')
     canal_notificacion = models.CharField(max_length=120, choices=CANAL_NOTIFICACION, verbose_name='Canal de Notificacion')
-    fk_membresia = models.ForeignKey(Membresia, null=True, blank=True, on_delete=models.CASCADE)
-    fk_asistencia = models.ForeignKey(Asistencia, null=True, blank=True, on_delete=models.CASCADE)
-    fk_mantenimiento = models.ForeignKey(Mantenimiento, null=True, blank=True, on_delete=models.CASCADE)
+    estado_notificacion = models.CharField(max_length=120, choices=ESTADO_NOTFIFICACION, verbose_name='Estado de Notificacion')
+    fk_usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
+    
     def __str__(self):
         return str(self.id)
       
@@ -164,12 +175,12 @@ class Notificacion(models.Model):
 #--------------------------------Modulo de Gestión de Encuestas----------------------------
 class Encuesta(models.Model):
     ESTADO_CHOICES = [
-        ('A', 'Activa'),
-        ('I', 'Inactiva'),
+        ('activa', 'Activa'),
+        ('inactiva', 'Inactiva'),
     ]
 
     nombre = models.CharField(max_length=100,unique=True)
-    estado = models.CharField(max_length=1,choices=ESTADO_CHOICES,default='A')
+    estado = models.CharField(max_length=20,choices=ESTADO_CHOICES,default='activa')
     fk_usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
        
       

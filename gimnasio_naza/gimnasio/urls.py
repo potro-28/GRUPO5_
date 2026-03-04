@@ -17,6 +17,7 @@ from gimnasio.views.Sanciones.views import *
 from gimnasio.views.registrovisitantestemporales.views import *
 from gimnasio.views.turnosdeentrenadores.views import *
 from gimnasio.views.certificacionesinternas.views import *
+from gimnasio.views.Dashboard.views import DashboardView
 
 app_name = 'gimnasio'
 
@@ -75,7 +76,6 @@ urlpatterns = [
     path('editar_Reportes_estadisticas/<int:pk>/', Reportes_estadisticasUpdateView.as_view(), name='editar_Reportes_estadisticas'),
     path('eliminar_Reportes_estadisticas/<int:pk>/', Reportes_estadisticasDeleteView.as_view(), name='eliminar_Reportes_estadisticas'),
 
-
     #Categoria
     path('listar_categorias/', categoriaListView.as_view(), name='listar_categorias'),
     path('crear_categoria/', CategoriaCreateView.as_view(), name='crear_categoria'),
@@ -119,4 +119,7 @@ urlpatterns = [
     path('crear_certificacioninterna/', CertificacioninternaCreateView.as_view(), name='crear_certificacioninterna'),
     path('editar_certificacioninterna/<int:pk>/', CertificacioninternaUpdateView.as_view(), name='editar_certificacioninterna'),
     path('eliminar_certificacioninterna/<int:pk>/', CertificacioninternaDeleteView.as_view(), name='eliminar_certificacioninterna'),
+    
+    # Dashboard
+    path('dashboard/', DashboardView.as_view(), name='dashboard'),
 ]
