@@ -33,7 +33,24 @@
             
             {% for field in form.visible_fields %}
                 <div class="form-group">
-                    <label for="{{ field.id_for_label }}">{{ field.label }}:</label>
+                    <label for="peso_equipo">Peso equipo</label>
+
+                    <div style="display:flex; gap:10px;">
+                        <!-- Campo donde se escribe el peso -->
+                        <input type="number" name="peso_equipo" id="peso_equipo"
+                            class="form-control"
+                            placeholder="Ingrese el peso"
+                            required>
+
+                        <!-- Selector de unidad -->
+                        <select name="unidad_peso" class="form-control" required>
+                            <option value="">Unidad</option>
+                            <option value="kg">Kg</option>
+                            <option value="lb">Lb</option>
+                        </select>
+                    </div>
+                </div>
+                                    <label for="{{ field.id_for_label }}">{{ field.label }}:</label>
                     {{ field }}
                 </div>
             {% endfor %}
