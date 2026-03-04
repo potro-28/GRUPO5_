@@ -36,8 +36,22 @@
                             <td>{{ soporte.tipo }}</td>
                             <td>{{ soporte.descripcion }}</td>
                             <td>{{ soporte.fecha_ingreso }}</td>
-                            <td>{{ soporte.estado }}</td>
+                            <td>
+                                {% if soporte.estado == "solucionada" %}
+                                    <span class="badge bg-success">{{ soporte.estado }}</span>
+
+                                {% elif soporte.estado == "en_proceso" %}
+                                    <span class="badge bg-warning text-dark">{{ soporte.estado }}</span>
+
+                                {% elif soporte.estado == "pendiente" %}
+                                    <span class="badge bg-danger">{{ soporte.estado }}</span>
+
+                                {% else %}
+                                    <span class="badge bg-secondary">{{ soporte.estado }}</span>
+                                {% endif %}
+                            </td>
                             <td>{{ soporte.fk_usuario }}</td>
+                            
                             
                             
                             <td class="text-nowrap">
