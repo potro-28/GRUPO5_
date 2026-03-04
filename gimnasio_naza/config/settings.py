@@ -129,7 +129,7 @@ os.path.join(BASE_DIR/'static/')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-LOGIN_REDIRECT_URL = 'gimnasio:listar_asistencia'
+LOGIN_REDIRECT_URL = 'gimnasio:dashboard'
 LOGOUT_REDIRECT_URL = 'login:login'
 LOGIN_URL = 'login:login'
 LOGOUT_URL = 'login:logout'

@@ -15,39 +15,55 @@
         <div class="card-body">
             {% csrf_token %}
 
-            {# Mostrar errores generales del formulario #}
             {% if form.errors %}
             <div class="alert alert-danger alert-dismissible">
                 <button type="button" class="close" data-bs-dismiss="alert">×</button>
                 <h5><i class="icon fas fa-ban"></i> Error! Verifica los siguientes campos.</h5>
-
-                {% if form.non_field_errors %}
-                <ul class="mb-0">
-                    {% for error in form.non_field_errors %}
-                    <li>{{ error }}</li>
-                    {% endfor %}
-                </ul>
-                {% endif %}
             </div>
             {% endif %}
 
-            {# Iterar campos del formulario con validación visual #}
-            {% for field in form.visible_fields %}
-            <div class="form-group">
-                <label for="{{ field.id_for_label }}">{{ field.label }}:</label>
-
-                {% if field.errors %}
-                    {{ field|add_class:'form-control is-invalid'|attr:'autocomplete:off' }}
+            <div class="form-group mb-3">
+                <label>Nombre categoria:</label>
+                {{ form.nombre_categoria|add_class:'form-control' }}
+                {% if form.nombre_categoria.errors %}
                     <div class="invalid-feedback d-block">
-                        {% for error in field.errors %}
-                        <div>{{ error }}</div>
-                        {% endfor %}
+                        {{ form.nombre_categoria.errors }}
                     </div>
-                {% else %}
-                    {{ field|add_class:'form-control'|attr:'autocomplete:off' }}
                 {% endif %}
             </div>
-            {% endfor %}
+
+            <div class="form-group mb-3">
+                <label>Material:</label>
+                {{ form.material|add_class:'form-control' }}
+                {% if form.material.errors %}
+                    <div class="invalid-feedback d-block">
+                        {{ form.material.errors }}
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="form-group mb-3">
+                <label>Peso equipo:</label>
+                <div class="input-group">
+                    {{ form.peso_equipo|add_class:'form-control' }}
+                    {{ form.unidad_peso|add_class:'form-select'|attr:'style:max-width:120px;' }}
+                </div>
+                {% if form.peso_equipo.errors %}
+                    <div class="invalid-feedback d-block">
+                        {{ form.peso_equipo.errors }}
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="form-group mb-3">
+                <label>Descripción:</label>
+                {{ form.descripcion|add_class:'form-control' }}
+                {% if form.descripcion.errors %}
+                    <div class="invalid-feedback d-block">
+                        {{ form.descripcion.errors }}
+                    </div>
+                {% endif %}
+            </div>
 
         </div>
 
@@ -66,6 +82,7 @@
 {% endblock %}
 
 {% block js %}
+
 {% if form.errors %}
 <script>
 Swal.fire({
@@ -75,4 +92,27 @@ Swal.fire({
 });
 </script>
 {% endif %}
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+
+    const input = document.querySelector("input[name='peso_equipo']");
+
+    if (input) {
+
+        input.addEventListener("input", function() {
+            this.value = this.value.replace(",", ".");
+        });
+
+        input.addEventListener("blur", function() {
+            if (parseFloat(this.value) < 1) {
+                this.value = "1";
+            }
+        });
+
+    }
+
+});
+</script>
+
 {% endblock %}

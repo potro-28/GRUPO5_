@@ -48,7 +48,7 @@ class nutricionListView(ListView):
 #Crear categoria    
 class NutricionCreateView(CreateView):
     model = Nutricion
-    template_name = 'categoria/crear.html'
+    template_name = 'nutricion/crear.html'
     form_class = NutricionForm
     success_url = reverse_lazy('gimnasio:listar_nutriciones')
     
@@ -57,7 +57,7 @@ class NutricionCreateView(CreateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['titulo'] = 'Crear Nutricion'
-        return super().get_context_data(**kwargs)
+        return context
     
     def form_valid(self, form):
         messages.success(self.request, "Nutricion guardada correctamente")
