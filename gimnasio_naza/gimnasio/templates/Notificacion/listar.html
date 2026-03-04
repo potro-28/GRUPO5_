@@ -20,10 +20,11 @@
                     <thead>
                         <tr>
                             <th>id</th>
-                            <th>Tipo de notificación</th>
-                            <th>Canal de notificación</th>
                             <th>Usuario</th>
                             <th>Documento</th>
+                            <th>Tipo de notificacion</th>
+                            <th>Canal de notificacion</th>
+                            <th>Estado</th>
                             <th>Acciones</th>
                         </tr>
                     </thead>
@@ -31,10 +32,16 @@
                         {% for no in object_list %}
                         <tr>
                             <td>{{ no.id }}</td>
+                            <td>{{  no.fk_usuario.nombre_usuario}} {{no.fk_usuario.apellido_usuario}}</td>
+                            <td>{{  no.fk_usuario.documento}}</td>
                             <td>{{ no.tipo_notificacion }}</td>
                             <td>{{ no.canal_notificacion }}</td>
-                            <td>{{no.fk_membresia.fk_usuario.nombre_usuario}} {{no.fk_membresia.fk_usuario.apellido_usuario}}</td>
-                            <td>{{no.fk_membresia.fk_usuario.documento}}</td>
+                            {% if no.estado_notificacion == 'ASIGNADA'%}
+                            <td> <span class="badge bg-success ">{{ no.estado_notificacion }}</span></td>
+                            {%else%}
+                            <td> <span class="badge bg-danger">{{ no.estado_notificacion }}</span></td>
+                            {% endif%}
+                            
                             <td class="text-nowrap">
                                
                             <a href="{% url 'gimnasio:editar_notificacion' no.id %}"

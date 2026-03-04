@@ -26,7 +26,7 @@ from django.contrib import messages
 
 from django.core.exceptions import ValidationError
 from django.core.exceptions import ValidationError
-from datetime import date , timedelta
+from datetime import *
 from django.utils import timezone
 
 class ElementoForm(forms.ModelForm):
@@ -202,16 +202,14 @@ class AsistenciaForm(forms.ModelForm):
         hora_salida = cleaned_data.get('hora_salida')
 
         if fecha_asistencia > forms.fields.datetime.date.today():
-            raise forms.ValidationError('La fecha de asistencia no puede ser futura')
+            self.add_error('fecha_asistencia','La fecha de asistencia no puede ser futura')
         if fecha_asistencia < forms.fields.datetime.date.today():
-            raise forms.ValidationError('La fecha de asistencia no puede ser anterior al día de hoy')
+            self.add_error('fecha_asistencia','La fecha de asistencia no puede ser anterior al día de hoy')
         if hora_salida == hora_ingreso:
-            raise forms.ValidationError('La hora de salida no puede ser igual a la hora de entrada')
+            self.add_error('hora_salida','La hora de salida no puede ser igual a la hora de entrada')
         if hora_salida < hora_ingreso:
-            raise forms.ValidationError('La hora de salida no puede ser anterior a la hora de entrada')
+            self.add_error('hora_salida','La hora de salida no puede ser anterior a la hora de entrada')
 
-        return cleaned_data
-    
 class MembresiaForm(ModelForm):
     class Meta:
         model = Membresia
@@ -234,19 +232,19 @@ class MembresiaForm(ModelForm):
         fk_usuario = cleaned_data.get('fk_usuario')
         
         if fecha_inicio > forms.fields.datetime.date.today():
-            raise forms.ValidationError('La fecha de inicio no puede ser futura')
+            self.add_error('fecha_inicio','La fecha de inicio no puede ser futura')
         if fecha_inicio < forms.fields.datetime.date.today():
-            raise forms.ValidationError('La fecha de inicio no puede ser anterior al día de hoy')
+           self.add_error('fecha_inicio','La fecha de inicio no puede ser anterior al día de hoy')
         if fecha_fin > forms.fields.datetime.date.today() + forms.fields.datetime.timedelta(days=30):
-            raise forms.ValidationError('La fecha de finalización no puede ser mayor a un mes')
+            self.add_error('fecha_fin','La fecha de finalización no puede ser mayor a un mes')
         if fecha_fin < forms.fields.datetime.date.today() + forms.fields.datetime.timedelta(days=30):
-            raise forms.ValidationError('La fecha de finalización no puede ser menor a un mes')
+            self.add_error('fecha_fin','La fecha de finalización no puede ser menor a un mes')
         if fecha_fin < forms.fields.datetime.date.today():
-            raise forms.ValidationError('La fecha de finalización no puede ser anterior al día de hoy')
+            self.add_error('fecha_fin','La fecha de finalización no puede ser anterior al día de hoy')
         if fecha_fin == fecha_inicio:
-            raise forms.ValidationError('La fecha de finalización no puede ser igual a la fecha de inicio')
+            self.add_error('fecha_fin','La fecha de finalización no puede ser igual a la fecha de inicio')
         if fecha_fin < fecha_inicio:
-            raise forms.ValidationError('La fecha de finalización no puede ser anterior a la fecha de inicio')
+            self.add_error('fecha_fin','La fecha de finalización no puede ser anterior a la fecha de inicio')
         if fk_usuario and Membresia.objects.filter(fk_usuario=fk_usuario, fecha_inicio__month=fecha_inicio.month).exists():
             raise forms.ValidationError('El usuario ya tuvo una membresia este mismo mes')
         return cleaned_data
