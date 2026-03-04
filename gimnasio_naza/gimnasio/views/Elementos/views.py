@@ -1,8 +1,11 @@
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, render, redirect
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
 from gimnasio.models import Elemento
 from gimnasio.forms import ElementoForm
+
+
+
 # ==============================
 # LISTAR ELEMENTOS
 # ==============================
@@ -20,6 +23,14 @@ class ElementoListView(ListView):
 
 
 # ==============================
+# LISTAR imagenes de elementos
+# ==============================
+
+def listar_imagenes_elementos(request):
+    imagenes = Elemento.objects.filter(imagen__isnull=False)
+    return render(request, 'listar_elementos.html', {'imagenes': imagenes})
+
+# ==============================
 # REGISTRAR ELEMENTO
 # ==============================
 
@@ -32,7 +43,7 @@ class ElementoCreateView(CreateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['titulo'] = 'Registrar Elemento'
-        context['list_url'] = reverse_lazy('gimnasio:listar_elemento')
+        context['list_url'] = reverse_lazy('gimnasio:listar_elementos')  # ← corregido: 'listar_elemento' → 'listar_elementos'
         return context
 
 
@@ -67,3 +78,18 @@ class ElementoDeleteView(DeleteView):
         context['titulo'] = 'Eliminar Elemento'
         context['list_url'] = reverse_lazy('gimnasio:listar_elementos')
         return context
+
+
+# ==============================
+# CREAR imagen de elemento
+# ==============================
+
+def crear_imagen_elemento(request):
+    if request.method == 'POST':
+        form = ElementoForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            return redirect('listar_elementos')
+    else:
+        form = ElementoForm()
+    return render(request, 'crear_elemento.html', {'form': form})

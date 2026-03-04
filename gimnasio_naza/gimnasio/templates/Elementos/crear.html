@@ -13,7 +13,7 @@
         </div>
 
         <div class="card-body">
-            <form method="post" action=".">
+            <form method="POST" action="." enctype="multipart/form-data">
                 {% csrf_token %}
 
                 {% if form.errors %}

@@ -32,6 +32,7 @@
                             <th>rol del usuario</th>
                             <th>estado</th>
                             <th>fecha de registro</th>
+                            <th>genero del usuario</th>
                             <th>Acciones</th>
                         </tr>
                     </thead>
@@ -50,6 +51,7 @@
                             <td>{{u.rol}}</td>
                             <td>{{u.estado}}</td>
                             <td>{{u.fecha_registro}}</td>
+                            <td>{{u.genero_usuario}}</td>
                             <td class="text-nowrap">
                                
 <a href="{% url 'gimnasio:editar_usuario' u.id %}"
