@@ -3,22 +3,43 @@
         <div class="topbar-left">
             <i class="fas fa-bars menu-toggle" id="menuToggle"></i>
             <div class="logo">
-                <i class="fas fa-dumbbell"></i> <span>GetFit</span>
+                <img src="{% static 'assets/img/avatars/8.png' %}" alt="Profile" style="width:38px; height:38px; border-radius:50%; border: 2px solid rgba(255,255,255,0.8); box-shadow: 0 2px 10px rgba(0,0,0,0.2); cursor: pointer; transition: transform 0.3s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'" >
+                <i class></i> <span>GYM NAZARETH</span>
             </div>
         </div>
         
         <div class="topbar-right">
             <div class="search-container">
-                <i class="fas fa-search"></i>
+                <img src="{% static 'assets/img/avatars/buscar.png' %}" alt="Profile" style="width:25px; height:25px; border-radius:50%; border: 2px solid rgba(255,255,255,0.8); box-shadow: 0 2px 10px rgba(0,0,0,0.2); cursor: pointer; transition: transform 0.3s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'" >
                 <input type="text" placeholder="Buscar...">
             </div>
             
             <div class="top-icons">
-                <span class="progress-badge">Tu progreso semanal: 98% completado.</span>
+                <span class="progress-badge"></span>
                 <i class="fas fa-globe icon-btn"></i>
                 <i class="fas fa-bell icon-btn"></i>
                 <i class="fas fa-comment icon-btn"></i>
-                <img src="https://i.pravatar.cc/150?img=11" alt="Profile" style="width:38px; height:38px; border-radius:50%; border: 2px solid rgba(255,255,255,0.8); box-shadow: 0 2px 10px rgba(0,0,0,0.2); cursor: pointer; transition: transform 0.3s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+                <img src="{% static 'assets/img/avatars/1.png' %}" alt="Profile" style="width:38px; height:38px; border-radius:50%; border: 2px solid rgba(255,255,255,0.8); box-shadow: 0 2px 10px rgba(0,0,0,0.2); cursor: pointer; transition: transform 0.3s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'" 
+                <a id="userSettings" class="dropdown-toggle d-flex align-items-center" href="#!" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  
+                </a>
+                <div class="dropdown-menu dropdown-menu-end shadow-lg">
+                  <div class="px-3 py-2">
+                    <span class="small">Administrador</span>
+                    <h6 class="m-0">Potro</h6>
+                  </div>
+                  <div class="d-grid px-4 pt-2 pb-1">
+                        <a class="btn btn-primary d-flex" href="javascript:void(0);">
+                          <form method="post" action="{% url 'login:logout' %}" class='float-end'>
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-default btn-flat">Cerrar Sesión</button>
+                          </form>
+
+                          <i class="ri ri-logout-box-r-line ms-2 ri-xs"></i>
+                        </a>
+                >
+                  </div>
+                </div>
             </div>
         </div>
     </header>

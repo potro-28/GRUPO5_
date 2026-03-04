@@ -32,7 +32,14 @@
                         <tr>
                             <td>{{ encuesta.id }}</td>
                             <td>{{ encuesta.nombre }}</td>
-                            <td>{{ encuesta.get_estado_display }}</td>
+                            
+                            <td>
+                                {% if encuesta.estado == "activa" %}
+                                    <span class="badge bg-success">Activa</span>
+                                {% elif encuesta.estado == "inactiva" %}
+                                    <span class="badge bg-danger">Inactiva</span>
+                                {% endif %}
+                            </td>
                             <td>{{ encuesta.fk_usuario.nombre_usuario }} {{ encuesta.fk_usuario.apellido_usuario }}</td>
                             <td class="text-nowrap">
                                

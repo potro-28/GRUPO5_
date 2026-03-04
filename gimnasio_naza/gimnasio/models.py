@@ -164,12 +164,12 @@ class Notificacion(models.Model):
 #--------------------------------Modulo de Gestión de Encuestas----------------------------
 class Encuesta(models.Model):
     ESTADO_CHOICES = [
-        ('A', 'Activa'),
-        ('I', 'Inactiva'),
+        ('activa', 'Activa'),
+        ('inactiva', 'Inactiva'),
     ]
 
     nombre = models.CharField(max_length=100,unique=True)
-    estado = models.CharField(max_length=1,choices=ESTADO_CHOICES,default='A')
+    estado = models.CharField(max_length=20,choices=ESTADO_CHOICES,default='activa')
     fk_usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
        
       
