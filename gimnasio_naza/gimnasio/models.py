@@ -15,6 +15,7 @@ class Usuario(models.Model):
     correo_usuario = models.CharField(max_length=100, unique=True)
     peso_usuario = models.DecimalField(max_digits=10, decimal_places=2)
     altura_usuario = models.DecimalField(max_digits=10, decimal_places=2)
+    genero_usuario = models.CharField(max_length=10, choices=[('M', 'Masculino'), ('F', 'Femenino')], default='M')
     ROL_CHOICES = [
         ('cliente', 'Cliente'),
         ('admin', 'Administrador'),
@@ -97,6 +98,7 @@ class Elemento(models.Model):
     serial = models.CharField(max_length=45, unique=True)
     marca = models.CharField(max_length=45)
     nombre_elemento = models.CharField(max_length=45)
+    
     TIPO_CHOICES = [
         ('maquina', 'Máquina'),
         ('disco', 'Disco'),
@@ -112,6 +114,7 @@ class Elemento(models.Model):
     estado = models.CharField(max_length=20, choices=ESTADO_CHOICES)
     fecha_ingreso = models.DateField()
     categoria = models.ForeignKey(Categoria, on_delete=models.CASCADE)
+    imagen = models.ImageField(upload_to='elementos/', null=True, blank=True)
 
     def __str__(self):
         return self.nombre_elemento

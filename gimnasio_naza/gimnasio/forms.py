@@ -43,6 +43,7 @@ class ElementoForm(forms.ModelForm):
         serial = cleaned_data.get('serial')
         nombre_elemento = cleaned_data.get('nombre_elemento')
         fecha_ingreso = cleaned_data.get('fecha_ingreso')
+        imagen = cleaned_data.get('imagen')
 
       
         if fecha_ingreso and fecha_ingreso > timezone.now().date():
@@ -71,6 +72,16 @@ class ElementoForm(forms.ModelForm):
         if fecha_ingreso and fecha_ingreso > timezone.now().date():
             raise forms.ValidationError('La fecha de ingreso no puede ser futura.')
         return fecha_ingreso
+    def clean_marca(self):
+        marca = self.cleaned_data.get('marca')
+        if marca:
+            if marca != marca.strip():
+                raise forms.ValidationError('La marca no puede contener espacios al inicio ni al final.')
+        if not re.match(r'^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$', marca):
+            raise forms.ValidationError('La marca solo puede contener letras y espacios.')
+        if '  ' in marca:
+            raise forms.ValidationError('La marca no puede contener espacios consecutivos.')
+        return marca
     
 
 class UsuarioForm(forms.ModelForm):
@@ -88,12 +99,11 @@ class UsuarioForm(forms.ModelForm):
         documento = cleaned_data.get('documento')
         nombre = cleaned_data.get('nombre')
         apellido = cleaned_data.get('apellido')
-        fecha_nacimiento= cleaned_data.get('fecha_nacimiento')
+        fecha_nacimiento = cleaned_data.get('fecha_nacimiento')
         telefono = cleaned_data.get('telefono')
         correo = cleaned_data.get('correo')
         fecha_inicio = cleaned_data.get('fecha_inicio')
         fecha_registro = cleaned_data.get('fecha_registro')
-
 
         if fecha_inicio and fecha_registro:
             if fecha_registro == fecha_inicio:
@@ -101,40 +111,52 @@ class UsuarioForm(forms.ModelForm):
             if fecha_registro < fecha_inicio:
                 raise forms.ValidationError('La fecha de registro no puede ser anterior a la fecha de inicio.')
 
-     
         qs = Usuario.objects.all()
         if self.instance and self.instance.pk:
             qs = qs.exclude(pk=self.instance.pk)
 
-        if documento and nombre and apellido and correo and telefono and fecha_nacimiento and qs.filter(documento=documento, nombre=nombre, apellido=apellido, correo=correo, telefono=telefono, fecha_nacimiento=fecha_nacimiento).exists():
-            raise forms.ValidationError('los datos de este usuario ya estan registrados.')
+        if documento and nombre and apellido and correo and telefono and fecha_nacimiento and qs.filter(
+            documento=documento, nombre=nombre, apellido=apellido,
+            correo=correo, telefono=telefono, fecha_nacimiento=fecha_nacimiento
+        ).exists():
+            raise forms.ValidationError('Los datos de este usuario ya están registrados.')
 
         return cleaned_data
+
     def clean_documento(self):
         documento = self.cleaned_data.get('documento')
-        if documento and not re.match(r'^\d{7,10}$', documento):
-            raise forms.ValidationError('El documento debe contener entre 7 y 10 dígitos numéricos.')
+        if documento:
+            if not re.match(r'^\d{10}$', documento):
+                raise forms.ValidationError('El documento debe contener exactamente 10 dígitos numéricos.')
+            for digito in set(documento):
+                if documento.count(digito) > 2:
+                    raise forms.ValidationError(
+                        f'El documento no es válido: el dígito "{digito}" aparece más de 2 veces.'
+                    )
         return documento
+
     def clean_nombre(self):
         nombre = self.cleaned_data.get('nombre')
-        if nombre and not re.match(r'^[a-zA-Z\s]+$', nombre):
+        if nombre:
+            if nombre != nombre.strip():
+                raise forms.ValidationError('El nombre no puede contener espacios al inicio ni al final.')
+        if not re.match(r'^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$', nombre):
             raise forms.ValidationError('El nombre solo puede contener letras y espacios.')
+        if '  ' in nombre:
+            raise forms.ValidationError('El nombre no puede contener espacios consecutivos.')
         return nombre
+
     def clean_apellido(self):
         apellido = self.cleaned_data.get('apellido')
-        if apellido and not re.match(r'^[a-zA-Z\s]+$', apellido):
+        if apellido:
+           if apellido != apellido.strip():
+              raise forms.ValidationError('El apellido no puede contener espacios al inicio ni al final.')
+        if not re.match(r'^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$', apellido):
             raise forms.ValidationError('El apellido solo puede contener letras y espacios.')
+        if '  ' in apellido:
+            raise forms.ValidationError('El apellido no puede contener espacios consecutivos.')
         return apellido
-    def clean_telefono(self):
-        telefono = self.cleaned_data.get('telefono')
-        if telefono and not re.match(r'^\d{7,10}$', telefono):
-            raise forms.ValidationError('El teléfono debe contener entre 7 y 10 dígitos numéricos.')
-        return telefono
-    def clean_correo(self):
-        correo = self.cleaned_data.get('correo')
-        if correo and not re.match(r'^[\w\.-]+@[\w\.-]+\.\w+$', correo):
-            raise forms.ValidationError('Ingrese un correo electrónico válido.')
-        return correo
+
     def clean_fecha_nacimiento(self):
         fecha_nacimiento = self.cleaned_data.get('fecha_nacimiento')
         if fecha_nacimiento is None:
@@ -142,16 +164,26 @@ class UsuarioForm(forms.ModelForm):
         hoy = date.today()
         if fecha_nacimiento >= hoy:
             raise forms.ValidationError("La fecha de nacimiento no puede ser hoy ni una fecha futura.")
-    
-   
         if fecha_nacimiento.year < 1900:
             raise forms.ValidationError("La fecha de nacimiento debe ser posterior al año 1900.")
-    
         edad_minima = hoy.replace(year=hoy.year - 5)
         if fecha_nacimiento > edad_minima:
             raise forms.ValidationError("La fecha de nacimiento no es válida, verifica el año ingresado.")
-    
         return fecha_nacimiento
+    def clean_telefono(self):
+        telefono = self.cleaned_data.get('telefono')
+        if telefono:
+            if not re.match(r'^3\d{9}$', telefono):
+                raise forms.ValidationError('El teléfono debe contener exactamente 10 dígitos y comenzar con 3.')
+        return telefono
+    def clean_correo(self):
+        correo = self.cleaned_data.get('correo')
+        if correo:
+            if not re.match(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$', correo):
+                raise forms.ValidationError('Ingrese un correo electrónico válido.')
+        if re.search(r'[^a-zA-Z0-9._%+\-@]', correo):
+            raise forms.ValidationError('El correo solo puede contener letras, números y los caracteres especiales permitidos (. _ % + -).')
+        return correo
     
 
 class MantenimientoForm(forms.ModelForm):
