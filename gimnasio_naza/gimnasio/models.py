@@ -1,6 +1,7 @@
 from django.db import models
 from datetime import datetime
 from decimal import Decimal  
+from django.contrib.auth.models import User
 
 # Create your models here.
 
@@ -290,22 +291,31 @@ class Registrovisitantestemporales(models.Model):
 
 class Turnosentrenadores(models.Model):
     JORNADA_CHOICES = [
-    ('mañana', 'mañana'),
-    ('tarde', 'tarde'),
+        ('mañana', 'Mañana'),
+        ('tarde', 'Tarde'),
     ]
+
+    administrador = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='turnos_entrenador'
+    )
 
     fecha_turno_inicio = models.DateField(default=datetime.now)
     fecha_turno_final = models.DateField(default=datetime.now)
-    jornada = models.CharField(max_length=10,choices=JORNADA_CHOICES)
+    jornada = models.CharField(max_length=10, choices=JORNADA_CHOICES)
 
     def __str__(self):
-        return str(self.id)
+        if self.administrador:
+            return f"{self.administrador.username} - {self.jornada}"
+        return f"Turno {self.id}"
 
-class Meta:
-    verbose_name = "Turno Entrenador"
-    verbose_name_plural = "Turnos Entrenadores"
-    db_table = "turno_entrenadores"
-
+    class Meta:
+        verbose_name = "Turno Entrenador"
+        verbose_name_plural = "Turnos Entrenadores"
+        db_table = "turno_entrenadores"
 #-----------------IMC------------------------------
 
 class Masa_corporal (models.Model):
