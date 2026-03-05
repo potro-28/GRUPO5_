@@ -1,102 +1,47 @@
-{% load static %}
-{%load widget_tweaks%}
-<!doctype html>
-<html lang="en">
-  <!--begin::Head-->
+<!DOCTYPE html>
+<html lang="es">
 <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>{{ titulo }}</title>
-    <!-- Tell the browser to be responsive to screen width -->
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="{% static 'lib/lib/adminlte-3.0.4/plugins/font-awesome-5.11.1/css/all.min.css' %}">
-    <!-- Theme style -->
-    <link rel="stylesheet" href="{% static 'lib/lib/adminlte-3.0.4/css/adminlte.min.css' %}">
-    <!-- Google Font: Source Sans Pro -->
-    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
-    <!-- Sweetalert2 -->
-    <script src="{% static 'lib/sweetalert2/sweetalert2.all.min.js' %}"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Iniciar Sesión</title>
+  <link rel="stylesheet" href="login/static/login.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
 </head>
-  <!--end::Head-->
-  <!--begin::Body-->
-  <body class="login-page bg-body-secondary">
-    <div class="login-box">
-      <div class="login-logo">
-        <a href="../index2.html"><b>Admin</b>LTE</a>
-      </div>
-      <!-- /.login-logo -->
-      <div class="card">
-        <div class="card-body login-card-body">
-          <p class="login-box-msg">Sign in to start your session</p>
-          <form method="post" >
-            {% csrf_token %}
-            <div class="input-group mb-3">
-              {{form.username|add_class:"form-control"|attr:"autocomplete: off"|attr:"placeholder: usuario" }}
-              <div class="input-group-text"><span class="bi bi-envelope"></span></div>
-            </div>
-            <div class="input-group mb-3">
-              {{form.password|add_class:"form-control"|attr:"autocomplete: off"|attr:"placeholder: password" }}
-              <div class="input-group-text"><span class="bi bi-lock-fill"></span></div>
-            </div>
-            <!--begin::Row-->
-            <div class="row">
-              <div class="col-8">
-                <div class="form-check">
-                  <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" />
-                  <label class="form-check-label" for="flexCheckDefault"> Remember Me </label>
-                </div>
-              </div>
-              <!-- /.col -->
-              <div class="col-4">
-                <div class="d-grid gap-2">
-                  <button type="submit" class="btn btn-primary">Sign In</button>
-                </div>
-              </div>
-              <!-- /.col -->
-            </div>
-            <!--end::Row-->
-          </form>
-          <script type="application/javascript">
-            {% if form.errors %}
-            var errors = '';
-            {% for field in form %}
-            {% for error in field.errors %}
-            errors += '{{ error }}\n';
-            {% endfor %}
-            {% endfor %}
-            {% for error in form.non_field_errors %}
-            errors += '{{ error }}\n';
-            {% endfor %}
-            Swal.fire({
-                title: 'Error!',
-                text: errors,
-                icon: 'error'
-            });
-            {% endif %}
-        </script>
+<body>
+  <div class="container">
+    <div class="form-section">
+      <h2>Bienvenido</h2>
+      <h1>Iniciar Sesión</h1>
 
+      <form id="loginForm">
+        <!-- Rol -->
+        <select id="rol">
+          <option value="user">Usuario</option>
+          <option value="admin">Administrador</option>
+        </select>
 
-      <!-- /.social-auth-links -->
+        <!-- Validación de correo -->
+        <input type="email" id="correoLogin" placeholder="Correo electrónico" 
+               required pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-z]{2,}$"
+               title="Debe ser un correo válido (ejemplo@dominio.com)">
 
-      <p class="mb-1">
-        <a href="forgot-password.html">I forgot my password</a>
-      </p>
-      <p class="mb-0">
-        <a href="register.html" class="text-center">Register a new membership</a>
-      </p>
+        <!-- Contraseña con reglas -->
+        <div class="password-container">
+          <input type="password" id="passwordLogin" placeholder="Contraseña" required
+            pattern="(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^*]).{6,}"
+            title="Debe tener al menos 1 mayúscula, 1 número y 1 carácter especial, mínimo 6 caracteres">
+          <i class="fas fa-eye toggle-password" onclick="togglePassword('passwordLogin', this)"></i>
+        </div>
+        <button type="submit">Entrar</button>
+        <p class="reset_password"><a href="restablecer.html">olvidaste tu contraseña?</a></p>
+      </form>
+
+      <p class="login-text">¿No tienes una cuenta? <a href="registro.html">Regístrate</a></p>
     </div>
-
-    <!-- /.login-card-body -->
+    <div class="image-section"></div>
   </div>
-</div>
-<!-- /.login-box -->
 
-<!-- jQuery -->
-<script src="../../plugins/jquery/jquery.min.js"></script>
-<!-- Bootstrap 4 -->
-<script src="../../plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
-<!-- AdminLTE App -->
-<script src="../../dist/js/adminlte.min.js"></script>
+  <script src="inicio.js"></script>
 </body>
 </html>
