@@ -16,6 +16,7 @@ class Usuario(models.Model):
     correo_usuario = models.CharField(max_length=100, unique=True)
     peso_usuario = models.DecimalField(max_digits=10, decimal_places=2)
     altura_usuario = models.DecimalField(max_digits=10, decimal_places=2)
+    genero_usuario = models.CharField(max_length=10, choices=[('M', 'Masculino'), ('F', 'Femenino')], default='M')
     ROL_CHOICES = [
         ('cliente', 'Cliente'),
         ('admin', 'Administrador'),
@@ -39,8 +40,14 @@ class Usuario(models.Model):
 
 #-----------------------------MODELO MEMBRESIA---------------------------------------------------
 class Membresia(models.Model):
+    
     fecha_inicio = models.DateField(default=datetime.now, verbose_name='Fecha de Inicio')
     fecha_fin = models.DateField(null=True, blank=True, verbose_name='Fecha de Finalizacion')
+    ESTADO_CHOICES = [
+        ('activo', 'Activo'),
+        ('inactivo', 'Inactivo'),
+    ]
+    estado = models.CharField(max_length=30, choices=ESTADO_CHOICES)
     fk_usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
 
     def __str__(self):
@@ -69,27 +76,26 @@ class Asistencia(models.Model):
         db_table = 'asistencia'
 
 #--------------------CATEGORIA------------------
-
 class Categoria(models.Model):
-    
-    UNIDADES_PESO = (
-        
-        ('kg', 'Kilogramos'),
-        ('lb', 'Libras'),
-    )
-    nombre_categoria = models.CharField(max_length=45)
-    material = models.CharField(max_length=45)
-    peso_equipo = models.CharField(max_length=45)
+
+    NOMBRE_CATEGORIA = [
+        ('maquinas', 'Máquinas'),
+        ('mancuernas', 'Mancuernas'),
+        ('discos', 'Discos'),
+        ('accesorios', 'Accesorios'),
+        ('barras', 'Barras'),
+    ]
+
+    nombre_categoria = models.CharField(max_length=45, choices=NOMBRE_CATEGORIA)
     descripcion = models.CharField(max_length=250)
-    unidad_peso = models.CharField(max_length=2, choices=UNIDADES_PESO)
 
     def __str__(self):
         return str(self.nombre_categoria)
+
     class Meta:
         db_table = "Categoria"
         verbose_name = "Categoria"
         verbose_name_plural = "Categorias"
-
 
         
 #------ELEMENTO------------------------
@@ -98,6 +104,7 @@ class Elemento(models.Model):
     serial = models.CharField(max_length=45, unique=True)
     marca = models.CharField(max_length=45)
     nombre_elemento = models.CharField(max_length=45)
+    
     TIPO_CHOICES = [
         ('maquina', 'Máquina'),
         ('disco', 'Disco'),
@@ -113,6 +120,7 @@ class Elemento(models.Model):
     estado = models.CharField(max_length=20, choices=ESTADO_CHOICES)
     fecha_ingreso = models.DateField()
     categoria = models.ForeignKey(Categoria, on_delete=models.CASCADE)
+    imagen = models.ImageField(upload_to='elementos/', null=True, blank=True)
 
     def __str__(self):
         return self.nombre_elemento
@@ -200,13 +208,8 @@ class Reportes_estadisticas(models.Model):
         ('asistencia', 'Asistencia'),
         ('elemento', 'Elemento'),
     ]
-    FORMATO_CHOICES = [
-        ('pdf', 'pdf'),
-        ('excel', 'excel'),
-    ]
     tipo_reporte = models.CharField(max_length=20,choices=TIPO_REPORTE_CHOICES,default='membresia')
     fecha_generacion = models.DateField(default=datetime.now)
-    formato = models.CharField(max_length=10,choices=FORMATO_CHOICES)
     fk_usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
 
     def __str__(self):
@@ -353,7 +356,7 @@ class Rutina(models.Model):
         ],
     )
 
-    disponibilidad = models.IntegerField()
+    disponibilidad_de_dias = models.IntegerField()
 
     distribucion = models.CharField(
         max_length=30,

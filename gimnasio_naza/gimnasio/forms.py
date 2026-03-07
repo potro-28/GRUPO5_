@@ -1,29 +1,10 @@
 import re 
 from dataclasses import fields
-from gimnasio.models import Elemento, Usuario, Mantenimiento
 from django.forms import ModelForm
-from gimnasio.models import Asistencia, Membresia, Notificacion
-from gimnasio.models import Encuesta, Soporte_PQRS, Reportes_estadisticas, Categoria, Nutricion, Rutina
+from gimnasio.models import *
 from django import forms
-from gimnasio.models import Encuesta
-from gimnasio.models import Soporte_PQRS
-from gimnasio.models import Reportes_estadisticas
-from gimnasio.models import Categoria
-from django import forms
-from gimnasio.models import Nutricion
-from gimnasio.models import Rutina
-from django.forms import ModelForm
-from gimnasio.models import Masa_corporal
-from django.forms import ModelForm
-from gimnasio.models import Sancion
-from django.forms import ModelForm
-from gimnasio.models import Registrovisitantestemporales
-from gimnasio.models import Turnosentrenadores
-from gimnasio.models import Certificacion_interna
-import re
 from datetime import date
 from django.contrib import messages
-from django.core.exceptions import ValidationError
 from django.core.exceptions import ValidationError
 from datetime import *
 from django.utils import timezone
@@ -44,12 +25,13 @@ class ElementoForm(forms.ModelForm):
         serial = cleaned_data.get('serial')
         nombre_elemento = cleaned_data.get('nombre_elemento')
         fecha_ingreso = cleaned_data.get('fecha_ingreso')
+        imagen = cleaned_data.get('imagen')
 
-        # Validar que la fecha no sea futura
+      
         if fecha_ingreso and fecha_ingreso > timezone.now().date():
             raise forms.ValidationError('La fecha de ingreso no puede ser futura.')
 
-        # Validar unicidad
+    
         qs = Elemento.objects.all()
         if self.instance and self.instance.pk:
             qs = qs.exclude(pk=self.instance.pk)
@@ -72,6 +54,16 @@ class ElementoForm(forms.ModelForm):
         if fecha_ingreso and fecha_ingreso > timezone.now().date():
             raise forms.ValidationError('La fecha de ingreso no puede ser futura.')
         return fecha_ingreso
+    def clean_marca(self):
+        marca = self.cleaned_data.get('marca')
+        if marca:
+            if marca != marca.strip():
+                raise forms.ValidationError('La marca no puede contener espacios al inicio ni al final.')
+        if not re.match(r'^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$', marca):
+            raise forms.ValidationError('La marca solo puede contener letras y espacios.')
+        if '  ' in marca:
+            raise forms.ValidationError('La marca no puede contener espacios consecutivos.')
+        return marca
     
 
 class UsuarioForm(forms.ModelForm):
@@ -89,53 +81,64 @@ class UsuarioForm(forms.ModelForm):
         documento = cleaned_data.get('documento')
         nombre = cleaned_data.get('nombre')
         apellido = cleaned_data.get('apellido')
-        fecha_nacimiento= cleaned_data.get('fecha_nacimiento')
+        fecha_nacimiento = cleaned_data.get('fecha_nacimiento')
         telefono = cleaned_data.get('telefono')
         correo = cleaned_data.get('correo')
         fecha_inicio = cleaned_data.get('fecha_inicio')
         fecha_registro = cleaned_data.get('fecha_registro')
 
-        # Validar rango de fechas
         if fecha_inicio and fecha_registro:
             if fecha_registro == fecha_inicio:
                 raise forms.ValidationError('La fecha de registro no puede ser igual a la fecha de inicio.')
             if fecha_registro < fecha_inicio:
                 raise forms.ValidationError('La fecha de registro no puede ser anterior a la fecha de inicio.')
 
-        # Validar unicidad
         qs = Usuario.objects.all()
         if self.instance and self.instance.pk:
             qs = qs.exclude(pk=self.instance.pk)
 
-        if documento and nombre and apellido and correo and telefono and fecha_nacimiento and qs.filter(documento=documento, nombre=nombre, apellido=apellido, correo=correo, telefono=telefono, fecha_nacimiento=fecha_nacimiento).exists():
-            raise forms.ValidationError('los datos de este usuario ya estan registrados.')
+        if documento and nombre and apellido and correo and telefono and fecha_nacimiento and qs.filter(
+            documento=documento, nombre=nombre, apellido=apellido,
+            correo=correo, telefono=telefono, fecha_nacimiento=fecha_nacimiento
+        ).exists():
+            raise forms.ValidationError('Los datos de este usuario ya están registrados.')
 
         return cleaned_data
+
     def clean_documento(self):
         documento = self.cleaned_data.get('documento')
-        if documento and not re.match(r'^\d{7,10}$', documento):
-            raise forms.ValidationError('El documento debe contener entre 7 y 10 dígitos numéricos.')
+        if documento:
+            if not re.match(r'^\d{10}$', documento):
+                raise forms.ValidationError('El documento debe contener exactamente 10 dígitos numéricos.')
+            for digito in set(documento):
+                if documento.count(digito) > 2:
+                    raise forms.ValidationError(
+                        f'El documento no es válido: el dígito "{digito}" aparece más de 2 veces.'
+                    )
         return documento
+
     def clean_nombre(self):
         nombre = self.cleaned_data.get('nombre')
-        if nombre and not re.match(r'^[a-zA-Z\s]+$', nombre):
+        if nombre:
+            if nombre != nombre.strip():
+                raise forms.ValidationError('El nombre no puede contener espacios al inicio ni al final.')
+        if not re.match(r'^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$', nombre):
             raise forms.ValidationError('El nombre solo puede contener letras y espacios.')
+        if '  ' in nombre:
+            raise forms.ValidationError('El nombre no puede contener espacios consecutivos.')
         return nombre
+
     def clean_apellido(self):
         apellido = self.cleaned_data.get('apellido')
-        if apellido and not re.match(r'^[a-zA-Z\s]+$', apellido):
+        if apellido:
+           if apellido != apellido.strip():
+              raise forms.ValidationError('El apellido no puede contener espacios al inicio ni al final.')
+        if not re.match(r'^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$', apellido):
             raise forms.ValidationError('El apellido solo puede contener letras y espacios.')
+        if '  ' in apellido:
+            raise forms.ValidationError('El apellido no puede contener espacios consecutivos.')
         return apellido
-    def clean_telefono(self):
-        telefono = self.cleaned_data.get('telefono')
-        if telefono and not re.match(r'^\d{7,10}$', telefono):
-            raise forms.ValidationError('El teléfono debe contener entre 7 y 10 dígitos numéricos.')
-        return telefono
-    def clean_correo(self):
-        correo = self.cleaned_data.get('correo')
-        if correo and not re.match(r'^[\w\.-]+@[\w\.-]+\.\w+$', correo):
-            raise forms.ValidationError('Ingrese un correo electrónico válido.')
-        return correo
+
     def clean_fecha_nacimiento(self):
         fecha_nacimiento = self.cleaned_data.get('fecha_nacimiento')
         if fecha_nacimiento is None:
@@ -143,14 +146,26 @@ class UsuarioForm(forms.ModelForm):
         hoy = date.today()
         if fecha_nacimiento >= hoy:
             raise forms.ValidationError("La fecha de nacimiento no puede ser hoy ni una fecha futura.")
-    
         if fecha_nacimiento.year < 1900:
-            raise forms.ValidationError("La fecha de nacimiento debe ser posterior al año 1900.")    
+            raise forms.ValidationError("La fecha de nacimiento debe ser posterior al año 1900.")
         edad_minima = hoy.replace(year=hoy.year - 5)
         if fecha_nacimiento > edad_minima:
             raise forms.ValidationError("La fecha de nacimiento no es válida, verifica el año ingresado.")
-    
         return fecha_nacimiento
+    def clean_telefono(self):
+        telefono = self.cleaned_data.get('telefono')
+        if telefono:
+            if not re.match(r'^3\d{9}$', telefono):
+                raise forms.ValidationError('El teléfono debe contener exactamente 10 dígitos y comenzar con 3.')
+        return telefono
+    def clean_correo(self):
+        correo = self.cleaned_data.get('correo')
+        if correo:
+            if not re.match(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$', correo):
+                raise forms.ValidationError('Ingrese un correo electrónico válido.')
+        if re.search(r'[^a-zA-Z0-9._%+\-@]', correo):
+            raise forms.ValidationError('El correo solo puede contener letras, números y los caracteres especiales permitidos (. _ % + -).')
+        return correo
     
 
 class MantenimientoForm(forms.ModelForm):
@@ -167,7 +182,6 @@ class MantenimientoForm(forms.ModelForm):
         fecha_programada = cleaned_data.get('fecha_programada')
         elemento = cleaned_data.get('Elemento')
 
-        # Validar unicidad de mantenimiento por elemento y fecha
         if elemento and fecha_programada:
             qs = Mantenimiento.objects.filter(Elemento=elemento)
             if self.instance and self.instance.pk:
@@ -357,7 +371,6 @@ class Soporte_PQRSForm(ModelForm):
                 })      
         }
     
-    #validacion descripcion minimo 10 caracteres   
     def clean_descripcion(self):
         descripcion = self.cleaned_data['descripcion']
 
@@ -368,7 +381,6 @@ class Soporte_PQRSForm(ModelForm):
 
         return descripcion
     
-    #Validacion fecha de ingreso
     def clean_fecha_ingreso(self):
         fecha_ingreso = self.cleaned_data['fecha_ingreso']
         if fecha_ingreso < date.today():
@@ -407,40 +419,41 @@ class Reportes_estadisticasForm(forms.ModelForm):
             raise forms.ValidationError("La fecha no puede ser anterior al 1 de enero de 2025.")
         return fecha_generacion
         
-#Categoria
 class CategoriaForm(forms.ModelForm):
+
     class Meta:
         model = Categoria
         fields = '__all__'
+
         widgets = {
-            'nombre_categoria': forms.TextInput(attrs={
-                'class': 'form_control',
-                'placeholder': 'Ingrese el nombre de la categoria'
+            'nombre_categoria': forms.Select(attrs={
+                'class': 'form-control'
+            }),
+
+            'descripcion': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Ingrese la descripción'
             }),
         }
 
-    #  Validar nombre_categoria
     def clean_nombre_categoria(self):
         nombre = self.cleaned_data.get('nombre_categoria')
         if nombre and not nombre.isalpha():
             raise forms.ValidationError("El Nombre no puede contener números")
         return nombre
 
-    # Validar material
     def clean_material(self):
         material = self.cleaned_data.get('material')
         if material and not material.isalpha():
             raise forms.ValidationError("El Material no puede contener números")
         return material
 
-    #  Validar peso_equipo
     def clean_peso_equipo(self):
         peso = self.cleaned_data.get('peso_equipo')
         if peso and not str(peso).isdigit():
             raise forms.ValidationError("El Peso_Equipo solo puede contener números")
         return peso
 
-    # Validar descripcion
     def clean_descripcion(self):
         descripcion = self.cleaned_data.get('descripcion')
         if descripcion:
@@ -455,7 +468,6 @@ class CategoriaForm(forms.ModelForm):
 
 
     
-#Nutricion        
 class NutricionForm(forms.ModelForm):
     class Meta:
         model = Nutricion
@@ -467,7 +479,6 @@ class NutricionForm(forms.ModelForm):
         }
         
 
-# ---------------- RUTINA ----------------
 class RutinaForm(ModelForm):
     class Meta:
         model = Rutina
@@ -483,13 +494,11 @@ class RutinaForm(ModelForm):
             }),
         }
 
-    # Validación real del sistema
     def clean_disponibilidad(self):
         disponibilidad = self.cleaned_data.get('disponibilidad')
         if disponibilidad < 1 or disponibilidad > 7:
             self.add_error('disponibilidad', "La disponibilidad debe ser un número entre 1 y 7.")
         return disponibilidad
- #--------------------------------------------------------------------------   
 
 class Masa_muscularForm(ModelForm):
     class Meta:
@@ -561,7 +570,6 @@ class SancionesForm(forms.ModelForm):
             'fecha_fin': forms.DateInput(attrs={'type': 'date'}),
         }
 
-
     def clean_motivo_sancion(self):
         motivo = self.cleaned_data.get('motivo_sancion')
 
@@ -575,7 +583,6 @@ class SancionesForm(forms.ModelForm):
 
         return motivo
 
-
     def clean_duracion_sancion(self):
         duracion = self.cleaned_data.get('duracion_sancion')
 
@@ -586,7 +593,6 @@ class SancionesForm(forms.ModelForm):
             raise ValidationError("La duración no puede ser mayor a 365 días.")
 
         return duracion
-
 
     def clean(self):
         cleaned_data = super().clean()
@@ -599,12 +605,10 @@ class SancionesForm(forms.ModelForm):
         fecha_inicio = date.today()
         cleaned_data['fecha_inicio'] = fecha_inicio
 
-    
         if duracion:
             fecha_fin = fecha_inicio + timedelta(days=duracion)
             cleaned_data['fecha_fin'] = fecha_fin
 
- 
         if usuario and tipo and estado == 'activa':
             queryset = Sancion.objects.filter(
                 fk_usuario=usuario,
@@ -622,7 +626,6 @@ class SancionesForm(forms.ModelForm):
 
         return cleaned_data
 
-
     def clean(self):
         cleaned_data = super().clean()
 
@@ -632,14 +635,12 @@ class SancionesForm(forms.ModelForm):
         tipo = cleaned_data.get('tipo_sancion')
         estado = cleaned_data.get('estado')
 
-        # Validar fechas
         if fecha_inicio and fecha_fin:
             if fecha_fin <= fecha_inicio:
                 raise ValidationError(
                     "La fecha de fin debe ser mayor que la fecha de inicio."
                 )
 
-        # Evitar sanciones activas duplicadas
         if usuario and tipo and estado == 'activa':
             queryset = Sancion.objects.filter(
                 fk_usuario=usuario,
