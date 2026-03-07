@@ -205,13 +205,8 @@ class Reportes_estadisticas(models.Model):
         ('asistencia', 'Asistencia'),
         ('elemento', 'Elemento'),
     ]
-    FORMATO_CHOICES = [
-        ('pdf', 'pdf'),
-        ('excel', 'excel'),
-    ]
     tipo_reporte = models.CharField(max_length=20,choices=TIPO_REPORTE_CHOICES,default='membresia')
     fecha_generacion = models.DateField(default=datetime.now)
-    formato = models.CharField(max_length=10,choices=FORMATO_CHOICES)
     fk_usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
 
     def __str__(self):

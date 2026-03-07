@@ -19,6 +19,7 @@ from gimnasio.views.turnosdeentrenadores.views import *
 from gimnasio.views.certificacionesinternas.views import *
 from gimnasio.views.Dashboard.views import DashboardView
 from gimnasio.views.Reportes.reportes import *
+from gimnasio.models import *
 
 app_name = 'gimnasio'
 
@@ -72,6 +73,8 @@ urlpatterns = [
     path('crear_Soporte_PQRS/', Soporte_PQRSCreateView.as_view(), name='crear_Soporte_PQRS'),
     path('editar_Soporte_PQRS/<int:pk>/', Soporte_PQRSUpdateView.as_view(), name='editar_Soporte_PQRS'),
     path('eliminar_Soporte_PQRS/<int:pk>/', Soporte_PQRSDeleteView.as_view(), name='eliminar_Soporte_PQRS'),
+    path('ExportarSoporte_PQRSPDF /',ExportarSoporte_PQRSPDF.as_view(), name='ExportarSoporte_PQRSPDF' ),
+    path('ExportarSoporte_PQRSEXCEL /',ExportarSoporte_PQRSEXCEL.as_view(), name='ExportarSoporte_PQRSEXCEL'),
 
     # Reportes_estadisticas
 
@@ -79,7 +82,8 @@ urlpatterns = [
     path('crear_Reportes_estadisticas/', Reportes_estadisticasCreateView.as_view(), name='crear_Reportes_estadisticas'),
     path('editar_Reportes_estadisticas/<int:pk>/', Reportes_estadisticasUpdateView.as_view(), name='editar_Reportes_estadisticas'),
     path('eliminar_Reportes_estadisticas/<int:pk>/', Reportes_estadisticasDeleteView.as_view(), name='eliminar_Reportes_estadisticas'),
-
+    path('ExportarReportes_estadisticasPDF /',ExportarReportes_estadisticasPDF.as_view(), name='ExportarReportes_estadisticasPDF' ),
+    path('ExportarReportes_estadisticasEXCEL /',ExportarReportes_estadisticasEXCEL.as_view(), name='ExportarReportes_estadisticasEXCEL'),
     #Categoria
     path('listar_categorias/', categoriaListView.as_view(), name='listar_categorias'),
     path('crear_categoria/', CategoriaCreateView.as_view(), name='crear_categoria'),
@@ -126,4 +130,6 @@ urlpatterns = [
     
     # Dashboard
     path('dashboard/', DashboardView.as_view(), name='dashboard'),
+    
+   
 ]
