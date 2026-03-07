@@ -1,58 +1,50 @@
+import json
+from django.utils import timezone
 from django.shortcuts import render, redirect
-from django.http import HttpResponse,JsonResponse
-from django.utils.decorators import method_decorator
-from django.contrib.auth.decorators import login_required
-from django.views.generic import ListView
-from django.views.generic import CreateView,UpdateView,DeleteView
 from django.urls import reverse_lazy
-from django.views.decorators.csrf import csrf_exempt
-from django.utils.decorators import method_decorator
-from gimnasio.models import *
-from gimnasio.forms import *
+from django.views.generic import ListView, CreateView, UpdateView, DeleteView
+from gimnasio.models import Membresia
+from gimnasio.forms import MembresiaForm
 
-#Listar membresias 
-def Listar_membresia(request):
-    nombre ={
-        'titulo':'Listado de Membresias',
-        'membresias': Membresia.objects.all()
-    }
-    return render(request,'Membresias/listar.html', nombre)
 
 class MembresiaListView(ListView):
     model = Membresia
     template_name = 'Membresia/listar.html'
 
- 
-    # metodo dispatch
-    #@method_decorator(login_required)
     def dispatch(self, request, *args, **kwargs):
-        #if request.method == 'GET':
-            #return redirect('app:listar_categorias')
         return super().dispatch(request, *args, **kwargs)
     
-    # metodo post
-    def post(self, request, *args, **kwargs):
-        return super().post(request, *args, **kwargs)
-    
-    #metodo context data 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['titulo'] = 'Listado de membresias'
-        context['crear_url']= reverse_lazy('gimnasio:crear_membresia')
-        return context
+        context['crear_url'] = reverse_lazy('gimnasio:crear_membresia')
 
+        # // LOGICA PARA EL GRAFICO ///
+        hoy = timezone.now().date()
+        
+        # Calculamos los estados
+        activas = Membresia.objects.filter(fecha_inicio__lte=hoy, fecha_fin__gte=hoy).count()
+        vencidas = Membresia.objects.filter(fecha_fin__lt=hoy).count()
+        futuras = Membresia.objects.filter(fecha_inicio__gt=hoy).count() # adquiridas para iniciar 
+        
+        context['total_membresias'] = activas + vencidas + futuras
+        
+        # Empaquetamos en JSON para Chart.js
+        context['chart_labels'] = json.dumps(['Activas', 'Vencidas', 'Futuras'])
+        context['chart_data'] = json.dumps([activas, vencidas, futuras])
+        
+        return context
 
 class MembresiaCreateView(CreateView):
     model = Membresia
     template_name = 'Membresia/crear.html'
     form_class = MembresiaForm
     success_url = reverse_lazy('gimnasio:listar_membresia')
-    #@method_decorator(csrf_exempt)
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['titulo'] = 'Crear membresia'
-        return super().get_context_data(**kwargs)
+        return context
     
 class MembresiaUpdateView(UpdateView):
     model = Membresia
@@ -64,7 +56,7 @@ class MembresiaUpdateView(UpdateView):
         context = super().get_context_data(**kwargs)
         context['titulo'] = 'Editar membresia'
         context['listar_url'] = reverse_lazy('gimnasio:listar_membresia')
-        return super().get_context_data(**kwargs)
+        return context
 
 class MembresiaDeleteView(DeleteView):
     model = Membresia
@@ -76,10 +68,3 @@ class MembresiaDeleteView(DeleteView):
         context['titulo'] = 'Eliminar membresia'
         context['listar_url'] = reverse_lazy('gimnasio:listar_membresia')
         return context
-
-
-
-
-    
-    
-    
