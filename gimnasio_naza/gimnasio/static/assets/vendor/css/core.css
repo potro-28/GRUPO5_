@@ -32,7 +32,7 @@
   --bs-gray-700: #6d6777;
   --bs-gray-800: #585164;
   --bs-gray-900: #433c50;
-  --bs-primary: #8c57ff;
+  --bs-primary: #267CA7;
   --bs-secondary: #8a8d93;
   --bs-success: #56ca00;
   --bs-info: #16b1ff;
@@ -3397,22 +3397,7 @@ textarea.form-control-lg {
   opacity: var(--bs-btn-disabled-opacity);
 }
 
-.btn-primary {
-  --bs-btn-color: #fff;
-  --bs-btn-bg: #8c57ff;
-  --bs-btn-border-color: #8c57ff;
-  --bs-btn-hover-color: #fff;
-  --bs-btn-hover-bg: #7e4ee6;
-  --bs-btn-hover-border-color: #7046cc;
-  --bs-btn-focus-shadow-rgb: 157, 112, 255;
-  --bs-btn-active-color: #fff;
-  --bs-btn-active-bg: #7e4ee6;
-  --bs-btn-active-border-color: #6941bf;
-  --bs-btn-active-shadow: 0 0.125rem 0.25rem 0 rgba(46, 38, 61, 0.16);
-  --bs-btn-disabled-color: #fff;
-  --bs-btn-disabled-bg: #8c57ff;
-  --bs-btn-disabled-border-color: #8c57ff;
-}
+
 
 .btn-secondary {
   --bs-btn-color: #fff;

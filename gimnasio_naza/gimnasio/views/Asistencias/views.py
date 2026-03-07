@@ -10,7 +10,7 @@ from django.utils.decorators import method_decorator
 from gimnasio.models import *
 from gimnasio.forms import AsistenciaForm
 
-#Listar asistencia 
+#Listar asistencia ##
 def Listar_asistencia(request):
     nombre ={
         'titulo':'Listado de Asistencias',

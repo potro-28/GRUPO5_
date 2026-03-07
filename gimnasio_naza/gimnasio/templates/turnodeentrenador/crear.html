@@ -15,7 +15,6 @@
         <div class="card-body">
             {% csrf_token %}
 
-            
             {% if form.errors %}
                 <div class="alert alert-danger alert-dismissible">
                     <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
@@ -26,15 +25,22 @@
                                 <li>{{ field.label }}: {{ error }}</li>
                             {% endfor %}
                         {% endfor %}
+                        {% for error in form.non_field_errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
                     </ul>
                 </div>
             {% endif %}
 
-            
             {% for field in form.visible_fields %}
                 <div class="form-group">
                     <label for="{{ field.id_for_label }}">{{ field.label }}:</label>
-                    {{ field }}
+
+                    {% if field.name == 'administrador' %}
+                        {{ field|add_class:"form-control" }}
+                    {% else %}
+                        {{ field }}
+                    {% endif %}
                 </div>
             {% endfor %}
         </div>
@@ -52,13 +58,13 @@
 {% endblock %}
 
 {% block js %}
-    {% if form.errors %}
-    <script>
-        Swal.fire({
-            title: "Error",
-            text: "Por favor, verifique los campos marcados en rojo.",
-            icon: "error",
-        });
-    </script>
-    {% endif %}
+{% if form.errors %}
+<script>
+    Swal.fire({
+        title: "Error",
+        text: "Por favor, verifique los campos marcados en rojo.",
+        icon: "error",
+    });
+</script>
+{% endif %}
 {% endblock %}

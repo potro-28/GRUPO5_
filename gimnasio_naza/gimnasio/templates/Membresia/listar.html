@@ -2,82 +2,47 @@
 {% load static %}
 
 {% block contenido %}
-<div class="col-xl-4 col-sm-6 col-12">
-                <div class="card mb-4">
-                  <div class="card-body">
-                    <div class="d-flex flex-column align-items-center">
-                      <h5 class="mb-3">Progress</h5>
-                      <span class="badge badge-pill bg-primary-subtle text-primary">Target 60/90</span>
-                    </div>
-                    <div class="chart-height-lg auto-align-graph" id="progress" style="min-height: 278.083px;"><div id="apexchartsrcjy1f59g" class="apexcharts-canvas apexchartsrcjy1f59g apexcharts-theme-light" style="width: 370px; height: 278.083px;"><svg id="SvgjsSvg2080" width="370" height="278.08333333333337" xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svgjs="http://svgjs.dev" class="apexcharts-svg" xmlns:data="ApexChartsNS" transform="translate(0, 0)" style="background: transparent;"><foreignObject x="0" y="0" width="370" height="278.08333333333337"><div class="apexcharts-legend apexcharts-align-center apx-legend-position-bottom" xmlns="http://www.w3.org/1999/xhtml" style="inset: auto 0px 1px; position: absolute; max-height: 154.167px;"><div class="apexcharts-legend-series" rel="1" seriesname="Treadmill" data:collapsed="false" style="margin: 2px 5px;"><span class="apexcharts-legend-marker" rel="1" data:collapsed="false" style="background: rgb(100, 121, 231) !important; color: rgb(100, 121, 231); height: 12px; width: 12px; left: 0px; top: 0px; border-width: 0px; border-color: rgb(255, 255, 255); border-radius: 12px;"></span><span class="apexcharts-legend-text" rel="1" i="0" data:default-text="Treadmill" data:collapsed="false" style="color: rgb(55, 61, 63); font-size: 12px; font-weight: 400;">Treadmill</span></div><div class="apexcharts-legend-series" rel="2" seriesname="Aerobic" data:collapsed="false" style="margin: 2px 5px;"><span class="apexcharts-legend-marker" rel="2" data:collapsed="false" style="background: rgb(255, 73, 103) !important; color: rgb(255, 73, 103); height: 12px; width: 12px; left: 0px; top: 0px; border-width: 0px; border-color: rgb(255, 255, 255); border-radius: 12px;"></span><span class="apexcharts-legend-text" rel="2" i="1" data:default-text="Aerobic" data:collapsed="false" style="color: rgb(55, 61, 63); font-size: 12px; font-weight: 400;">Aerobic</span></div><div class="apexcharts-legend-series" rel="3" seriesname="Stretching" data:collapsed="false" style="margin: 2px 5px;"><span class="apexcharts-legend-marker" rel="3" data:collapsed="false" style="background: rgb(6, 194, 192) !important; color: rgb(6, 194, 192); height: 12px; width: 12px; left: 0px; top: 0px; border-width: 0px; border-color: rgb(255, 255, 255); border-radius: 12px;"></span><span class="apexcharts-legend-text" rel="3" i="2" data:default-text="Stretching" data:collapsed="false" style="color: rgb(55, 61, 63); font-size: 12px; font-weight: 400;">Stretching</span></div><div class="apexcharts-legend-series" rel="4" seriesname="Cycling" data:collapsed="false" style="margin: 2px 5px;"><span class="apexcharts-legend-marker" rel="4" data:collapsed="false" style="background: rgb(14, 172, 224) !important; color: rgb(14, 172, 224); height: 12px; width: 12px; left: 0px; top: 0px; border-width: 0px; border-color: rgb(255, 255, 255); border-radius: 12px;"></span><span class="apexcharts-legend-text" rel="4" i="3" data:default-text="Cycling" data:collapsed="false" style="color: rgb(55, 61, 63); font-size: 12px; font-weight: 400;">Cycling</span></div><div class="apexcharts-legend-series" rel="5" seriesname="Weights" data:collapsed="false" style="margin: 2px 5px;"><span class="apexcharts-legend-marker" rel="5" data:collapsed="false" style="background: rgb(238, 209, 48) !important; color: rgb(238, 209, 48); height: 12px; width: 12px; left: 0px; top: 0px; border-width: 0px; border-color: rgb(255, 255, 255); border-radius: 12px;"></span><span class="apexcharts-legend-text" rel="5" i="4" data:default-text="Weights" data:collapsed="false" style="color: rgb(55, 61, 63); font-size: 12px; font-weight: 400;">Weights</span></div></div><style type="text/css">	
-
-      .apexcharts-legend {	
-        display: flex;	
-        overflow: auto;	
-        padding: 0 10px;	
-      }	
-      .apexcharts-legend.apx-legend-position-bottom, .apexcharts-legend.apx-legend-position-top {	
-        flex-wrap: wrap	
-      }	
-      .apexcharts-legend.apx-legend-position-right, .apexcharts-legend.apx-legend-position-left {	
-        flex-direction: column;	
-        bottom: 0;	
-      }	
-      .apexcharts-legend.apx-legend-position-bottom.apexcharts-align-left, .apexcharts-legend.apx-legend-position-top.apexcharts-align-left, .apexcharts-legend.apx-legend-position-right, .apexcharts-legend.apx-legend-position-left {	
-        justify-content: center;	
-      }	
-      .apexcharts-legend.apx-legend-position-bottom.apexcharts-align-center, .apexcharts-legend.apx-legend-position-top.apexcharts-align-center {	
-        justify-content: center;  	
-      }	
-      .apexcharts-legend.apx-legend-position-bottom.apexcharts-align-right, .apexcharts-legend.apx-legend-position-top.apexcharts-align-right {	
-        justify-content: flex-end;	
-      }	
-      .apexcharts-legend-series {	
-        cursor: pointer;	
-        line-height: normal;	
-      }	
-      .apexcharts-legend.apx-legend-position-bottom .apexcharts-legend-series, .apexcharts-legend.apx-legend-position-top .apexcharts-legend-series{	
-        display: flex;	
-        align-items: center;	
-      }	
-      .apexcharts-legend-text {	
-        position: relative;	
-        font-size: 14px;	
-      }	
-      .apexcharts-legend-text *, .apexcharts-legend-marker * {	
-        pointer-events: none;	
-      }	
-      .apexcharts-legend-marker {	
-        position: relative;	
-        display: inline-block;	
-        cursor: pointer;	
-        margin-right: 3px;	
-        border-style: solid;
-      }	
-      	
-      .apexcharts-legend.apexcharts-align-right .apexcharts-legend-series, .apexcharts-legend.apexcharts-align-left .apexcharts-legend-series{	
-        display: inline-block;	
-      }	
-      .apexcharts-legend-series.apexcharts-no-click {	
-        cursor: auto;	
-      }	
-      .apexcharts-legend .apexcharts-hidden-zero-series, .apexcharts-legend .apexcharts-hidden-null-series {	
-        display: none !important;	
-      }	
-      .apexcharts-inactive-legend {	
-        opacity: 0.45;	
-      }</style></foreignObject><g id="SvgjsG2082" class="apexcharts-inner apexcharts-graphical" transform="translate(12, 0)"><defs id="SvgjsDefs2081"><clipPath id="gridRectMaskrcjy1f59g"><rect id="SvgjsRect2083" width="353" height="244.33333333333337" x="-2.5" y="-0.5" rx="0" ry="0" opacity="1" stroke-width="0" stroke="none" stroke-dasharray="0" fill="#fff"></rect></clipPath><clipPath id="forecastMaskrcjy1f59g"></clipPath><clipPath id="nonForecastMaskrcjy1f59g"></clipPath><clipPath id="gridRectMarkerMaskrcjy1f59g"><rect id="SvgjsRect2084" width="352" height="247.33333333333337" x="-2" y="-2" rx="0" ry="0" opacity="1" stroke-width="0" stroke="none" stroke-dasharray="0" fill="#fff"></rect></clipPath><radialGradient id="SvgjsRadialGradient2098" gradientUnits="userSpaceOnUse" cx="174" cy="121.66666666666669" r="68.21951219512198"><stop id="SvgjsStop2099" stop-opacity="1" stop-color="rgba(100,121,231,1)" offset="0.2"></stop><stop id="SvgjsStop2100" stop-opacity="1" stop-color="rgba(100,121,231,1)" offset="1"></stop><stop id="SvgjsStop2101" stop-opacity="1" stop-color="rgba(100,121,231,1)" offset="1"></stop></radialGradient><radialGradient id="SvgjsRadialGradient2104" gradientUnits="userSpaceOnUse" cx="174" cy="121.66666666666669" r="76.34088269454126"><stop id="SvgjsStop2105" stop-opacity="1" stop-color="rgba(255,73,103,1)" offset="0.2"></stop><stop id="SvgjsStop2106" stop-opacity="1" stop-color="rgba(255,73,103,1)" offset="1"></stop><stop id="SvgjsStop2107" stop-opacity="1" stop-color="rgba(255,73,103,1)" offset="1"></stop></radialGradient><radialGradient id="SvgjsRadialGradient2110" gradientUnits="userSpaceOnUse" cx="174" cy="121.66666666666669" r="84.46225319396054"><stop id="SvgjsStop2111" stop-opacity="1" stop-color="rgba(6,194,192,1)" offset="0.2"></stop><stop id="SvgjsStop2112" stop-opacity="1" stop-color="rgba(6,194,192,1)" offset="1"></stop><stop id="SvgjsStop2113" stop-opacity="1" stop-color="rgba(6,194,192,1)" offset="1"></stop></radialGradient><radialGradient id="SvgjsRadialGradient2116" gradientUnits="userSpaceOnUse" cx="174" cy="121.66666666666669" r="94.20789779326368"><stop id="SvgjsStop2117" stop-opacity="1" stop-color="rgba(14,172,224,1)" offset="0.2"></stop><stop id="SvgjsStop2118" stop-opacity="1" stop-color="rgba(14,172,224,1)" offset="1"></stop><stop id="SvgjsStop2119" stop-opacity="1" stop-color="rgba(14,172,224,1)" offset="1"></stop></radialGradient><radialGradient id="SvgjsRadialGradient2122" gradientUnits="userSpaceOnUse" cx="174" cy="121.66666666666669" r="105.57781649245067"><stop id="SvgjsStop2123" stop-opacity="1" stop-color="rgba(238,209,48,1)" offset="0.2"></stop><stop id="SvgjsStop2124" stop-opacity="1" stop-color="rgba(238,209,48,1)" offset="1"></stop><stop id="SvgjsStop2125" stop-opacity="1" stop-color="rgba(238,209,48,1)" offset="1"></stop></radialGradient></defs><g id="SvgjsG2085" class="apexcharts-pie"><g id="SvgjsG2087"><circle id="SvgjsCircle2089" r="113.69918699186995" cx="174" cy="121.66666666666669" fill="none" stroke-width="0" stroke="#e8e8e8"></circle><circle id="SvgjsCircle2090" r="97.4564459930314" cx="174" cy="121.66666666666669" fill="none" stroke-width="0" stroke="#e8e8e8"></circle><circle id="SvgjsCircle2091" r="81.21370499419282" cx="174" cy="121.66666666666669" fill="none" stroke-width="0" stroke="#e8e8e8"></circle><circle id="SvgjsCircle2092" r="64.97096399535425" cx="174" cy="121.66666666666669" fill="none" stroke-width="0" stroke="#e8e8e8"></circle><circle id="SvgjsCircle2093" r="48.72822299651569" cx="174" cy="121.66666666666669" fill="none" stroke-width="0" stroke="#e8e8e8"></circle><circle id="SvgjsCircle2094" r="32.48548199767713" cx="174" cy="121.66666666666669" fill="none" stroke-width="0" stroke="#e8e8e8"></circle><circle id="SvgjsCircle2095" r="16.242740998838563" cx="174" cy="121.66666666666669" fill="none" stroke-width="0" stroke="#e8e8e8"></circle></g><g id="SvgjsG2088"></g><g id="SvgjsG2086" transform="translate(0, 0) scale(1)"><g id="SvgjsG2096" class="apexcharts-slices"><g id="SvgjsG2097" class="apexcharts-series apexcharts-pie-series" seriesName="Treadmill" rel="1" data:realIndex="0"><path id="SvgjsPath2102" d="M 174 53.44715447154471 A 68.21951219512198 68.21951219512198 0 0 1 238.88061161164745 100.58567805040502 L 174 121.66666666666669 L 174 53.44715447154471" fill="url(#SvgjsRadialGradient2098)" fill-opacity="0.7" stroke-opacity="1" stroke-linecap="butt" stroke-width="1" stroke-dasharray="0" class="apexcharts-pie-area apexcharts-polararea-slice-0" index="0" j="0" data:angle="72" data:startAngle="0" data:strokeWidth="1" data:value="42" data:pathOrig="M 174 53.44715447154471 A 68.21951219512198 68.21951219512198 0 0 1 238.88061161164745 100.58567805040502 L 174 121.66666666666669 L 174 53.44715447154471" stroke="#6479e7"></path></g><g id="SvgjsG2103" class="apexcharts-series apexcharts-pie-series" seriesName="Aerobic" rel="2" data:realIndex="1"><path id="SvgjsPath2108" d="M 246.60449394636737 98.0760365484691 A 76.34088269454126 76.34088269454126 0 0 1 218.87204499484102 183.4277381321349 L 174 121.66666666666669 L 246.60449394636737 98.0760365484691" fill="url(#SvgjsRadialGradient2104)" fill-opacity="0.7" stroke-opacity="1" stroke-linecap="butt" stroke-width="1" stroke-dasharray="0" class="apexcharts-pie-area apexcharts-polararea-slice-1" index="0" j="1" data:angle="72" data:startAngle="72" data:strokeWidth="1" data:value="47" data:pathOrig="M 246.60449394636737 98.0760365484691 A 76.34088269454126 76.34088269454126 0 0 1 218.87204499484102 183.4277381321349 L 174 121.66666666666669 L 246.60449394636737 98.0760365484691" stroke="#ff4967"></path></g><g id="SvgjsG2109" class="apexcharts-series apexcharts-pie-series" seriesName="Stretching" rel="3" data:realIndex="2"><path id="SvgjsPath2114" d="M 223.64566680280285 189.99806488378044 A 84.46225319396054 84.46225319396054 0 0 1 124.35433319719718 189.99806488378044 L 174 121.66666666666669 L 223.64566680280285 189.99806488378044" fill="url(#SvgjsRadialGradient2110)" fill-opacity="0.7" stroke-opacity="1" stroke-linecap="butt" stroke-width="1" stroke-dasharray="0" class="apexcharts-pie-area apexcharts-polararea-slice-2" index="0" j="2" data:angle="72" data:startAngle="144" data:strokeWidth="1" data:value="52" data:pathOrig="M 223.64566680280285 189.99806488378044 A 84.46225319396054 84.46225319396054 0 0 1 124.35433319719718 189.99806488378044 L 174 121.66666666666669 L 223.64566680280285 189.99806488378044" stroke="#06c2c0"></path></g><g id="SvgjsG2115" class="apexcharts-series apexcharts-pie-series" seriesName="Cycling" rel="4" data:realIndex="3"><path id="SvgjsPath2120" d="M 118.62598702764299 197.8824569857551 A 94.20789779326368 94.20789779326368 0 0 1 84.40296491724877 92.55482524421006 L 174 121.66666666666669 L 118.62598702764299 197.8824569857551" fill="url(#SvgjsRadialGradient2116)" fill-opacity="0.7" stroke-opacity="1" stroke-linecap="butt" stroke-width="1" stroke-dasharray="0" class="apexcharts-pie-area apexcharts-polararea-slice-3" index="0" j="3" data:angle="72" data:startAngle="216" data:strokeWidth="1" data:value="58" data:pathOrig="M 118.62598702764299 197.8824569857551 A 94.20789779326368 94.20789779326368 0 0 1 84.40296491724877 92.55482524421006 L 174 121.66666666666669 L 118.62598702764299 197.8824569857551" stroke="#0eace0"></path></g><g id="SvgjsG2121" class="apexcharts-series apexcharts-pie-series" seriesName="Weights" rel="5" data:realIndex="4"><path id="SvgjsPath2126" d="M 73.58952964864086 89.04132714149979 A 105.57781649245067 105.57781649245067 0 0 1 173.98157319494493 16.088851782258118 L 174 121.66666666666669 L 73.58952964864086 89.04132714149979" fill="url(#SvgjsRadialGradient2122)" fill-opacity="0.7" stroke-opacity="1" stroke-linecap="butt" stroke-width="1" stroke-dasharray="0" class="apexcharts-pie-area apexcharts-polararea-slice-4" index="0" j="4" data:angle="72" data:startAngle="288" data:strokeWidth="1" data:value="65" data:pathOrig="M 73.58952964864086 89.04132714149979 A 105.57781649245067 105.57781649245067 0 0 1 173.98157319494493 16.088851782258118 L 174 121.66666666666669 L 73.58952964864086 89.04132714149979" stroke="#eed130"></path></g></g></g></g><line id="SvgjsLine2127" x1="0" y1="0" x2="348" y2="0" stroke="#b6b6b6" stroke-dasharray="0" stroke-width="1" stroke-linecap="butt" class="apexcharts-ycrosshairs"></line><line id="SvgjsLine2128" x1="0" y1="0" x2="348" y2="0" stroke-dasharray="0" stroke-width="0" stroke-linecap="butt" class="apexcharts-ycrosshairs-hidden"></line></g></svg><div class="apexcharts-tooltip apexcharts-theme-dark"><div class="apexcharts-tooltip-series-group" style="order: 1;"><span class="apexcharts-tooltip-marker" style="background-color: rgb(100, 121, 231);"></span><div class="apexcharts-tooltip-text" style="font-size: 12px;"><div class="apexcharts-tooltip-y-group"><span class="apexcharts-tooltip-text-y-label"></span><span class="apexcharts-tooltip-text-y-value"></span></div><div class="apexcharts-tooltip-goals-group"><span class="apexcharts-tooltip-text-goals-label"></span><span class="apexcharts-tooltip-text-goals-value"></span></div><div class="apexcharts-tooltip-z-group"><span class="apexcharts-tooltip-text-z-label"></span><span class="apexcharts-tooltip-text-z-value"></span></div></div></div><div class="apexcharts-tooltip-series-group" style="order: 2;"><span class="apexcharts-tooltip-marker" style="background-color: rgb(255, 73, 103);"></span><div class="apexcharts-tooltip-text" style="font-size: 12px;"><div class="apexcharts-tooltip-y-group"><span class="apexcharts-tooltip-text-y-label"></span><span class="apexcharts-tooltip-text-y-value"></span></div><div class="apexcharts-tooltip-goals-group"><span class="apexcharts-tooltip-text-goals-label"></span><span class="apexcharts-tooltip-text-goals-value"></span></div><div class="apexcharts-tooltip-z-group"><span class="apexcharts-tooltip-text-z-label"></span><span class="apexcharts-tooltip-text-z-value"></span></div></div></div><div class="apexcharts-tooltip-series-group" style="order: 3;"><span class="apexcharts-tooltip-marker" style="background-color: rgb(6, 194, 192);"></span><div class="apexcharts-tooltip-text" style="font-size: 12px;"><div class="apexcharts-tooltip-y-group"><span class="apexcharts-tooltip-text-y-label"></span><span class="apexcharts-tooltip-text-y-value"></span></div><div class="apexcharts-tooltip-goals-group"><span class="apexcharts-tooltip-text-goals-label"></span><span class="apexcharts-tooltip-text-goals-value"></span></div><div class="apexcharts-tooltip-z-group"><span class="apexcharts-tooltip-text-z-label"></span><span class="apexcharts-tooltip-text-z-value"></span></div></div></div><div class="apexcharts-tooltip-series-group" style="order: 4;"><span class="apexcharts-tooltip-marker" style="background-color: rgb(14, 172, 224);"></span><div class="apexcharts-tooltip-text" style="font-size: 12px;"><div class="apexcharts-tooltip-y-group"><span class="apexcharts-tooltip-text-y-label"></span><span class="apexcharts-tooltip-text-y-value"></span></div><div class="apexcharts-tooltip-goals-group"><span class="apexcharts-tooltip-text-goals-label"></span><span class="apexcharts-tooltip-text-goals-value"></span></div><div class="apexcharts-tooltip-z-group"><span class="apexcharts-tooltip-text-z-label"></span><span class="apexcharts-tooltip-text-z-value"></span></div></div></div><div class="apexcharts-tooltip-series-group" style="order: 5;"><span class="apexcharts-tooltip-marker" style="background-color: rgb(238, 209, 48);"></span><div class="apexcharts-tooltip-text" style="font-size: 12px;"><div class="apexcharts-tooltip-y-group"><span class="apexcharts-tooltip-text-y-label"></span><span class="apexcharts-tooltip-text-y-value"></span></div><div class="apexcharts-tooltip-goals-group"><span class="apexcharts-tooltip-text-goals-label"></span><span class="apexcharts-tooltip-text-goals-value"></span></div><div class="apexcharts-tooltip-z-group"><span class="apexcharts-tooltip-text-z-label"></span><span class="apexcharts-tooltip-text-z-value"></span></div></div></div></div></div></div>
-                  </div>
+<div class="row mb-4">
+    <div class="col-xl-4 col-sm-6 col-12">
+        <div class="card h-100 shadow-sm" style="border-radius: 15px; border: none;">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="mb-0 text-primary fw-bold">Estado de Membresias</h5>
+                    <span class="badge bg-primary-subtle text-primary rounded-pill">Total: {{ total_membresias }}</span>
                 </div>
-              </div>
-    
+                <div style="position: relative; height: 230px; width: 100%;">
+                    <canvas id="membresiaChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <link rel="stylesheet" href="{% static 'lib/datatables-1.10.20/css/dataTables.bootstrap4.min.css' %}">
 <link rel="stylesheet" href="{% static 'lib/datatables-1.10.20/plugins/responsive-2.2.3/css/responsive.bootstrap4.min.css' %}">
 
 <div class="container-xxl flex-grow-1 container-p-y">
     <div class="card">
-        <div class="card-header d-flex justify-content-between align-items-center">
-            <h5 class="mb-0">Listado de membresias</h5>
+    <div class="card-header d-flex justify-content-between align-items-center flex-wrap gap-2">
+            <h5 class="mb-0">Listado de Membresias</h5>
+            <div class="d-flex gap-2 flex-wrap">
+                <div class="dropdown">
+                    <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="dropdownExportar" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="icon-base ri ri-file-chart-line icon-18px me-1"></i>Exportar
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="dropdownExportar">
+                        <li>
+                            <a class="dropdown-item" href="{% url 'gimnasio:exportar_membresia_excel' %}">
+                                <i class="ri ri-file-excel-2-line me-2 text-success"></i>Exportar a Excel
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="{% url 'gimnasio:exportar_membresia_pdf' %}">
+                                <i class="ri ri-file-pdf-line me-2 text-danger"></i>Exportar a PDF
+                            </a>
+                        </li>
+                    </ul>
+                </div>
             <a href="{{ crear_url }}" class="btn btn-primary">
                 <i class="icon-base ri ri-add-line icon-18px me-1"></i>Agregar membresias
             </a>
@@ -85,43 +50,38 @@
 
         <div class="card-body">
             <div class="table-responsive">
-                <table id="tabla-membresia" class="table table-bordered table-striped w-100">
-                    <thead>
+                <table id="tabla-membresia" class="table table-hover table-borderless w-100">
+                    <thead class="table-light">
                         <tr>
-                            <th>id</th>
-                            <th>fecha inicio</th>
-                            <th>Fecha de fin</th>
-                            <th>Membresia</th>
-                            <th>Documento de usuario</th>
+                            <th>ID</th>
+                            <th>Fecha Inicio</th>
+                            <th>Fecha Fin</th>
+                            <th>Usuario</th>
+                            <th>Documento</th>
                             <th>Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for membresia in object_list %}
                         <tr>
-                            <td>{{ membresia.id }}</td>
-                            <td>{{ membresia.fecha_inicio }}</td>
-                            <td>{{ membresia.fecha_fin }}</td>
-                            <td>{{ membresia.fk_usuario.nombre_usuario}} {{ membresia.fk_usuario.apellido_usuario}}</td>
-                            <td> <span class="badge bg-warning">{{ membresia.fk_usuario.documento }}</span></td>
-
-                            
+                            <td><strong>#{{ membresia.id }}</strong></td>
+                            <td>{{ membresia.fecha_inicio|date:"d M Y" }}</td>
+                            <td>{{ membresia.fecha_fin|date:"d M Y" }}</td>
+                            <td>{{ membresia.fk_usuario.nombre_usuario }} {{ membresia.fk_usuario.apellido_usuario }}</td>
+                            <td><span class="badge bg-warning text-dark">{{ membresia.fk_usuario.documento }}</span></td>
                             <td class="text-nowrap">
-                               
-                            <a href="{% url 'gimnasio:editar_membresia' membresia.id %}"
-                                                class="btn btn-sm btn-text-secondary rounded-pill btn-icon item-edit">
-                                                <i class="icon-base ri ri-edit-box-line icon-22px"></i>
-                                            </a>
-                                       
-                                            <a href="{% url 'gimnasio:eliminar_membresia' membresia.id %}"
-                              class="btn btn-sm btn-text-secondary rounded-pill btn-icon item-trash">
-                                                <i class="icon-base ri ri-delete-bin-line icon-22px">                                      </li>
-                                    
+                                 
+                                <a href="{% url 'gimnasio:editar_membresia' membresia.id %}" class="btn btn-sm btn-outline-primary rounded-circle me-1" title="Editar">
+                                    <i class="ri ri-edit-box-line"></i>
+                                </a>
+                                <a href="{% url 'gimnasio:eliminar_membresia' membresia.id %}" class="btn btn-sm btn-outline-danger rounded-circle" title="Eliminar">
+                                    <i class="ri ri-delete-bin-line"></i>
+                                </a>
                             </td>
                         </tr>
                         {% empty %}
                         <tr>
-                            <td colspan="5" class="text-center">No hay asistencias registradas.</td>
+                            <td colspan="6" class="text-center py-4 text-muted">No hay membresias registradas actualmente.</td>
                         </tr>
                         {% endfor %}
                     </tbody>
@@ -130,8 +90,7 @@
         </div>
     </div>
 </div>
-
-{% endblock %}
+{% endblock contenido %}
 
 {% block js %}
 <script src="{% static 'lib/datatables-1.10.20/js/jquery.dataTables.min.js' %}"></script>
@@ -139,9 +98,11 @@
 <script src="{% static 'lib/datatables-1.10.20/plugins/responsive-2.2.3/js/dataTables.responsive.min.js' %}"></script>
 <script src="{% static 'lib/datatables-1.10.20/plugins/responsive-2.2.3/js/responsive.bootstrap4.min.js' %}"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script>
-    $(function () {
+    // Inicializacion de DataTable
+    $(document).ready(function () {
         $('#tabla-membresia').DataTable({
             responsive: true,
             autoWidth: false,
@@ -149,23 +110,59 @@
                 url: "{% static 'lib/datatables-1.10.20/spanish.txt' %}"
             },
             columnDefs: [
-                { orderable: false, targets: 4 }
+                { orderable: false, targets: 5 } // La columna de acciones es la 5 (empezando de 0)
             ]
         });
     });
 
+    // Inicialización del Grafico Dinamico
+    const chartLabels = {{ chart_labels|safe }};
+    const chartData = {{ chart_data|safe }};
+
+    const ctx = document.getElementById('membresiaChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: chartLabels,
+            datasets: [{
+                data: chartData,
+                backgroundColor: [
+                    '#10b981', // Verde (Activas)
+                    '#ff4d4f', // Rojo (Vencidas)
+                    '#f39c12'  // Naranja (Futuras)
+                ],
+                borderWidth: 0,
+                hoverOffset: 8
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            cutout: '75%',
+            plugins: {
+                legend: {
+                    position: 'right',
+                    labels: {
+                        usePointStyle: true,
+                        boxWidth: 8,
+                        font: { family: 'Poppins', size: 12 }
+                    }
+                }
+            }
+        }
+    });
+
+    // Notificaciones SweetAlert
     {% if messages %}
         {% for message in messages %}
             Swal.fire({
-                title: "Correcto",
+                title: "Notificación",
                 text: "{{ message }}",
-                icon: "success",
-                confirmButtonText: "OK"
+                icon: "{% if message.tags == 'error' %}error{% else %}success{% endif %}",
+                confirmButtonText: "Entendido",
+                confirmButtonColor: '#5b73e8'
             });
         {% endfor %}
     {% endif %}
 </script>
-
-
-{% endblock %}
-
+{% endblock js %}

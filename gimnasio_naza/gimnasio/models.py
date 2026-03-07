@@ -1,6 +1,7 @@
 from django.db import models
 from datetime import *
 from decimal import Decimal  
+from django.contrib.auth.models import User
 
 # Create your models here.
 
@@ -39,8 +40,14 @@ class Usuario(models.Model):
 
 #-----------------------------MODELO MEMBRESIA---------------------------------------------------
 class Membresia(models.Model):
+    
     fecha_inicio = models.DateField(default=datetime.now, verbose_name='Fecha de Inicio')
     fecha_fin = models.DateField(null=True, blank=True, verbose_name='Fecha de Finalizacion')
+    ESTADO_CHOICES = [
+        ('activo', 'Activo'),
+        ('inactivo', 'Inactivo'),
+    ]
+    estado = models.CharField(max_length=30, choices=ESTADO_CHOICES)
     fk_usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
 
     def __str__(self):
@@ -69,27 +76,26 @@ class Asistencia(models.Model):
         db_table = 'asistencia'
 
 #--------------------CATEGORIA------------------
-
 class Categoria(models.Model):
-    
-    UNIDADES_PESO = (
-        
-        ('kg', 'Kilogramos'),
-        ('lb', 'Libras'),
-    )
-    nombre_categoria = models.CharField(max_length=45)
-    material = models.CharField(max_length=45)
-    peso_equipo = models.CharField(max_length=45)
+
+    NOMBRE_CATEGORIA = [
+        ('maquinas', 'Máquinas'),
+        ('mancuernas', 'Mancuernas'),
+        ('discos', 'Discos'),
+        ('accesorios', 'Accesorios'),
+        ('barras', 'Barras'),
+    ]
+
+    nombre_categoria = models.CharField(max_length=45, choices=NOMBRE_CATEGORIA)
     descripcion = models.CharField(max_length=250)
-    unidad_peso = models.CharField(max_length=2, choices=UNIDADES_PESO)
 
     def __str__(self):
         return str(self.nombre_categoria)
+
     class Meta:
         db_table = "Categoria"
         verbose_name = "Categoria"
         verbose_name_plural = "Categorias"
-
 
         
 #------ELEMENTO------------------------
@@ -202,13 +208,8 @@ class Reportes_estadisticas(models.Model):
         ('asistencia', 'Asistencia'),
         ('elemento', 'Elemento'),
     ]
-    FORMATO_CHOICES = [
-        ('pdf', 'pdf'),
-        ('excel', 'excel'),
-    ]
     tipo_reporte = models.CharField(max_length=20,choices=TIPO_REPORTE_CHOICES,default='membresia')
     fecha_generacion = models.DateField(default=datetime.now)
-    formato = models.CharField(max_length=10,choices=FORMATO_CHOICES)
     fk_usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
 
     def __str__(self):
@@ -304,22 +305,31 @@ class Registrovisitantestemporales(models.Model):
 
 class Turnosentrenadores(models.Model):
     JORNADA_CHOICES = [
-    ('mañana', 'mañana'),
-    ('tarde', 'tarde'),
+        ('mañana', 'Mañana'),
+        ('tarde', 'Tarde'),
     ]
+
+    administrador = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='turnos_entrenador'
+    )
 
     fecha_turno_inicio = models.DateField(default=datetime.now)
     fecha_turno_final = models.DateField(default=datetime.now)
-    jornada = models.CharField(max_length=10,choices=JORNADA_CHOICES)
+    jornada = models.CharField(max_length=10, choices=JORNADA_CHOICES)
 
     def __str__(self):
-        return str(self.id)
+        if self.administrador:
+            return f"{self.administrador.username} - {self.jornada}"
+        return f"Turno {self.id}"
 
-class Meta:
-    verbose_name = "Turno Entrenador"
-    verbose_name_plural = "Turnos Entrenadores"
-    db_table = "turno_entrenadores"
-
+    class Meta:
+        verbose_name = "Turno Entrenador"
+        verbose_name_plural = "Turnos Entrenadores"
+        db_table = "turno_entrenadores"
 #-----------------IMC------------------------------
 
 class Masa_corporal (models.Model):
@@ -346,7 +356,7 @@ class Rutina(models.Model):
         ],
     )
 
-    disponibilidad = models.IntegerField()
+    disponibilidad_de_dias = models.IntegerField()
 
     distribucion = models.CharField(
         max_length=30,

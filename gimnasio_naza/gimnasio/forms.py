@@ -1,33 +1,15 @@
 import re 
 from dataclasses import fields
-from gimnasio.models import Elemento, Usuario, Mantenimiento
 from django.forms import ModelForm
-from gimnasio.models import Asistencia, Membresia, Notificacion
-from gimnasio.models import Encuesta, Soporte_PQRS, Reportes_estadisticas, Categoria, Nutricion, Rutina
+from gimnasio.models import *
 from django import forms
-from gimnasio.models import Encuesta
-from gimnasio.models import Soporte_PQRS
-from gimnasio.models import Reportes_estadisticas
-from gimnasio.models import Categoria
-from django import forms
-from gimnasio.models import Nutricion
-from gimnasio.models import Rutina
-from django.forms import ModelForm
-from gimnasio.models import Masa_corporal
-from django.forms import ModelForm
-from gimnasio.models import Sancion
-from django.forms import ModelForm
-from gimnasio.models import Registrovisitantestemporales
-from gimnasio.models import Turnosentrenadores
-from gimnasio.models import Certificacion_interna
-import re
 from datetime import date
 from django.contrib import messages
-
-from django.core.exceptions import ValidationError
 from django.core.exceptions import ValidationError
 from datetime import *
 from django.utils import timezone
+from django.contrib.auth.models import User
+from django.shortcuts import render
 
 class ElementoForm(forms.ModelForm):
     class Meta:
@@ -438,13 +420,19 @@ class Reportes_estadisticasForm(forms.ModelForm):
         return fecha_generacion
         
 class CategoriaForm(forms.ModelForm):
+
     class Meta:
         model = Categoria
         fields = '__all__'
+
         widgets = {
-            'nombre_categoria': forms.TextInput(attrs={
-                'class': 'form_control',
-                'placeholder': 'Ingrese el nombre de la categoria'
+            'nombre_categoria': forms.Select(attrs={
+                'class': 'form-control'
+            }),
+
+            'descripcion': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Ingrese la descripción'
             }),
         }
 
@@ -685,15 +673,35 @@ class RegistrovisitantetemporalForm(ModelForm):
             }),
         }
     def clean_fecha_registro(self):
-        fecha_registro = self.cleaned_data['fecha_registro']
-        if fecha_registro < timezone.now().date():
-            raise forms.ValidationError("La fecha de registro no puede ser en el pasado.")
+        fecha_registro = self.cleaned_data.get('fecha_registro')
+        hoy = timezone.now().date()
+        if fecha_registro < hoy:
+            raise forms.ValidationError(
+            "La fecha de registro no puede ser en el pasado."
+        )
+        if fecha_registro > hoy:
+            raise forms.ValidationError(
+            "La fecha de registro no puede ser en el futuro."
+        )
         return fecha_registro
-        
+    
 class TurnodeentrenadorForm(ModelForm):
+    administrador = forms.ModelChoiceField(
+        queryset=User.objects.filter(is_active=True, is_superuser=True),
+        empty_label="Seleccione un administrador",
+        widget=forms.Select(attrs={'class': 'form-control'}),
+        label="Administrador",
+        required=True
+    )
+
     class Meta:
         model = Turnosentrenadores
-        fields = '__all__'
+        fields = [
+            'administrador',         
+            'fecha_turno_inicio',
+            'fecha_turno_final',
+            'jornada',
+        ]
         widgets = {
             'fecha_turno_inicio': forms.DateInput(attrs={
                 'class': 'form-control',
@@ -707,23 +715,39 @@ class TurnodeentrenadorForm(ModelForm):
                 'class': 'form-control',
             }),
         }
-        
-    def clean_fecha_turno_inicio(self):
-        fecha_turno_inicio = self.cleaned_data['fecha_turno_inicio']
-        if fecha_turno_inicio < timezone.now().date():
-            raise forms.ValidationError("La fecha de inicio del turno no puede ser en el pasado.")
-        return fecha_turno_inicio
-    
-    def clean_fecha_turno_final(self):
-        fecha_turno_inicio = self.cleaned_data.get('fecha_turno_inicio')
-        fecha_turno_final = self.cleaned_data['fecha_turno_final']
-        if fecha_turno_final < timezone.now().date():
-            raise forms.ValidationError("La fecha de finalización del turno no puede ser en el pasado.")
-        if fecha_turno_inicio and fecha_turno_final < fecha_turno_inicio:
-            raise forms.ValidationError("La fecha de finalización del turno no puede ser anterior a la fecha de inicio.")
-        return fecha_turno_final
-        
 
+    def clean_fecha_turno_inicio(self):
+        inicio = self.cleaned_data.get('fecha_turno_inicio')
+        hoy = timezone.now().date()
+
+        if inicio and inicio < hoy:
+            raise forms.ValidationError(
+                "La fecha de inicio no puede ser en el pasado."
+            )
+        return inicio
+
+    def clean_fecha_turno_final(self):
+        fin = self.cleaned_data.get('fecha_turno_final')
+        hoy = timezone.now().date()
+
+        if fin and fin < hoy:
+            raise forms.ValidationError(
+                "La fecha de finalización no puede ser en el pasado."
+            )
+        return fin
+
+    def clean(self):
+        cleaned_data = super().clean()
+        inicio = cleaned_data.get('fecha_turno_inicio')
+        fin = cleaned_data.get('fecha_turno_final')
+
+        if inicio and fin and fin < inicio:
+            self.add_error(
+                'fecha_turno_final',
+                "La fecha final no puede ser menor a la fecha de inicio."
+            )
+
+        return cleaned_data
 class CertificacioninternaForm(ModelForm):
     class Meta:
         model = Certificacion_interna
@@ -747,6 +771,10 @@ class CertificacioninternaForm(ModelForm):
             raise forms.ValidationError("La descripcion de la certificacion interna debe tener al menos 10 caracteres.")
         if descripcion_certificacion.isdigit():
             raise forms.ValidationError("La descripcion de la certificacion interna no puede ser solo números.")
+        if not re.match(r'^[A-Za-zÁÉÍÓÚáéíóúÑñ]', descripcion_certificacion):
+            raise forms.ValidationError(
+                "La descripción debe comenzar con una letra."
+            )        
         return descripcion_certificacion
     
     def clean_fecha_certificacion(self):

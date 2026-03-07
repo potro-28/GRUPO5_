@@ -10,45 +10,65 @@
     <div class="card">
         <div class="card-header d-flex justify-content-between align-items-center">
             <h5 class="mb-0">Listado de Turnos de Entrenador</h5>
-            <a href="{{ crear_url }}" class="btn btn-primary">
-                <i class="icon-base ri ri-add-line icon-18px me-1"></i>Agregar turno de entrenador
+            <a href="{% url 'gimnasio:crear_turnodeentrenador' %}" class="btn btn-primary">
+                <i class="icon-base ri ri-add-line icon-18px me-1"></i>
+                Agregar turno de entrenador
             </a>
         </div>
 
         <div class="card-body">
             <div class="table-responsive">
-                <table id="tabla-certificacion" class="table table-bordered table-striped w-100">
+                <table id="tabla-turnos" class="table table-bordered table-striped w-100">
                     <thead>
                         <tr>
                             <th>ID</th>
-                            <th>fecha_turno_inicio</th>
-                            <th>fecha_turno_fin</th>
-                            <th>jornada</th>
-                            <th>ACCIONES</th>
+                            <th>Administrador</th>
+                            <th>Fecha inicio</th>
+                            <th>Fecha fin</th>
+                            <th>Jornada</th>
+                            <th>Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {% for certificacion in object_list %}
+                        {% for turno in object_list %}
                         <tr>
-                            <td>{{ certificacion.id }}</td>
-                            <td>{{ certificacion.fecha_turno_inicio }}</td>
-                            <td>{{ certificacion.fecha_turno_final }}</td>
-                            <td>{{ certificacion.jornada }}</td>
-                            <td class="text-nowrap">
+                            <td>{{ turno.id }}</td>
 
-<a href="{% url 'gimnasio:editar_turnodeentrenador' certificacion.id %}"
-                                                class="btn btn-sm btn-text-secondary rounded-pill btn-icon item-edit">
-                                                <i class="icon-base ri ri-edit-box-line icon-22px"></i>
-                                            </a>
-                                            <a href="{% url 'gimnasio:eliminar_turnodeentrenador' certificacion.id %}"
-                                class="btn btn-sm btn-text-secondary rounded-pill btn-icon item-trash">
-                                                <i class="icon-base ri ri-delete-bin-line icon-22px">                                      </li>
-                                    
+                            <td>
+                                {% if turno.administrador %}
+                                    {{ turno.administrador.get_full_name|default:turno.administrador.username }}
+                                {% else %}
+                                    Sin administrador
+                                {% endif %}
+                            </td>
+
+                            <td>{{ turno.fecha_turno_inicio|date:"d/m/Y" }}</td>
+                            <td>{{ turno.fecha_turno_final|date:"d/m/Y" }}</td>
+                            <td>{{ turno.jornada }}</td>
+
+                            <td class="text-nowrap">
+                                <a href="{% url 'gimnasio:editar_turnodeentrenador' turno.id %}"
+                                   class="btn btn-sm btn-text-secondary rounded-pill btn-icon">
+                                    <i class="icon-base ri ri-edit-box-line icon-22px"></i>
+                                </a>
+
+                                <form method="post"
+                                      action="{% url 'gimnasio:eliminar_turnodeentrenador' turno.id %}"
+                                      style="display:inline;">
+                                    {% csrf_token %}
+                                    <button type="submit"
+                                            class="btn btn-sm btn-text-secondary rounded-pill btn-icon"
+                                            onclick="return confirm('¿Seguro que deseas eliminar este turno?')">
+                                        <i class="icon-base ri ri-delete-bin-line icon-22px"></i>
+                                    </button>
+                                </form>
                             </td>
                         </tr>
                         {% empty %}
                         <tr>
-                            <td colspan="5" class="text-center">No hay turnos de entrenador registrados.</td>
+                            <td colspan="6" class="text-center">
+                                No hay turnos de entrenador registrados.
+                            </td>
                         </tr>
                         {% endfor %}
                     </tbody>
@@ -57,7 +77,6 @@
         </div>
     </div>
 </div>
-
 {% endblock %}
 
 {% block js %}
@@ -68,30 +87,30 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
-    $(function () {
-        $('#tabla-certificacion').DataTable({
-            responsive: true,
-            autoWidth: false,
-            language: {
-                url: "{% static 'lib/datatables-1.10.20/spanish.txt' %}"
-            },
-            columnDefs: [
-                { orderable: false, targets: 4 }
-            ]
-        });
+$(function () {
+    $('#tabla-turnos').DataTable({
+        responsive: true,
+        autoWidth: false,
+        language: {
+            url: "{% static 'lib/datatables-1.10.20/spanish.txt' %}"
+        },
+        columnDefs: [
+            { orderable: false, targets: 5 }
+        ]
     });
-
-    {% if messages %}
-        {% for message in messages %}
-            Swal.fire({
-                title: "Correcto",
-                text: "{{ message }}",
-                icon: "success",
-                confirmButtonText: "OK"
-            });
-        {% endfor %}
-    {% endif %}
+});
 </script>
 
-
+{% if messages %}
+<script>
+    {% for message in messages %}
+        Swal.fire({
+            title: "{% if message.tags == 'success' %}Correcto{% else %}Error{% endif %}",
+            text: "{{ message }}",
+            icon: "{% if message.tags == 'success' %}success{% else %}error{% endif %}",
+            confirmButtonText: "OK"
+        });
+    {% endfor %}
+</script>
+{% endif %}
 {% endblock %}
