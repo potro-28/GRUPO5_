@@ -75,27 +75,26 @@ class Asistencia(models.Model):
         db_table = 'asistencia'
 
 #--------------------CATEGORIA------------------
-
 class Categoria(models.Model):
-    
-    UNIDADES_PESO = (
-        
-        ('kg', 'Kilogramos'),
-        ('lb', 'Libras'),
-    )
-    nombre_categoria = models.CharField(max_length=45)
-    material = models.CharField(max_length=45)
-    peso_equipo = models.CharField(max_length=45)
+
+    NOMBRE_CATEGORIA = [
+        ('maquinas', 'Máquinas'),
+        ('mancuernas', 'Mancuernas'),
+        ('discos', 'Discos'),
+        ('accesorios', 'Accesorios'),
+        ('barras', 'Barras'),
+    ]
+
+    nombre_categoria = models.CharField(max_length=45, choices=NOMBRE_CATEGORIA)
     descripcion = models.CharField(max_length=250)
-    unidad_peso = models.CharField(max_length=2, choices=UNIDADES_PESO)
 
     def __str__(self):
         return str(self.nombre_categoria)
+
     class Meta:
         db_table = "Categoria"
         verbose_name = "Categoria"
         verbose_name_plural = "Categorias"
-
 
         
 #------ELEMENTO------------------------
@@ -359,7 +358,7 @@ class Rutina(models.Model):
         ],
     )
 
-    disponibilidad = models.IntegerField()
+    disponibilidad_de_dias = models.IntegerField()
 
     distribucion = models.CharField(
         max_length=30,

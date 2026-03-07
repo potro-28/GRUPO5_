@@ -390,37 +390,21 @@ class Reportes_estadisticasForm(forms.ModelForm):
         
 #Categoria
 class CategoriaForm(forms.ModelForm):
+
     class Meta:
         model = Categoria
         fields = '__all__'
+
         widgets = {
-            'nombre_categoria': forms.TextInput(attrs={
-                'class': 'form_control',
-                'placeholder': 'Ingrese el nombre de la categoria'
+            'nombre_categoria': forms.Select(attrs={
+                'class': 'form-control'
+            }),
+
+            'descripcion': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Ingrese la descripción'
             }),
         }
-
-    #  Validar nombre_categoria
-    def clean_nombre_categoria(self):
-        nombre = self.cleaned_data.get('nombre_categoria')
-        if nombre and not nombre.isalpha():
-            raise forms.ValidationError("El Nombre no puede contener números")
-        return nombre
-
-    # Validar material
-    def clean_material(self):
-        material = self.cleaned_data.get('material')
-        if material and not material.isalpha():
-            raise forms.ValidationError("El Material no puede contener números")
-        return material
-
-    #  Validar peso_equipo
-    def clean_peso_equipo(self):
-        peso = self.cleaned_data.get('peso_equipo')
-        if peso and not str(peso).isdigit():
-            raise forms.ValidationError("El Peso_Equipo solo puede contener números")
-        return peso
-
     # Validar descripcion
     def clean_descripcion(self):
         descripcion = self.cleaned_data.get('descripcion')
