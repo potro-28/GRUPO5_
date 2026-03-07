@@ -39,8 +39,14 @@ class Usuario(models.Model):
 
 #-----------------------------MODELO MEMBRESIA---------------------------------------------------
 class Membresia(models.Model):
+    
     fecha_inicio = models.DateField(default=datetime.now, verbose_name='Fecha de Inicio')
     fecha_fin = models.DateField(null=True, blank=True, verbose_name='Fecha de Finalizacion')
+    ESTADO_CHOICES = [
+        ('activo', 'Activo'),
+        ('inactivo', 'Inactivo'),
+    ]
+    estado = models.CharField(max_length=30, choices=ESTADO_CHOICES)
     fk_usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
 
     def __str__(self):

@@ -1,29 +1,10 @@
 import re 
 from dataclasses import fields
-from gimnasio.models import Elemento, Usuario, Mantenimiento
 from django.forms import ModelForm
-from gimnasio.models import Asistencia, Membresia, Notificacion
-from gimnasio.models import Encuesta, Soporte_PQRS, Reportes_estadisticas, Categoria, Nutricion, Rutina
+from gimnasio.models import *
 from django import forms
-from gimnasio.models import Encuesta
-from gimnasio.models import Soporte_PQRS
-from gimnasio.models import Reportes_estadisticas
-from gimnasio.models import Categoria
-from django import forms
-from gimnasio.models import Nutricion
-from gimnasio.models import Rutina
-from django.forms import ModelForm
-from gimnasio.models import Masa_corporal
-from django.forms import ModelForm
-from gimnasio.models import Sancion
-from django.forms import ModelForm
-from gimnasio.models import Registrovisitantestemporales
-from gimnasio.models import Turnosentrenadores
-from gimnasio.models import Certificacion_interna
-import re
 from datetime import date
 from django.contrib import messages
-from django.core.exceptions import ValidationError
 from django.core.exceptions import ValidationError
 from datetime import *
 from django.utils import timezone

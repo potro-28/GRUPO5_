@@ -17,7 +17,9 @@ from gimnasio.views.Sanciones.views import *
 from gimnasio.views.registrovisitantestemporales.views import *
 from gimnasio.views.turnosdeentrenadores.views import *
 from gimnasio.views.certificacionesinternas.views import *
-from gimnasio.views.dashboard.views import DashboardView
+from gimnasio.views.Dashboard.views import DashboardView
+from gimnasio.views.Reportes.reportes import *
+
 app_name = 'gimnasio'
 
 urlpatterns = [
@@ -42,12 +44,15 @@ urlpatterns = [
     path('crear_asistencia/', AsistenciaCreateView.as_view(), name='crear_asistencia'),
     path('editar_asistencia/<int:pk>/', AsistenciaUpdateView.as_view(), name='editar_asistencia'),
     path('eliminar_asistencia/<int:pk>/', AsistenciaDeleteView.as_view(), name='eliminar_asistencia'),
-    
+    path('exportar_asistencia_pdf', ExportarAsistenciaPDF.as_view(), name='exportar_asistencia_pdf'),
+    path('exportar_asistencia_excel', ExportarAsistenciaExcel.as_view(), name='exportar_asistencia_excel'),
     #Membresias
     path('listar_membresia/', MembresiaListView.as_view(), name='listar_membresia'),
     path('crear_membresia/', MembresiaCreateView.as_view(), name='crear_membresia'),
     path('editar_membresia/<int:pk>/', MembresiaUpdateView.as_view(), name='editar_membresia'),
     path('eliminar_membresia/<int:pk>/', MembresiaDeleteView.as_view(), name='eliminar_membresia'),
+    path('exportar_membresia_pdf', ExportarMembresiaPDF.as_view(), name='exportar_membresia_pdf'),
+    path('exportar_membresia_excel', ExportarMembresiaExcel.as_view(), name='exportar_membresia_excel'),
     
     #Notificaciones
     path('listar_notificacion/', NotificacionListView.as_view(), name='listar_notificacion'),

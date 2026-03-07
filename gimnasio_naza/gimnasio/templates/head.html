@@ -58,7 +58,7 @@
         .stagger-4 { animation: revealBounce 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; animation-delay: 0.55s; opacity: 0; }
 
         /* ==================== TOPBAR ==================== */
-        .topbar { background-color: var(--primary-blue); height: 70px; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; color: white; z-index: 1000; box-shadow: 0 4px 15px rgba(91, 115, 232, 0.3); }
+        .topbar { background-color: #267CA7; height: 70px; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; color: white; z-index: 1000; box-shadow: 0 4px 15px rgba(91, 115, 232, 0.3); }
         .topbar-left { display: flex; align-items: center; gap: 20px; width: var(--sidebar-width); transition: var(--transition); }
         .menu-toggle { cursor: pointer; font-size: 20px; transition: var(--transition); }
         .menu-toggle:hover { transform: scale(1.2) rotate(180deg); }
@@ -102,7 +102,7 @@
         .nav-menu { padding: 20px 15px; flex-grow: 1; list-style: none;}
         .nav-menu > li { margin-bottom: 5px; }
         .nav-menu li > a { display: flex; align-items: center; padding: 8px 15px; color: var(--text-dark); font-size: 14.5px; font-weight: 500; transition: var(--transition); border-radius: 30px; white-space: nowrap; text-decoration: none;}
-        .icon-circle { min-width: 35px; height: 35px; border-radius: 50%; background-color: var(--primary-light); color: var(--primary-blue); display: flex; justify-content: center; align-items: center; margin-right: 15px; transition: var(--transition); font-size: 16px; }
+        .icon-circle { min-width: 35px; height: 35px; border-radius: 50%; background-color: var(--primary-light); color: #267CA7; display: flex; justify-content: center; align-items: center; margin-right: 15px; transition: var(--transition); font-size: 16px; }
         .nav-menu li.active > a, .nav-menu li > a:hover { background-color: var(--primary-light); transform: translateX(8px); letter-spacing: 0.3px;}
         .nav-menu li.active > a .icon-circle, .nav-menu li > a:hover .icon-circle { background-color: white; box-shadow: 0 4px 12px rgba(91, 115, 232, 0.2); transform: rotate(15deg) scale(1.1); }
 
@@ -224,11 +224,11 @@
 
     <!-- Core CSS -->
     <!-- build:css assets/vendor/css/theme.css -->
+    <link rel="stylesheet" href="{% static '/custom.css'%}" />
     <link rel="stylesheet" href="{% static '/assets/vendor/libs/node-waves/node-waves.css' %}" />
     <link rel="stylesheet" href="{% static '/assets/vendor/css/core.css' %}" />
-    <link rel="stylesheet" href="{% static '/custom.css'%}" />
     <link rel="stylesheet" href="{% static '/assets/css/demo.css' %}"  />
-
+    
     <!-- Vendors CSS -->
 
     <link rel="stylesheet" href=" {% static '/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css' %}" />
