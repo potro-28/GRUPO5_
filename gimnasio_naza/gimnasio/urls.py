@@ -18,21 +18,26 @@ from gimnasio.views.registrovisitantestemporales.views import *
 from gimnasio.views.turnosdeentrenadores.views import *
 from gimnasio.views.certificacionesinternas.views import *
 from gimnasio.views.Dashboard.views import DashboardView
+from gimnasio.views.reportes.reportes import ExportarElementosPDF, ExportarElementosExcel,ExportarUsuariosPDF, ExportarUsuariosExcel
 
 app_name = 'gimnasio'
 
 urlpatterns = [
-    # Rutas existentes
+    # =============================elementos============================#
     path('crear_elemento/', ElementoCreateView.as_view(), name='crear_elemento'),
     path('listar_elemento/', ElementoListView.as_view(), name='listar_elementos'),
     path('modificar_estado/<int:pk>/', ElementoUpdateView.as_view(), name='editar_elemento'),
     path('eliminar_elemento/<int:pk>/', ElementoDeleteView.as_view(), name='eliminar_elemento'),
+    path('exportar_elementos_pdf/', ExportarElementosPDF.as_view(), name='exportar_elementos_pdf'),
+    path('exportar_elementos_excel/', ExportarElementosExcel.as_view(), name='exportar_elementos_excel'),
 #============================usuario============================#
     path('crear_usuario/', UsuarioCreateView.as_view(), name='crear_usuario'),
     path('listar_usuario/', UsuarioListView.as_view(), name='listar_usuario'),
     path('modificar_usuario/<int:pk>/', UsuarioUpdateView.as_view(), name='editar_usuario'),
     path('eliminar_usuario/<int:pk>/', UsuarioDeleteView.as_view(), name='eliminar_usuario'),
     path('asignar_rol/<int:pk>/', UsuarioRolUpdateView.as_view(), name='asignar_rol_usuario'),
+    path('exportar_usuarios_pdf/', ExportarUsuariosPDF.as_view(), name='exportar_usuarios_pdf'),
+    path('exportar_usuarios_excel/', ExportarUsuariosExcel.as_view(), name='exportar_usuarios_excel'),
 #==============================mantenimiento==============================#
     path('crear_mantenimiento/', MantenimientoCreateView.as_view(), name='crear_mantenimiento'),
     path('listar_mantenimiento/', MantenimientoListView.as_view(), name='listar_mantenimiento'),

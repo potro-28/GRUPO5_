@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Listado de Elementos</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: #f4f5f7;
+    min-height: 100vh;
+    padding: 40px 20px;
+    color: #2d2d3a;
+  }
+
+  .container {
+    max-width: 700px;
+    margin: 0 auto;
+    background: #fff;
+    border-radius: 20px;
+    padding: 36px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.07);
+  }
+
+  .page-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 28px;
+  }
+
+  .btn-back {
+    display: none;
+    align-items: center;
+    gap: 6px;
+    background: #f0f3ff;
+    border: none;
+    border-radius: 10px;
+    padding: 8px 14px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.88rem;
+    font-weight: 500;
+    color: #4a6cf7;
+    cursor: pointer;
+    transition: background .18s;
+  }
+  .btn-back:hover { background: #e2e8ff; }
+
+  h2 {
+    font-size: 1.55rem;
+    font-weight: 600;
+    color: #1a1a2e;
+    letter-spacing: -0.3px;
+  }
+
+  /* ── PÁGINA 1 ── */
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+
+  .card {
+    border: 1.5px solid #e8e8ee;
+    border-radius: 16px;
+    padding: 28px 16px 22px;
+    cursor: pointer;
+    transition: border-color .22s, box-shadow .22s, transform .18s;
+    background: #fff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+  }
+  .card:hover {
+    border-color: #4a6cf7;
+    box-shadow: 0 8px 24px rgba(74,108,247,.14);
+    transform: translateY(-3px);
+  }
+  .card img { width: 96px; height: 80px; object-fit: contain; }
+  .card-label { font-size: 1rem; font-weight: 500; color: #2d2d3a; }
+
+  /* ── PÁGINA 2 ── */
+  #page-list { display: none; }
+
+  .element-info {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    background: #f8f9ff;
+    border: 1px solid #e4e8fb;
+    border-radius: 14px;
+    padding: 16px 20px;
+    margin-bottom: 24px;
+  }
+  .element-info img { width: 64px; height: 52px; object-fit: contain; }
+  .element-info h3 { font-size: 1.1rem; font-weight: 600; color: #1a1a2e; }
+  .element-info p  { font-size: 0.82rem; color: #9090a8; margin-top: 2px; }
+
+  .table-wrap {
+    border: 1px solid #e8e8ee;
+    border-radius: 14px;
+    overflow: hidden;
+  }
+  table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+
+  thead tr { background: #f4f5f7; }
+  thead th {
+    padding: 13px 18px;
+    text-align: left;
+    font-size: 0.72rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.7px;
+    color: #9090a8;
+    border-bottom: 1px solid #e8e8ee;
+  }
+
+  tbody tr { transition: background .15s; }
+  tbody tr:not(:last-child) td { border-bottom: 1px solid #f0f0f5; }
+  tbody tr:hover { background: #f8f9ff; }
+  tbody td { padding: 14px 18px; color: #2d2d3a; vertical-align: middle; }
+
+  .serial-badge {
+    display: inline-block;
+    background: #eef1ff;
+    color: #4a6cf7;
+    border-radius: 6px;
+    padding: 3px 10px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.4px;
+    font-family: 'Courier New', monospace;
+  }
+
+  .peso-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: #fff4e6;
+    color: #e07a10;
+    border-radius: 8px;
+    padding: 4px 12px;
+    font-size: 0.85rem;
+    font-weight: 600;
+  }
+
+  .num-cell { color: #b0b0c0; font-size: 0.82rem; }
+
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateX(28px); }
+    to   { opacity: 1; transform: translateX(0); }
+  }
+  .anim { animation: slideIn .28s ease both; }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div class="page-header">
+    <button class="btn-back" id="btn-back" onclick="goBack()">
+      ← Volver
+    </button>
+    <h2 id="page-title">Listado de Elementos</h2>
+  </div>
+
+  <!-- PÁGINA 1 -->
+  <div id="page-grid">
+    <div class="grid">
+
+      <div class="card" onclick="goToList('mancuerna')">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/35/Dumbbell.png/640px-Dumbbell.png"
+             onerror="this.src='https://via.placeholder.com/96x80?text=MAN'"
+             alt="Mancuerna">
+        <span class="card-label">Mancuerna</span>
+      </div>
+
+      <div class="card" onclick="goToList('disco')">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/23/Weight_plate.jpg/640px-Weight_plate.jpg"
+             onerror="this.src='https://via.placeholder.com/96x80?text=DSC'"
+             alt="Disco">
+        <span class="card-label">Disco</span>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- PÁGINA 2 -->
+  <div id="page-list">
+    <div class="element-info" id="el-info"></div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Serial</th>
+            <th>Nombre del Elemento</th>
+            <th>Peso</th>
+          </tr>
+        </thead>
+        <tbody id="table-body"></tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  const data = {
+    mancuerna: {
+      label: 'Mancuerna',
+      desc: 'Pesas de mano – todos los modelos disponibles',
+      img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/35/Dumbbell.png/640px-Dumbbell.png',
+      items: [
+        { serial: 'MAN-0021', nombre: 'Mancuerna Hexagonal', peso: '2 kg' },
+        { serial: 'MAN-0022', nombre: 'Mancuerna Hexagonal', peso: '4 kg' },
+        { serial: 'MAN-0023', nombre: 'Mancuerna Hexagonal', peso: '6 kg' },
+        { serial: 'MAN-0031', nombre: 'Mancuerna Rubber',    peso: '8 kg' },
+        { serial: 'MAN-0032', nombre: 'Mancuerna Rubber',    peso: '10 kg' },
+        { serial: 'MAN-0041', nombre: 'Mancuerna Cromada',   peso: '12 kg' },
+        { serial: 'MAN-0042', nombre: 'Mancuerna Cromada',   peso: '15 kg' },
+        { serial: 'MAN-0051', nombre: 'Mancuerna Pro',       peso: '20 kg' },
+      ]
+    },
+    disco: {
+      label: 'Disco',
+      desc: 'Discos olímpicos y estándar – todos los modelos',
+      img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/23/Weight_plate.jpg/640px-Weight_plate.jpg',
+      items: [
+        { serial: 'DSC-0011', nombre: 'Disco Estándar',    peso: '1.25 kg' },
+        { serial: 'DSC-0012', nombre: 'Disco Estándar',    peso: '2.5 kg'  },
+        { serial: 'DSC-0013', nombre: 'Disco Estándar',    peso: '5 kg'    },
+        { serial: 'DSC-0021', nombre: 'Disco Olímpico',    peso: '10 kg'   },
+        { serial: 'DSC-0022', nombre: 'Disco Olímpico',    peso: '15 kg'   },
+        { serial: 'DSC-0023', nombre: 'Disco Olímpico',    peso: '20 kg'   },
+        { serial: 'DSC-0031', nombre: 'Disco Pro Rubber',  peso: '25 kg'   },
+      ]
+    }
+  };
+
+  function goToList(type) {
+    const d = data[type];
+
+    document.getElementById('el-info').innerHTML = `
+      <img src="${d.img}" alt="${d.label}">
+      <div>
+        <h3>${d.label}</h3>
+        <p>${d.desc}</p>
+      </div>
+    `;
+
+    document.getElementById('table-body').innerHTML = d.items.map((item, i) => `
+      <tr>
+        <td class="num-cell">${i + 1}</td>
+        <td><span class="serial-badge">${item.serial}</span></td>
+        <td>${item.nombre}</td>
+        <td><span class="peso-chip">⚖ ${item.peso}</span></td>
+      </tr>
+    `).join('');
+
+    document.getElementById('page-grid').style.display = 'none';
+    document.getElementById('page-list').style.display = 'block';
+    document.getElementById('page-list').classList.remove('anim');
+    void document.getElementById('page-list').offsetWidth; // reflow
+    document.getElementById('page-list').classList.add('anim');
+    document.getElementById('page-title').textContent = d.label + 's';
+    document.getElementById('btn-back').style.display = 'flex';
+  }
+
+  function goBack() {
+    document.getElementById('page-list').style.display = 'none';
+    document.getElementById('page-grid').style.display = 'block';
+    document.getElementById('page-title').textContent = 'Listado de Elementos';
+    document.getElementById('btn-back').style.display = 'none';
+  }
+</script>
+</body>
+</html>

@@ -106,7 +106,7 @@ class Elemento(models.Model):
         ('barra', 'Barras'),
         ('otro', 'Otro'),
     ]
-    tipo_elemento = models.CharField(max_length=20, choices=TIPO_CHOICES)
+    peso = models.CharField(max_length=20, choices=TIPO_CHOICES)
     ESTADO_CHOICES = [
         ('activo', 'Activo'),
         ('inactivo', 'Inactivo'),
@@ -408,5 +408,5 @@ class Sancion(models.Model):
         db_table='Sancion'
         verbose_name='Sancion'
         verbose_name_plural='Sanciones'
-        
+       
 
