@@ -18,7 +18,7 @@ from gimnasio.views.registrovisitantestemporales.views import *
 from gimnasio.views.turnosdeentrenadores.views import *
 from gimnasio.views.certificacionesinternas.views import *
 from gimnasio.views.Dashboard.views import DashboardView
-from gimnasio.views.Reportes.reportes import *
+from gimnasio.views.reportes.reportes import *
 from gimnasio.models import *
 
 app_name = 'gimnasio'
