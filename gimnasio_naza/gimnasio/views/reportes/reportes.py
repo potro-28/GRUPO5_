@@ -8,130 +8,62 @@ from datetime import datetime
 
 # ====== VISTAS PARA EXPORTAR REPORTES ======
 
-class ExportarAsistenciaPDF(DjangoView):
+class ExportarRegistrovisitantestemporalesPDF(DjangoView):
     """
-    VISTA PARA EXPORTAR CATEGORIAS A PDF
-    Obtiene todas las categorías y las exporta en formato PDF
+    VISTA PARA EXPORTAR CERTIFICACIONES INTERNAS A PDF
+    Obtiene todas las certificaciones internas y las exporta en formato PDF
     """
     
     def get(self, request):
-        # Obtener todas las categorias 
-        asistencia = Asistencia.objects.all()
+        # Obtener todas las certificaciones internas
+        registro = Registrovisitantestemporales.objects.all()
         
         # Definir las columnas que se muestran en el reporte
-        columnas = ['ID','Fecha de asistencia','Hora de ingreso','Hora de salida','Membresia','Documento de usuario']
+        columnas = ['ID', 'fecha_registro' ]
         
         # Preparar los datos en formato de tuplas
         datos = [
-            (a.id,a.fecha_asistencia,a.hora_ingreso,a.hora_salida,(a.fk_membresia.fk_usuario.nombre_usuario,a.fk_membresia.fk_usuario.apellido_usuario),a.fk_membresia.fk_usuario.documento)
-            for a in asistencia
+            (visitante.id, visitante.fecha_registro, )
+            for visitante in registro
         ]
         
         # Generar nombre del archivo con timestamp
-        nombre_archivo = f'Reporte_Asistencia_{datetime.now().strftime("%d_%m_%Y")}'
+        nombre_archivo = f'Registrovisitantestemporales{datetime.now().strftime("%d_%m_%Y")}'
         
         # Llamar funcion de exportacion a PDF
         return exportar_pdf(
-            titulo='REPORTE DE ASISTENCIAS',
+            titulo='REPORTE DE CERTIFICACIONES INTERNAS',
             columnas=columnas,
             datos=datos,
             nombre_archivo=nombre_archivo
         )
 
 
-class ExportarAsistenciaExcel(DjangoView):
+class ExportarRegistrovisitantestemporalesExcel(DjangoView):
     """
     VISTA PARA EXPORTAR CATEGORIAS A EXCEL
     Obtiene todas las categorias y las exporta en formato Excel
     """
     
     def get(self, request):
-        # Obtener todas las categorias 
-        asistencia = Asistencia.objects.all()
+        # Obtener todas las certificaciones internas
+        registro = Registrovisitantestemporales.objects.all()
         
-        # Definir las columnas que se muestran en el reporte
-        columnas = ['ID', 'Fecha de asistencia', 'Hora de ingreso', 'Hora de salida', 'Membresia','Documento de usuario']
+        # Definir las columnas que se mostraran en el reporte
+        columnas = ['ID', 'fecha_registro']
         
-        # Preparar los datos en formato de tuplas
+        # Preparar los datos en  tuplas
         datos = [
-            (a.id,a.fecha_asistencia,a.hora_ingreso,a.hora_salida,(a.fk_membresia.fk_usuario.nombre_usuario,a.fk_membresia.fk_usuario.apellido_usuario),a.fk_membresia.fk_usuario.documento)
-            for a in asistencia
+            (visitante.id, visitante.fecha_registro, )
+            for visitante in registro
         ]
         
         # Generar nombre del archivo con timestamp
-        nombre_archivo = f'Reporte_Asistencia_{datetime.now().strftime("%d_%m_%Y")}'
+        nombre_archivo = f'Registrovisitantestemporales{datetime.now().strftime("%d_%m_%Y")}'
         
-        # Llamar funcion de exportacion a PDF
+        # Llamar funcion de exportacion a Excel
         return exportar_excel(
-            titulo='REPORTE DE ASISTENCIAS',
-            columnas=columnas,
-            datos=datos,
-            nombre_archivo=nombre_archivo
-        )
-
-
-# ====== VISTAS PARA EXPORTAR REPORTES MEMBRESIA======
-
-class ExportarMembresiaPDF(DjangoView):
-    """
-    VISTA PARA EXPORTAR CATEGORIAS A PDF
-    Obtiene todas las categorías y las exporta en formato PDF
-    """
-    
-    def get(self, request):
-        # Obtener todas las categorias 
-        membresia = Membresia.objects.all()
-        
-        # Definir las columnas que se 
-        # 
-        # en el reporte
-        columnas = ['ID','Fecha de inicio','Fecha de fin','Membresia','Documento de usuario']
-        
-        # Preparar los datos en formato de tuplas
-        datos = [
-            (m.id,m.fecha_inicio, m.fecha_fin,(m.fk_usuario.nombre_usuario,m.fk_usuario.apellido_usuario),m.fk_usuario.documento)
-            for m in membresia
-        ]
-        
-        # Generar nombre del archivo con timestamp
-        nombre_archivo = f'Reporte_membresia_{datetime.now().strftime("%d_%m_%Y")}'
-        
-        # Llamar funcion de exportacion a PDF
-        return exportar_pdf(
-            titulo='REPORTE DE MEMBRESIAS',
-            columnas=columnas,
-            datos=datos,
-            nombre_archivo=nombre_archivo
-        )
-
-
-class ExportarMembresiaExcel(DjangoView):
-    """
-    VISTA PARA EXPORTAR CATEGORIAS A EXCEL
-    Obtiene todas las categorias y las exporta en formato Excel
-    """
-    
-    def get(self, request):
-        # Obtener todas las categorias 
-        membresia = Membresia.objects.all()
-        
-        # Definir las columnas que se 
-        # 
-        # en el reporte
-        columnas = ['ID','Fecha de inicio','Fecha de fin','Membresia','Documento de usuario']
-        
-        # Preparar los datos en formato de tuplas
-        datos = [
-            (m.id,m.fecha_inicio, m.fecha_fin,(m.fk_usuario.nombre_usuario,m.fk_usuario.apellido_usuario),m.fk_usuario.documento)
-            for m in membresia
-        ]
-        
-        # Generar nombre del archivo con timestamp
-        nombre_archivo = f'Reporte_membresia_{datetime.now().strftime("%d_%m_%Y")}'    
-        
-        # Llamar funcion de exportacion a PDF
-        return exportar_excel(
-            titulo='REPORTE DE MEMBRESIAS',
+            titulo='REPORTE DE REGISTRO DE VISITANTES TEMPORALES',
             columnas=columnas,
             datos=datos,
             nombre_archivo=nombre_archivo
