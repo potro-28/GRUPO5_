@@ -3,16 +3,59 @@
 
 {% block contenido %}
 <link rel="stylesheet" href="{% static 'lib/datatables-1.10.20/css/dataTables.bootstrap4.min.css' %}">
-<link rel="stylesheet"
-    href="{% static 'lib/datatables-1.10.20/plugins/responsive-2.2.3/css/responsive.bootstrap4.min.css' %}">
+<link rel="stylesheet" href="{% static 'lib/datatables-1.10.20/plugins/responsive-2.2.3/css/responsive.bootstrap4.min.css' %}">
+
+<style>
+    .user-avatar {
+        width: 45px;
+        height: 45px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 2px solid #e0e0e0;
+    }
+    .avatar-placeholder {
+        width: 45px;
+        height: 45px;
+        border-radius: 50%;
+        background-color: #e9ecef;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #6c757d;
+        font-size: 18px;
+    }
+    #tabla-usuarios td {
+        vertical-align: middle;
+    }
+</style>
 
 <div class="container-xxl flex-grow-1 container-p-y">
     <div class="card">
-        <div class="card-header d-flex justify-content-between align-items-center">
+        <div class="card-header d-flex justify-content-between align-items-center flex-wrap gap-2">
             <h5 class="mb-0">Listado de Usuarios</h5>
-            <a href="{% url 'gimnasio:crear_usuario' %}" class="btn btn-primary">
-                <i class="icon-base ri ri-add-line icon-18px me-1"></i>Agregar usuario
-            </a>
+            <div class="d-flex gap-2 flex-wrap">
+                <div class="dropdown">
+                    <button class="btn btn-outline-secondary dropdown-toggle" type="button"
+                        id="dropdownExportar" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="icon-base ri ri-file-chart-line icon-18px me-1"></i>Exportar
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="dropdownExportar">
+                        <li>
+                            <a class="dropdown-item" href="{% url 'gimnasio:exportar_usuarios_excel' %}">
+                                <i class="ri ri-file-excel-2-line me-2 text-success"></i>Exportar a Excel
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="{% url 'gimnasio:exportar_usuarios_pdf' %}">
+                                <i class="ri ri-file-pdf-line me-2 text-danger"></i>Exportar a PDF
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <a href="{% url 'gimnasio:crear_usuario' %}" class="btn btn-primary">
+                    <i class="icon-base ri ri-add-line icon-18px me-1"></i>Agregar usuario
+                </a>
+            </div>
         </div>
 
         <div class="card-body">
@@ -20,54 +63,62 @@
                 <table id="tabla-usuarios" class="table table-bordered table-striped w-100">
                     <thead>
                         <tr>
+                            <th>Foto</th>
                             <th>ID</th>
-                            <th>documento</th>
-                            <th>nombre del usuario</th>
-                            <th>apellido del usuario</th>
-                            <th>fecha de nacimiento</th>
-                            <th>telefono del usuario</th>
-                            <th>correo del usuario</th>
-                            <th>peso del usuario</th>
-                            <th>altura del usuario</th>
-                            <th>rol del usuario</th>
-                            <th>estado</th>
-                            <th>fecha de registro</th>
-                            <th>genero del usuario</th>
+                            <th>Documento</th>
+                            <th>Nombre</th>
+                            <th>Apellido</th>
+                            <th>Fecha Nacimiento</th>
+                            <th>Teléfono</th>
+                            <th>Correo</th>
+                            <th>Peso</th>
+                            <th>Altura</th>
+                            <th>Rol</th>
+                            <th>Estado</th>
+                            <th>Fecha Registro</th>
+                            <th>Género</th>
                             <th>Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for u in object_list %}
                         <tr>
-                            <td>{{u.id}}</td>
-                            <td>{{u.documento}}</td>
-                            <td>{{u.nombre_usuario}}</td>
-                            <td>{{u.apellido_usuario}}</td>
-                            <td>{{u.fecha_nacimiento}}</td>
-                            <td>{{u.telefono_usuario}}</td>
-                            <td>{{u.correo_usuario}}</td>
-                            <td>{{u.peso_usuario}}</td>
-                            <td>{{u.altura_usuario}}</td>
-                            <td>{{u.rol}}</td>
-                            <td>{{u.estado}}</td>
-                            <td>{{u.fecha_registro}}</td>
-                            <td>{{u.genero_usuario}}</td>
+                            <td class="text-center">
+                                {% if u.foto %}
+                                    <img src="{{ u.foto.url }}" alt="{{ u.nombre_usuario }}" class="user-avatar">
+                                {% else %}
+                                    <div class="avatar-placeholder mx-auto">
+                                        <i class="ri ri-user-line"></i>
+                                    </div>
+                                {% endif %}
+                            </td>
+                            <td>{{ u.id }}</td>
+                            <td>{{ u.documento }}</td>
+                            <td>{{ u.nombre_usuario }}</td>
+                            <td>{{ u.apellido_usuario }}</td>
+                            <td>{{ u.fecha_nacimiento }}</td>
+                            <td>{{ u.telefono_usuario }}</td>
+                            <td>{{ u.correo_usuario }}</td>
+                            <td>{{ u.peso_usuario }}</td>
+                            <td>{{ u.altura_usuario }}</td>
+                            <td>{{ u.rol }}</td>
+                            <td>{{ u.estado }}</td>
+                            <td>{{ u.fecha_registro }}</td>
+                            <td>{{ u.genero_usuario }}</td>
                             <td class="text-nowrap">
-                               
-<a href="{% url 'gimnasio:editar_usuario' u.id %}"
-                                                class="btn btn-sm btn-text-secondary rounded-pill btn-icon item-edit">
-                                                <i class="icon-base ri ri-edit-box-line icon-22px"></i>
-                                            </a>
-                                       
-                                            <a href="{% url 'gimnasio:eliminar_usuario' u.id %}"
-                              class="btn btn-sm btn-text-secondary rounded-pill btn-icon item-trash">
-                                                <i class="icon-base ri ri-delete-bin-line icon-22px">                                      </li>
-                                    
+                                <a href="{% url 'gimnasio:editar_usuario' u.id %}"
+                                    class="btn btn-sm btn-text-secondary rounded-pill btn-icon item-edit">
+                                    <i class="icon-base ri ri-edit-box-line icon-22px"></i>
+                                </a>
+                                <a href="{% url 'gimnasio:eliminar_usuario' u.id %}"
+                                    class="btn btn-sm btn-text-secondary rounded-pill btn-icon item-trash">
+                                    <i class="icon-base ri ri-delete-bin-line icon-22px"></i>
+                                </a>
                             </td>
                         </tr>
                         {% empty %}
                         <tr>
-                            <td colspan="5" class="text-center">No hay usuarios registrados.</td>
+                            <td colspan="15" class="text-center">No hay usuarios registrados.</td>
                         </tr>
                         {% endfor %}
                     </tbody>
@@ -76,7 +127,6 @@
         </div>
     </div>
 </div>
-
 {% endblock %}
 
 {% block js %}
@@ -95,7 +145,7 @@
                 url: "{% static 'lib/datatables-1.10.20/spanish.txt' %}"
             },
             columnDefs: [
-                { orderable: false, targets: 4 }
+                { orderable: false, targets: [0, 14] }
             ]
         });
     });
@@ -111,6 +161,4 @@
         {% endfor %}
     {% endif %}
 </script>
-
-
-{% endblock %}
+{% endblock %} 

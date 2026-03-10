@@ -7,6 +7,7 @@ from django.contrib.auth.models import User
 
 
 #---------------------------------MODELO USUARIO-----------------------------------------       
+
 class Usuario(models.Model):
     documento = models.CharField(max_length=45, unique=True)
     nombre_usuario = models.CharField(max_length=45)
@@ -17,11 +18,14 @@ class Usuario(models.Model):
     peso_usuario = models.DecimalField(max_digits=10, decimal_places=2)
     altura_usuario = models.DecimalField(max_digits=10, decimal_places=2)
     genero_usuario = models.CharField(max_length=10, choices=[('M', 'Masculino'), ('F', 'Femenino')], default='M')
+    foto = models.ImageField(upload_to='usuarios/', null=True, blank=True)
+
     ROL_CHOICES = [
         ('cliente', 'Cliente'),
         ('admin', 'Administrador'),
     ]
     rol = models.CharField(max_length=30, choices=ROL_CHOICES)
+
     ESTADO_CHOICES = [
         ('activo', 'Activo'),
         ('inactivo', 'Inactivo'),
@@ -32,12 +36,11 @@ class Usuario(models.Model):
 
     def __str__(self):
         return str(self.id)
-    
+
     class Meta:
         verbose_name = 'Usuario'
         verbose_name_plural = 'Usuarios'
         db_table = 'usuario'
-
 #-----------------------------MODELO MEMBRESIA---------------------------------------------------
 class Membresia(models.Model):
     
@@ -112,7 +115,7 @@ class Elemento(models.Model):
         ('barra', 'Barras'),
         ('otro', 'Otro'),
     ]
-    tipo_elemento = models.CharField(max_length=20, choices=TIPO_CHOICES)
+    peso_elemento = models.DecimalField(max_digits=10, decimal_places=2)
     ESTADO_CHOICES = [
         ('activo', 'Activo'),
         ('inactivo', 'Inactivo'),

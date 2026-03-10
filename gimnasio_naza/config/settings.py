@@ -133,3 +133,5 @@ LOGIN_REDIRECT_URL = 'gimnasio:dashboard'
 LOGOUT_REDIRECT_URL = 'login:login'
 LOGIN_URL = 'login:login'
 LOGOUT_URL = 'login:logout'
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')

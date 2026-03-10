@@ -21,7 +21,6 @@ from gimnasio.views.Dashboard.views import DashboardView
 from gimnasio.views.Reportes.reportes import *
 from gimnasio.models import *
 
-
 app_name = 'gimnasio'
 
 urlpatterns = [
@@ -30,17 +29,23 @@ urlpatterns = [
     path('listar_elemento/', ElementoListView.as_view(), name='listar_elementos'),
     path('modificar_estado/<int:pk>/', ElementoUpdateView.as_view(), name='editar_elemento'),
     path('eliminar_elemento/<int:pk>/', ElementoDeleteView.as_view(), name='eliminar_elemento'),
+     path('exportar_elementos_pdf/', ExportarElementosPDF.as_view(), name='exportar_elementos_pdf'),
+    path('exportar_elementos_excel/', ExportarElementosExcel.as_view(), name='exportar_elementos_excel'),
 #============================usuario============================#
     path('crear_usuario/', UsuarioCreateView.as_view(), name='crear_usuario'),
     path('listar_usuario/', UsuarioListView.as_view(), name='listar_usuario'),
     path('modificar_usuario/<int:pk>/', UsuarioUpdateView.as_view(), name='editar_usuario'),
     path('eliminar_usuario/<int:pk>/', UsuarioDeleteView.as_view(), name='eliminar_usuario'),
     path('asignar_rol/<int:pk>/', UsuarioRolUpdateView.as_view(), name='asignar_rol_usuario'),
+    path('exportar_usuarios_pdf/', ExportarUsuariosPDF.as_view(), name='exportar_usuarios_pdf'),
+    path('exportar_usuarios_excel/', ExportarUsuariosExcel.as_view(), name='exportar_usuarios_excel'),
 #==============================mantenimiento==============================#
     path('crear_mantenimiento/', MantenimientoCreateView.as_view(), name='crear_mantenimiento'),
     path('listar_mantenimiento/', MantenimientoListView.as_view(), name='listar_mantenimiento'),
     path('editar_mantenimiento/<int:pk>/', MantenimientoUpdateView.as_view(), name='editar_mantenimiento'),
     path('eliminar_mantenimiento/<int:pk>/', MantenimientoDeleteView.as_view(), name='eliminar_mantenimiento'),
+    path('exportar_mantenimiento_pdf/', ExportarmantenimientoPDF.as_view(), name='exportar_mantenimiento_pdf'),
+    path('exportar_mantenimiento_excel/', ExportarMantenimientoExcel.as_view(), name='exportar_mantenimiento_excel'),   
 #==============================asistencia==============================#
     path('listar_asistencia/', AsistenciaListView.as_view(), name='listar_asistencia'),
     path('crear_asistencia/', AsistenciaCreateView.as_view(), name='crear_asistencia'),
@@ -118,8 +123,6 @@ urlpatterns = [
     path('crear_registrovisitantetemporal/', RegistrovisitantestemporalCreateView.as_view(), name='crear_registrovisitante'),
     path('editar_registrovisitantetemporal/<int:pk>/', RegistrovisitantetemporalUpdateView.as_view(), name='editar_registrovisitante'),
     path('eliminar_registrovisitantetemporal/<int:pk>/', RegistrovisitantetemporalDeleteView.as_view(), name='eliminar_registrovisitante'),
-    #path('ExportarRegistrovisitantestemporalesPDF/', ExportarRegistrovisitantestemporalesPDF.as_view(), name='ExportarRegistrovisitantestemporalesPDF'),
-    #path('ExportarRegistrovisitantestemporalesExcel/', ExportarRegistrovisitantestemporalesExcel.as_view(), name='ExportarRegistrovisitantestemporalesExcel'),
     
     
     path('listar_turnodeentrenador/', TurnodeentrenadorListView.as_view(), name='listar_turnodeentrenador'),
