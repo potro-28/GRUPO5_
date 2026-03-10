@@ -25,13 +25,13 @@ class MembresiaListView(ListView):
         # Calculamos los estados
         activas = Membresia.objects.filter(fecha_inicio__lte=hoy, fecha_fin__gte=hoy).count()
         vencidas = Membresia.objects.filter(fecha_fin__lt=hoy).count()
-        futuras = Membresia.objects.filter(fecha_inicio__gt=hoy).count() # adquiridas para iniciar 
         
-        context['total_membresias'] = activas + vencidas + futuras
+        
+        context['total_membresias'] = activas + vencidas 
         
         # Empaquetamos en JSON para Chart.js
-        context['chart_labels'] = json.dumps(['Activas', 'Vencidas', 'Futuras'])
-        context['chart_data'] = json.dumps([activas, vencidas, futuras])
+        context['chart_labels'] = json.dumps(['Activas', 'Vencidas'])
+        context['chart_data'] = json.dumps([activas, vencidas])
         
         return context
 
