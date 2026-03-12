@@ -26,7 +26,7 @@
                 <h5 class="mb-0">Listado de Membresias</h5>
                 <div class="d-flex gap-2 flex-wrap">
                 <div class="dropdown">
-                    <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="dropdownExportar" data-bs-toggle="dropdown" aria-expanded="false">
+                    <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownExportar" data-bs-toggle="dropdown" aria-expanded="false">
                         <i class="icon-base ri ri-file-chart-line icon-18px me-1"></i>Exportar
                     </button>
                     <ul class="dropdown-menu" aria-labelledby="dropdownExportar">
@@ -74,7 +74,7 @@
                                 <td> <span class="badge bg-danger">{{ membresia.estado}}</span></td>
                             {% endif %}
                             
-                            <td><span class="badge bg-warning text-dark">{{ membresia.fk_usuario.documento }}</span></td>
+                            <td>{{ membresia.fk_usuario.documento }}</td>
                             <td class="text-nowrap">
                                  
                                 <a href="{% url 'gimnasio:editar_membresia' membresia.id %}"

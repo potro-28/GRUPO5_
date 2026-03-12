@@ -23,7 +23,7 @@ class ExportarAsistenciaPDF(DjangoView):
         
         # Preparar los datos en formato de tuplas
         datos = [
-            (a.id,a.fecha_asistencia,a.hora_ingreso,a.hora_salida,(a.fk_membresia.fk_usuario.nombre_usuario,a.fk_membresia.fk_usuario.apellido_usuario),a.fk_membresia.fk_usuario.documento)
+            (a.id,a.fecha_asistencia,a.hora_ingreso,a.hora_salida,f"{a.fk_membresia.fk_usuario.nombre_usuario, a.fk_membresia.fk_usuario.apellido_usuario}",a.fk_membresia.fk_usuario.documento)
             for a in asistencia
         ]
         
@@ -54,7 +54,7 @@ class ExportarAsistenciaExcel(DjangoView):
         
         # Preparar los datos en formato de tuplas
         datos = [
-            (a.id,a.fecha_asistencia,a.hora_ingreso,a.hora_salida,(a.fk_membresia.fk_usuario.nombre_usuario,a.fk_membresia.fk_usuario.apellido_usuario),a.fk_membresia.fk_usuario.documento)
+            (a.id,a.fecha_asistencia,a.hora_ingreso,a.hora_salida,f"{a.fk_membresia.fk_usuario.nombre_usuario, a.fk_membresia.fk_usuario.apellido_usuario}",a.fk_membresia.fk_usuario.documento)
             for a in asistencia
         ]
         
@@ -89,7 +89,7 @@ class ExportarMembresiaPDF(DjangoView):
         
         # Preparar los datos en formato de tuplas
         datos = [
-            (m.id,m.fecha_inicio, m.fecha_fin,(m.fk_usuario.nombre_usuario,m.fk_usuario.apellido_usuario),m.fk_usuario.documento)
+            (m.id,m.fecha_inicio, m.fecha_fin,f"{m.fk_usuario.nombre_usuario,m.fk_usuario.apellido_usuario}",m.fk_usuario.documento)
             for m in membresia
         ]
         
@@ -122,7 +122,7 @@ class ExportarMembresiaExcel(DjangoView):
         
         # Preparar los datos en formato de tuplas
         datos = [
-            (m.id,m.fecha_inicio, m.fecha_fin,(m.fk_usuario.nombre_usuario,m.fk_usuario.apellido_usuario),m.fk_usuario.documento)
+            (m.id,m.fecha_inicio, m.fecha_fin,f"{m.fk_usuario.nombre_usuario,m.fk_usuario.apellido_usuario}",m.fk_usuario.documento)
             for m in membresia
         ]
         

@@ -23,8 +23,8 @@ class MembresiaListView(ListView):
         hoy = timezone.now().date()
         
         # Calculamos los estados
-        activas = Membresia.objects.filter(fecha_inicio__lte=hoy, fecha_fin__gte=hoy).count()
-        vencidas = Membresia.objects.filter(fecha_fin__lt=hoy).count()
+        activas = Membresia.objects.filter(estado = 'activo').count()
+        vencidas = Membresia.objects.filter(estado = 'inactivo').count()
         
         
         context['total_membresias'] = activas + vencidas 
