@@ -5,11 +5,79 @@
 <link rel="stylesheet" href="{% static 'lib/datatables-1.10.20/css/dataTables.bootstrap4.min.css' %}">
 <link rel="stylesheet"
     href="{% static 'lib/datatables-1.10.20/plugins/responsive-2.2.3/css/responsive.bootstrap4.min.css' %}">
+<style>
+    /* Animaciones y utilidades  Dashboard */
+    .stagger-1 { animation: revealBounce 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; animation-delay: 0.1s; opacity: 0; }
+    .stagger-2 { animation: revealBounce 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; animation-delay: 0.2s; opacity: 0; }
+    .stagger-3 { animation: revealBounce 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; animation-delay: 0.3s; opacity: 0; }
+    .stagger-4 { animation: revealBounce 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; animation-delay: 0.4s; opacity: 0; }
+    .stagger-5 { animation: revealBounce 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; animation-delay: 0.5s; opacity: 0; }
 
+    @keyframes revealBounce { 
+        0% { opacity: 0; transform: translateY(40px) scale(0.95); } 
+        70% { transform: translateY(-10px) scale(1.02); } 
+        100% { opacity: 1; transform: translateY(0) scale(1); } 
+    }
+
+    .card-dash { background-color: #ffffff; border-radius: 16px; padding: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.03); border: 1px solid rgba(255,255,255,0.8); transition: all 0.4s ease; }
+    .card-dash:hover { transform: translateY(-5px); box-shadow: 0 15px 35px rgba(91, 115, 232, 0.08); }
+    
+    .card-title { font-size: 17px; font-weight: 600; color: #2c3e50; margin-bottom: 15px; text-align: center; }
+    .card-subtitle { font-size: 12px; color: #5b73e8; background-color: #eef2fa; padding: 5px 12px; border-radius: 20px; display: inline-block; margin-bottom: 20px; font-weight: 500; }
+
+    /* Grillas */
+    .grid-sparklines { display: grid; grid-template-columns: repeat(3, 1fr); gap: 25px; margin-bottom: 30px; }
+    .sparkline-card { display: flex; align-items: center; justify-content: space-between; }
+    .spark-info { display: flex; align-items: center; gap: 15px; }
+    .spark-icon { width: 50px; height: 50px; border-radius: 14px; display: flex; justify-content: center; align-items: center; color: white; font-size: 20px; box-shadow: 0 8px 15px rgba(0,0,0,0.1); transition: all 0.3s ease;}
+    .sparkline-card:hover .spark-icon { transform: scale(1.1) rotate(5deg); }
+    .spark-text h2 { font-size: 26px; color: #2c3e50; line-height: 1; margin-bottom: 4px; font-weight: 700;}
+    .spark-text p { font-size: 13.5px; color: #8b9eb0; font-weight: 500; margin: 0;}
+
+    .grid-5-stats { display: grid; grid-template-columns: repeat(5, 1fr); gap: 20px; margin-bottom: 30px; }
+    .stat-box { text-align: center; padding: 25px 15px; cursor: pointer;}
+    .stat-box-icon { width: 55px; height: 55px; border-radius: 16px; display: flex; justify-content: center; align-items: center; color: white; font-size: 22px; margin: 0 auto 15px; box-shadow: 0 8px 20px rgba(0,0,0,0.1); transition: all 0.3s ease; }
+    .stat-box:hover .stat-box-icon { transform: rotate(-10deg) scale(1.1); }
+    .stat-box h3 { font-size: 24px; color: #2c3e50; margin-bottom: 5px; font-weight: 700; transition: all 0.3s ease;}
+    .stat-box:hover h3 { color: #5b73e8; }
+    .stat-box p { font-size: 14px; color: #8b9eb0; font-weight: 500; margin: 0;}
+
+    .grid-bottom-charts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 25px; }
+    .bottom-chart-card { text-align: center; display: flex; flex-direction: column; align-items: center; }
+    .donut-container { position: relative; width: 220px; height: 220px; margin: 0 auto; }
+    .donut-inner-text { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; }
+    .donut-inner-text span { display: block; font-size: 13px; color: #8b9eb0; font-weight: 500; margin-bottom: 5px;}
+    .donut-inner-text h2 { font-size: 38px; color: #2c3e50; line-height: 1; font-weight: 700; margin: 0;}
+
+    @media (max-width: 1200px) { .grid-5-stats { grid-template-columns: repeat(3, 1fr); } }
+    @media (max-width: 1024px) {
+        .grid-sparklines { grid-template-columns: repeat(2, 1fr); }
+        .grid-bottom-charts { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 768px) {
+        .grid-sparklines, .grid-5-stats, .grid-bottom-charts { grid-template-columns: 1fr; }
+    }
+</style> 
+
+
+    
 <div class="container-xxl flex-grow-1 container-p-y">
+
+    <div class="card-dash mb-4 stagger-3">
+    <div style="text-align: center;">
+        <div class="card-title">Estadísticas del Gimnasio</div>
+        <div class="card-subtitle">
+            Resumen general de reportes, membresías, asistencias, elementos y usuarios
+        </div>
+    </div>
+
+    <div style="width:100%; height:320px;">
+        <canvas id="chartActivity"></canvas>
+    </div>
+</div>
     <div class="card">
-        <div class="card-header d-flex justify-content-between align-items-center flex-wrap gap-2">   
-            <h5 class="mb-0">Listado de Reportes y estadisticas</h5>
+    <div class="card-header d-flex justify-content-between align-items-center flex-wrap gap-2">       
+            <h5 class="mb-0">Listado de Reportes y Estadisticas</h5>
             <div class="d-flex gap-2 flex-wrap">
             <div class="dropdown">
                     <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="dropdownExportar" data-bs-toggle="dropdown" aria-expanded="false">
@@ -40,6 +108,7 @@
                         <tr>
                             <th>ID</th>
                             <th>Tipo reporte</th>
+                            <th>Descripcion</th>
                             <th>Fecha generacion</th>
                             <th>Usuario</th>
                             <th>Acciones</th>
@@ -50,6 +119,7 @@
                         <tr>
                             <td>{{ reporte.id }}</td>
                             <td>{{ reporte.tipo_reporte }}</td>
+                            <td>{{ reporte.descripcion }}</td>
                             <td>{{ reporte.fecha_generacion }}</td>
                             <td>{{ reporte.fk_usuario }}</td>
                             
@@ -82,14 +152,83 @@
 {% endblock %}
 
 {% block js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="{% static 'lib/datatables-1.10.20/js/jquery.dataTables.min.js' %}"></script>
 <script src="{% static 'lib/datatables-1.10.20/js/dataTables.bootstrap4.min.js' %}"></script>
 <script src="{% static 'lib/datatables-1.10.20/plugins/responsive-2.2.3/js/dataTables.responsive.min.js' %}"></script>
 <script src="{% static 'lib/datatables-1.10.20/plugins/responsive-2.2.3/js/responsive.bootstrap4.min.js' %}"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+   
+
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script>
-    $(function () {
+
+document.addEventListener("DOMContentLoaded", function(){
+
+    // DATOS QUE VIENEN DE DJANGO
+    const labelsEstadisticas = {{ labels_estadisticas|safe }};
+    const datosEstadisticas = {{ datos_estadisticas|safe }};
+
+    // datos garfica
+    const canvas = document.getElementById('chartActivity');
+
+    if(canvas){
+
+        const ctx = canvas.getContext('2d');
+
+        new Chart(ctx, {
+            type: 'bar',
+
+            data: {
+                labels: labelsEstadisticas,
+                datasets: [{
+                    label: 'Cantidad por categoría',
+                    data: datosEstadisticas,
+
+                    backgroundColor: [
+                        '#5b73e8',
+                        '#ff6b6b',
+                        '#4ecdc4',
+                        '#ffd93d',
+                        '#95e1d3'
+                    ],
+
+                    borderRadius: 8,
+                    barThickness: 40
+                }]
+            },
+
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+
+                plugins:{
+                    legend:{
+                        position:'bottom'
+                    }
+                },
+
+                scales:{
+                    y:{
+                        beginAtZero:true
+                    }
+                }
+            }
+        });
+
+    }
+
+});
+
+</script>
+
+
+<script>
+
+    $(document).ready(function() {
+        // Inicializar DataTable
         $('#tabla-reporte').DataTable({
             responsive: true,
             autoWidth: false,
@@ -100,19 +239,126 @@
                 { orderable: false, targets: 4 }
             ]
         });
+
+        // Mostrar mensajes
+        {% if messages %}
+            {% for message in messages %}
+                Swal.fire({
+                    title: "Correcto",
+                    text: "{{ message }}",
+                    icon: "success",
+                    confirmButtonText: "OK"
+                });
+            {% endfor %}
+        {% endif %}
+
+        // VARIABLES DESDE LA VISTA DE DJANGO
+        const labelsEstadisticas = {{ labels_estadisticas|safe }};
+        const datosEstadisticas = {{ datos_estadisticas|safe }};
+        const diasSemana = {{ dias_semana|safe }};
+        const asistenciasSemana = {{ asistencias_semana|safe }};
+        const rutinasLabels = {{ rutinas_labels|safe }};
+        const rutinasData = {{ rutinas_data|safe }};
+        const pctActivas = {{ porcentaje_activas }};
+        const pctInactivas = {{ porcentaje_inactivas }};
+
+        // Actualizamos el texto central del grafico 
+        const pctElement = document.getElementById('pctActivasText');
+        if (pctElement) {
+            pctElement.innerText = pctActivas + '%';
+        }
+
+        // 2. CONFIGURACION GLOBAL DEL GRAFICO
+        Chart.defaults.plugins.tooltip.backgroundColor = 'rgba(15, 23, 42, 0.9)';
+        Chart.defaults.plugins.tooltip.titleFont = { family: 'Poppins', size: 13, weight: '600' };
+        Chart.defaults.plugins.tooltip.bodyFont = { family: 'Poppins', size: 12 };
+        Chart.defaults.plugins.tooltip.padding = 12;
+        Chart.defaults.plugins.tooltip.cornerRadius = 8;
+        
+        function createGradient(ctx, colorStart, colorEnd, height = 200) {
+            const gradient = ctx.createLinearGradient(0, 0, 0, height);
+            gradient.addColorStop(0, colorStart);
+            gradient.addColorStop(1, colorEnd);
+            return gradient;
+        }
+
+        const progressiveAnimation = {
+            y: {
+                easing: 'easeOutElastic',
+                duration: 1500,
+                from: (ctx) => { if (ctx.type === 'data') { return ctx.chart.scales.y.getPixelForValue(0); } },
+                delay: (ctx) => { return ctx.type === 'data' ? ctx.dataIndex * 150 : 0; }
+            }
+        };
+
+        // GRAFICO PRINCIPAL DE ESTADISTICAS
+        const ctxAct = document.getElementById('chartActivity');
+        if (ctxAct) {
+            const context = ctxAct.getContext('2d');
+            new Chart(context, {
+                type: 'bar',
+                data: {
+                    labels: labelsEstadisticas,
+                    datasets: [{
+                        label: 'Cantidad por Membresias',
+                        data: datosEstadisticas,
+                        backgroundColor: [
+                            createGradient(context, '#5b73e8', 'rgba(91, 115, 232, 0.2)', 300),
+                            createGradient(context, '#ff6b6b', 'rgba(255, 107, 107, 0.2)', 300),
+                            createGradient(context, '#4ecdc4', 'rgba(78, 205, 196, 0.2)', 300),
+                            createGradient(context, '#ffd93d', 'rgba(255, 217, 61, 0.2)', 300),
+                            createGradient(context, '#95e1d3', 'rgba(149, 225, 211, 0.2)', 300)
+                        ],
+                        hoverBackgroundColor: ['#4a62d8', '#ff5555', '#3db8b0', '#ffcd23', '#7dd5c3'],
+                        borderRadius: 8,
+                        barThickness: 24
+                    }]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    animation: progressiveAnimation,
+                    plugins: {
+                        legend: { position: 'bottom', labels: { usePointStyle: true, boxWidth: 10, padding: 20 } }
+                    },
+                    scales: {
+                        x: { grid: { display: false } },
+                        y: { grid: { borderDash: [5, 5], color: '#eaeff5' }, border: {display: false}, beginAtZero: true }
+                    }
+                }
+            });
+        } else {
+            console.error('Canvas chartActivity no encontrado');
+        }
+
+        
+
+        // GRAFICO  DE RUTINAS
+        const chartProgress = document.getElementById('chartProgress');
+        if (chartProgress) {
+            new Chart(chartProgress, {
+                type: 'pie',
+                data: {
+                    labels: rutinasLabels,
+                    datasets: [{
+                        data: rutinasData,
+                        backgroundColor: ['#5b73e8', '#ff4d4f', '#00cfd5'],
+                        hoverBackgroundColor: ['#4a62d8', '#ff3333', '#00b5bb'],
+                        borderWidth: 2,
+                        borderColor: '#ffffff',
+                        hoverOffset: 12
+                    }]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    animation: { animateScale: true, animateRotate: true, duration: 1500, easing: 'easeOutElastic' },
+                    plugins: { legend: { position: 'bottom', labels: { usePointStyle: true, padding: 15 } } }
+                }
+            });
+        }
     });
 
-    {% if messages %}
-        {% for message in messages %}
-            Swal.fire({
-                title: "Correcto",
-                text: "{{ message }}",
-                icon: "success",
-                confirmButtonText: "OK"
-            });
-        {% endfor %}
-    {% endif %}
 </script>
+
 
 
 {% endblock %}

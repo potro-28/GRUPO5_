@@ -209,6 +209,7 @@ class Reportes_estadisticas(models.Model):
         ('elemento', 'Elemento'),
     ]
     tipo_reporte = models.CharField(max_length=20,choices=TIPO_REPORTE_CHOICES,default='membresia')
+    descripcion = models.TextField()
     fecha_generacion = models.DateField(default=datetime.now)
     fk_usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
 
