@@ -33,7 +33,7 @@ class UsuarioCreateView(CreateView):
     form_class = UsuarioForm
     template_name = 'usuarios/crear.html'
     success_url = reverse_lazy('gimnasio:listar_usuario')
-
+ 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['titulo'] = 'Crear Usuario'
