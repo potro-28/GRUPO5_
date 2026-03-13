@@ -143,162 +143,183 @@ class ExportarMembresiaExcel(DjangoView):
         )
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+class ExportarElementosPDF(DjangoView):
+    """
+    VISTA PARA EXPORTAR ELEMENTOS A PDF
+    Obtiene todos los elementos y los exporta en formato PDF
+    """
+    
+    def get(self, request):
+        # Obtener todas las categorias 
+        elemento= Elemento.objects.all()
+        
+        # Definir las columnas que se mostraran en el reporte
+        columnas = ['ID', 'Nombre','marca','categoria']
+        
+        # Preparar los datos en  tuplas
+        datos = [
+            (e.id, e.nombre_elemento,e.marca,e.categoria_id)
+            for e in elemento
+        ]
+        
+        # Generar nombre del archivo con timestamp
+        nombre_archivo = f'Reporte_Elementos_{datetime.now().strftime("%d_%m_%Y")}'
+
+        
+        # Llamar funcion de exportacion a PDF
+        return exportar_pdf(
+            titulo='REPORTE DE ELEMENTOS',
+            columnas=columnas,
+            datos=datos,
+            nombre_archivo=nombre_archivo
+        )
+class ExportarElementosExcel(DjangoView):
+    """
+    VISTA PARA EXPORTAR ELEMENTOS A EXCEL
+    Obtiene todos los elementos y los exporta en formato Excel
+    """
+    
+    def get(self, request):
+        # Obtener todas las categorias 
+        elemento= Elemento.objects.all()
+        
+        # Definir las columnas que se mostraran en el reporte
+        columnas = ['ID', 'Nombre', 'Marca', 'Categoria']
+        
+        # Preparar los datos en  tuplas
+        datos = [
+            (e.id, e.nombre_elemento, e.marca, e.categoria_id)
+            for e in elemento
+        ]
+        
+        # Generar nombre del archivo con timestamp
+        nombre_archivo = f'Reporte_Elementos_{datetime.now().strftime("%d_%m_%Y")}'
+        
+        # Llamar funcion de exportacion a Excel
+        return exportar_excel(
+            titulo='REPORTE DE ELEMENTOS',
+            columnas=columnas,
+            datos=datos,
+            nombre_archivo=nombre_archivo
+        )
+class ExportarUsuariosPDF(DjangoView):
+    """
+    VISTA PARA EXPORTAR USUARIOS A PDF
+    Obtiene todos los usuarios y los exporta en formato PDF
+    """
+    
+    def get(self, request):
+        # Obtener todos los usuarios
+        usuarios = Usuario.objects.all()
+        
+        # Definir las columnas que se mostraran en el reporte
+        columnas = ['ID', 'documento','genero','nombre ','apellido','correo de','telefono','fecha de nacimiento','estado']
+        
+        # Preparar los datos en  tuplas
+        datos = [
+            (u.id, u.documento, u.genero_usuario, u.nombre_usuario, u.apellido_usuario, u.correo_usuario, u.telefono_usuario, u.fecha_nacimiento, u.estado)
+            for u in usuarios
+        ]
+        
+        # Generar nombre del archivo con timestamp
+        nombre_archivo = f'Reporte_Usuarios_{datetime.now().strftime("%d_%m_%Y")}'
+
+        
+        # Llamar funcion de exportacion a PDF
+        return exportar_pdf(
+            titulo='REPORTE DE USUARIOS',
+            columnas=columnas,
+            datos=datos,
+            nombre_archivo=nombre_archivo
+        )
+class ExportarUsuariosExcel(DjangoView):
+    """
+    VISTA PARA EXPORTAR USUARIOS A EXCEL
+    Obtiene todos los usuarios y los exporta en formato Excel
+    """
+    
+    def get(self, request):
+        # Obtener todos los usuarios
+        usuarios = Usuario.objects.all()
+        
+        # Definir las columnas que se mostraran en el reporte
+        columnas = ['ID', 'documento','genero del usuario','nombre del usuario','apellido del usuario','correo del usuario','telefono del usuario','fecha de nacimiento del usuario','estado del usuario']
+        
+        # Preparar los datos en  tuplas
+        datos = [
+            (u.id, u.documento, u.genero_usuario, u.nombre_usuario, u.apellido_usuario, u.correo_usuario, u.telefono_usuario, u.fecha_nacimiento, u.estado)
+            for u in usuarios
+        ]
+        
+        # Generar nombre del archivo con timestamp
+        nombre_archivo = f'Reporte_Usuarios_{datetime.now().strftime("%d_%m_%Y")}'
+        
+        # Llamar funcion de exportacion a Excel
+        return exportar_excel(
+            titulo='REPORTE DE USUARIOS',
+            columnas=columnas,
+            datos=datos,
+            nombre_archivo=nombre_archivo
+        )
+class ExportarmantenimientoPDF(DjangoView):
+    """
+    VISTA PARA EXPORTAR MANTENIMIENTO A PDF
+    Obtiene todos los mantenimientos y los exporta en formato PDF
+    """
+    
+    def get(self, request):
+        # Obtener todos los mantenimientos
+        mantenimientos = Mantenimiento.objects.all()
+        
+        # Definir las columnas que se mostraran en el reporte
+        columnas = ['ID', 'Elemento_id', 'Tipo de mantenimiento', 'Fecha programada', 'Estado']
+        
+        # Preparar los datos en  tuplas
+        datos = [
+            (m.id, m.elemento_id, m.tipo_mantenimiento, m.fecha_programada, m.estado)
+            for m in mantenimientos
+        ]
+        
+        # Generar nombre del archivo con timestamp
+        nombre_archivo = f'Reporte_Mantenimiento_{datetime.now().strftime("%d_%m_%Y")}'
+
+        
+        # Llamar funcion de exportacion a PDF
+        return exportar_pdf(
+            titulo='REPORTE DE MANTENIMIENTO',
+            columnas=columnas,
+            datos=datos,
+            nombre_archivo=nombre_archivo
+        )
+class ExportarMantenimientoExcel(DjangoView):
+    """
+    VISTA PARA EXPORTAR MANTENIMIENTO A EXCEL
+    Obtiene todos los mantenimientos y los exporta en formato Excel
+    """
+    
+    def get(self, request):
+        # Obtener todos los mantenimientos
+        mantenimientos = Mantenimiento.objects.all()
+        
+        # Definir las columnas que se mostraran en el reporte
+        columnas = ['ID', 'Elemento_id', 'Tipo de mantenimiento', 'Fecha programada', 'Estado']
+        
+        # Preparar los datos en  tuplas
+        datos = [
+            (m.id, m.elemento_id, m.tipo_mantenimiento, m.fecha_programada, m.estado)
+            for m in mantenimientos
+        ]
+        
+        # Generar nombre del archivo con timestamp
+        nombre_archivo = f'Reporte_Mantenimiento_{datetime.now().strftime("%d_%m_%Y")}'
+
+        # Llamar funcion de exportacion a Excel
+        return exportar_excel(
+            titulo='REPORTE DE MANTENIMIENTO',
+            columnas=columnas,
+            datos=datos,
+            nombre_archivo=nombre_archivo
+        )
 class ExportarRegistrovisitantestemporalesPDF(DjangoView):
     """
     VISTA PARA EXPORTAR CERTIFICACIONES INTERNAS A PDF
@@ -605,8 +626,6 @@ class ExportarSoporte_PQRSEXCEL(DjangoView):
             datos=datos,
             nombre_archivo=nombre_archivo
         )
-
-
 class ExportarSancionPDF(DjangoView):
     
     def get(self, request):

@@ -1,3 +1,4 @@
+import os
 import re 
 from dataclasses import fields
 from django.forms import ModelForm
@@ -25,9 +26,7 @@ class ElementoForm(forms.ModelForm):
         serial = cleaned_data.get('serial')
         nombre_elemento = cleaned_data.get('nombre_elemento')
         fecha_ingreso = cleaned_data.get('fecha_ingreso')
-        imagen = cleaned_data.get('imagen')
-
-      
+        
         if fecha_ingreso and fecha_ingreso > timezone.now().date():
             raise forms.ValidationError('La fecha de ingreso no puede ser futura.')
 
@@ -64,7 +63,13 @@ class ElementoForm(forms.ModelForm):
         if '  ' in marca:
             raise forms.ValidationError('La marca no puede contener espacios consecutivos.')
         return marca
-    
+    def clean_imagen(self):
+        imagen = self.cleaned_data.get('imagen')
+        if imagen:
+            ext = os.path.splitext(imagen.name)[1].lower()
+            if ext != '.png':
+                raise forms.ValidationError('Solo se permiten imágenes en formato PNG.')
+        return imagen
 
 class UsuarioForm(forms.ModelForm):
     class Meta:
@@ -74,6 +79,7 @@ class UsuarioForm(forms.ModelForm):
             'fecha_nacimiento': forms.DateInput(attrs={'type': 'date'}),
             'fecha_inicio': forms.DateInput(attrs={'type': 'date'}),
             'fecha_registro': forms.DateInput(attrs={'type': 'date'}),
+            
         }
 
     def clean(self):
@@ -108,12 +114,12 @@ class UsuarioForm(forms.ModelForm):
     def clean_documento(self):
         documento = self.cleaned_data.get('documento')
         if documento:
-            if not re.match(r'^\d{10}$', documento):
-                raise forms.ValidationError('El documento debe contener exactamente 10 dígitos numéricos.')
+            if not re.match(r'^\d{7,10}$', documento):
+                raise forms.ValidationError('El documento debe contener exactamente 7 a 10 dígitos numéricos.')
             for digito in set(documento):
-                if documento.count(digito) > 2:
+                if documento.count(digito) > 5:
                     raise forms.ValidationError(
-                        f'El documento no es válido: el dígito "{digito}" aparece más de 2 veces.'
+                        f'El documento no es válido: el dígito "{digito}" aparece más de 5 veces.'
                     )
         return documento
 
@@ -175,6 +181,9 @@ class MantenimientoForm(forms.ModelForm):
         widgets = {
             'fecha_programada': forms.DateInput(attrs={'type': 'date'}),
             'fecha_realizada': forms.DateInput(attrs={'type': 'date'}),
+            'descripcion' : forms.TextInput(attrs={ 
+                'class':'form-control',
+                'placeholder': 'Ingrese la descripcion del mantenimiento'}),
         }
 
     def clean(self):
@@ -191,6 +200,7 @@ class MantenimientoForm(forms.ModelForm):
                 raise forms.ValidationError('Ya existe un mantenimiento programado para esa fecha en este elemento.')
 
         return cleaned_data
+    
     
 class AsistenciaForm(forms.ModelForm):
     class Meta:

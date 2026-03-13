@@ -3,16 +3,102 @@
 
 {% block contenido %}
 <link rel="stylesheet" href="{% static 'lib/datatables-1.10.20/css/dataTables.bootstrap4.min.css' %}">
-<link rel="stylesheet"
-    href="{% static 'lib/datatables-1.10.20/plugins/responsive-2.2.3/css/responsive.bootstrap4.min.css' %}">
+<link rel="stylesheet" href="{% static 'lib/datatables-1.10.20/plugins/responsive-2.2.3/css/responsive.bootstrap4.min.css' %}">
+
+<style>
+    .equipment-card {
+        border: 1px solid #e0e0e0;
+        border-radius: 12px;
+        padding: 16px;
+        margin-bottom: 20px;
+        text-align: center;
+        transition: transform 0.2s, box-shadow 0.2s;
+        background: #fff;
+    }
+    .equipment-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 6px 20px rgba(222, 7, 7, 0.12);
+    }
+    .equipment-card img {
+        width: 100px;
+        height: 190px;
+        object-fit: contain;
+        margin-bottom: 10px;
+    }
+    .equipment-card .cantidad {
+        font-size: 1.6rem;
+        font-weight: 700;
+        color: #333;
+        margin: 4px 0;
+    }
+    .equipment-card .nombre {
+        font-size: 0.9rem;
+        color: #666;
+        text-transform: capitalize;
+    }
+    .equipment-card .sin-imagen {
+        width: 100px;
+        height: 100px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #f5f5f5;
+        border-radius: 8px;
+        margin: 0 auto 10px;
+        color: #aaa;
+        font-size: 0.8rem;
+    }
+</style>
 
 <div class="container-xxl flex-grow-1 container-p-y">
     <div class="card">
-        <div class="card-header d-flex justify-content-between align-items-center">
+
+        <div class="card-header d-flex justify-content-between align-items-center flex-wrap gap-2">
             <h5 class="mb-0">Listado de Mantenimientos</h5>
-            <a href="{% url 'gimnasio:crear_mantenimiento' %}" class="btn btn-primary">
-                <i class="icon-base ri ri-add-line icon-18px me-1"></i>Agregar mantenimiento
-            </a>
+            <div class="d-flex gap-2 flex-wrap">
+                <div class="dropdown">
+                    <buttonclass="btn btn-primary dropdown-toggle" type="button" id="dropdownExportar" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="icon-base ri ri-file-chart-line icon-18px me-1"></i>Exportar
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="dropdownExportar">
+                        <li>
+                            <a class="dropdown-item" href="{% url 'gimnasio:exportar_mantenimiento_excel' %}">
+                                <i class="ri ri-file-excel-2-line me-2 text-success"></i>Exportar a Excel
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="{% url 'gimnasio:exportar_mantenimiento_pdf' %}">
+                                <i class="ri ri-file-pdf-line me-2 text-danger"></i>Exportar a PDF
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <a href="{% url 'gimnasio:crear_mantenimiento' %}" class="btn btn-primary">
+                    <i class="icon-base ri ri-add-line icon-18px me-1"></i>Agregar mantenimiento
+                </a>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="row gx-4">
+                {% for mantenimiento in mantenimientos %}
+                <div class="col-xl-2 col-lg-3 col-sm-4">
+                    <div class="equipment-card">
+                        {% if mantenimiento.elemento.imagen %}
+                            <img src="{{ mantenimiento.elemento.imagen.url }}" alt="{{ mantenimiento.elemento.nombre_elemento }}">
+                        {% else %}
+                            <div class="sin-imagen">Sin imagen</div>
+                        {% endif %}
+                        <p class="cantidad">{{ mantenimiento.elemento.cantidad }}</p>
+                        <p class="nombre">{{ mantenimiento.elemento.nombre_elemento }}</p>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="col-12 text-center">
+                    <p class="text-muted">No hay mantenimientos registrados.</p>
+                </div>
+                {% endfor %}
+            </div>
         </div>
 
         <div class="card-body">
@@ -20,44 +106,45 @@
                 <table id="tabla-mantenimiento" class="table table-bordered table-striped w-100">
                     <thead>
                         <tr>
-                          <th>ID</th>
-                          <th>Elemento_id</th>
-                          <th>Tipo de mantenimiento</th>
-                          <th>Fecha programada</th>
-                          <th>Estado</th>
-                          <th>Acciones</th>
+                            <th>ID</th>
+                            <th>Elemento</th>
+                            <th>Tipo de mantenimiento</th>
+                            <th>Fecha programada</th>
+                            <th>Estado</th>
+                            <th>Descripción</th>
+                            <th>Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for m in object_list %}
                         <tr>
-                            <td>{{  m.id }}</td>
-            <td>{{ m.elemento_id}}</td>
-            <td>{{ m.tipo_mantenimiento}}</td>
-            <td>{{ m.fecha_programada}}</td>
-            <td>{{ m.estado}}</td>
+                            <td>{{ m.id }}</td>
+                            <td>{{ m.elemento_id }}</td>
+                            <td>{{ m.tipo_mantenimiento }}</td>
+                            <td>{{ m.fecha_programada }}</td>
+                            <td>{{ m.estado }}</td>
+                            <td>{{ m.descripcion }}</td>
                             <td class="text-nowrap">
-                               
-<a href="{% url 'gimnasio:editar_mantenimiento' m.id %}"
-                                                class="btn btn-sm btn-text-secondary rounded-pill btn-icon item-edit">
-                                                <i class="icon-base ri ri-edit-box-line icon-22px"></i>
-                                            </a>
-                                       
-                                            <a href="{% url 'gimnasio:eliminar_mantenimiento' m.id %}"
-                              class="btn btn-sm btn-text-secondary rounded-pill btn-icon item-trash">
-                                                <i class="icon-base ri ri-delete-bin-line icon-22px">                                      </li>
-                                    
+                                <a href="{% url 'gimnasio:editar_mantenimiento' m.id %}"
+                                    class="btn btn-sm btn-text-secondary rounded-pill btn-icon item-edit">
+                                    <i class="icon-base ri ri-edit-box-line icon-22px"></i>
+                                </a>
+                                <a href="{% url 'gimnasio:eliminar_mantenimiento' m.id %}"
+                                    class="btn btn-sm btn-text-secondary rounded-pill btn-icon item-trash">
+                                    <i class="icon-base ri ri-delete-bin-line icon-22px"></i>
+                                </a>
                             </td>
                         </tr>
                         {% empty %}
                         <tr>
-                            <td colspan="5" class="text-center">No hay mantenimientos registrados.</td>
+                            <td colspan="7" class="text-center">No hay mantenimientos registrados.</td>
                         </tr>
                         {% endfor %}
                     </tbody>
                 </table>
             </div>
         </div>
+
     </div>
 </div>
 
@@ -70,16 +157,22 @@
 <script src="{% static 'lib/datatables-1.10.20/plugins/responsive-2.2.3/js/responsive.bootstrap4.min.js' %}"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.6.0/jspdf.plugin.autotable.min.js"></script>
+
 <script>
+    var tablaMantenimiento;
+
     $(function () {
-        $('#tabla-mantenimiento').DataTable({
+        tablaMantenimiento = $('#tabla-mantenimiento').DataTable({
             responsive: true,
             autoWidth: false,
             language: {
                 url: "{% static 'lib/datatables-1.10.20/spanish.txt' %}"
             },
             columnDefs: [
-                { orderable: false, targets: 4 }
+                { orderable: false, targets: 6 }
             ]
         });
     });
@@ -95,6 +188,4 @@
         {% endfor %}
     {% endif %}
 </script>
-
-
 {% endblock %}
