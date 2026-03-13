@@ -20,7 +20,7 @@ from gimnasio.views.certificacionesinternas.views import *
 from gimnasio.views.Dashboard.views import DashboardView
 from gimnasio.views.Reportes.reportes import *
 from gimnasio.models import *
-
+from gimnasio.views.backup.backup import backup,restaurar_datos
 
 app_name = 'gimnasio'
 
@@ -118,23 +118,27 @@ urlpatterns = [
     path('crear_registrovisitantetemporal/', RegistrovisitantestemporalCreateView.as_view(), name='crear_registrovisitante'),
     path('editar_registrovisitantetemporal/<int:pk>/', RegistrovisitantetemporalUpdateView.as_view(), name='editar_registrovisitante'),
     path('eliminar_registrovisitantetemporal/<int:pk>/', RegistrovisitantetemporalDeleteView.as_view(), name='eliminar_registrovisitante'),
-    #path('ExportarRegistrovisitantestemporalesPDF/', ExportarRegistrovisitantestemporalesPDF.as_view(), name='ExportarRegistrovisitantestemporalesPDF'),
-    #path('ExportarRegistrovisitantestemporalesExcel/', ExportarRegistrovisitantestemporalesExcel.as_view(), name='ExportarRegistrovisitantestemporalesExcel'),
+    path('ExportarRegistrovisitantestemporalesPDF/', ExportarRegistrovisitantestemporalesPDF.as_view(), name='ExportarRegistrovisitantestemporalesPDF'),
+    path('ExportarRegistrovisitantestemporalesExcel/', ExportarRegistrovisitantestemporalesExcel.as_view(), name='ExportarRegistrovisitantestemporalesExcel'),
     
     
     path('listar_turnodeentrenador/', TurnodeentrenadorListView.as_view(), name='listar_turnodeentrenador'),
     path('crear_turnodeentrenador/', TurnodeentrenadorCreateView.as_view(), name='crear_turnodeentrenador'),
     path('editar_turnodeentrenador/<int:pk>/', TurnodeentrenadorUpdateView.as_view(), name='editar_turnodeentrenador'),
     path('eliminar_turnodeentrenador/<int:pk>/', TurnodeentrenadorDeleteView.as_view(), name='eliminar_turnodeentrenador'),
+    path('ExportarTurnodeentrenadorPDF/', ExportarTurnodeentrenadorPDF.as_view(), name='ExportarTurnodeentrenadorPDF'),
+    path('ExportarTurnodeentrenadorExcel/', ExportarTurnodeentrenadorExcel.as_view(), name='ExportarTurnodeentrenadorExcel'),
     
     path('listar_certificacioninterna/', CertificacioninternaListView.as_view(), name='listar_certificacioninterna'),
     path('crear_certificacioninterna/', CertificacioninternaCreateView.as_view(), name='crear_certificacioninterna'),
     path('editar_certificacioninterna/<int:pk>/', CertificacioninternaUpdateView.as_view(), name='editar_certificacioninterna'),
     path('eliminar_certificacioninterna/<int:pk>/', CertificacioninternaDeleteView.as_view(), name='eliminar_certificacioninterna'),
-    
+    path('certificacion_interna/<int:pk>/',CertificacioninternaUser.as_view(),name='certificacion_interna'),
+    path('ExportarCertificacioninternaPDF/', ExportarCertificacioninternaPDF.as_view(), name='ExportarCertificacioninternaPDF'),
+    path('ExportarCertificacioninternaExcel/', ExportarCertificacioninternaExcel.as_view(), name='ExportarCertificacioninternaExcel'),  
     # Dashboard
     path('dashboard/', DashboardView.as_view(), name='dashboard'),
-    
-    
+    path('backup/',backup, name='backup'),
+    path('backup/restaurar',restaurar_datos, name='restaurar_datos'),
    
 ]

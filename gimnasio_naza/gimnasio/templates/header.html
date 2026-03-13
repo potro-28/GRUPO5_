@@ -1,6 +1,7 @@
     {% load static %}
     <header class="topbar">
         <div class="topbar-left">
+          
             <i class="fas fa-bars menu-toggle" id="menuToggle"></i>
             <div class="logo">
                 <img src="{% static 'assets/img/avatars/logo.png' %}" alt="Logo"style="width:110px; height:auto; cursor:pointer; transition: transform 0.3s;"onmouseover="this.style.transform='scale(1.1)'"onmouseout="this.style.transform='scale(1)'">
@@ -9,11 +10,26 @@
         </div>
         
         <div class="topbar-right">
+            <div class="btn-group">
+                <button type="button" class="btn btn-danger dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                  Action
+                </button>
+                <ul class="dropdown-menu">
+                  <li><a class="dropdown-item" href="{% url 'gimnasio:backup' %}">Action</a></li>
+                  <form action = "{% url 'gimnasio:backup' %}" method="post">
+                    {% csrf_token %}
+                    <input type="hidden" class="dropdown-item" name= 'accion' value="backup_completo">
+                    <button type="submit" class="dropdown-item">backup_completo</button>
+                  </form>
+                </ul>
+              </div>
             <div class="search-container">
                 <i class="fa-solid fa-magnifying-glass"></i>
                 <input type="text" 
                 placeholder="Buscar...">
             </div>
+            
+
             
             <div class="top-icons">
                 <i class="fas fa-bell icon-btn"></i>
@@ -24,7 +40,7 @@
                 <div class="dropdown-menu dropdown-menu-end shadow-lg">
                   <div class="px-3 py-2">
                     <span class="small">Administrador</span>
-                    <h6 class="m-0">Potro</h6>
+                    <h6 class="m-0">{{ user.username }}</h6>
                   </div>
                   <div class="d-grid px-4 pt-2 pb-1">
                         <a class="btn btn-primary d-flex" href="javascript:void(0);">

@@ -10,6 +10,7 @@ from django.views.generic import CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
 from django.views.decorators.csrf import csrf_exempt
 
+
 # Importamos SOLO los modelos que vamos a usar explícitamente, evitando colisiones
 from gimnasio.models import Usuario, Asistencia, Membresia, Elemento, Soporte_PQRS, Rutina
 
@@ -88,3 +89,7 @@ class DashboardView(TemplateView):
         context['porcentaje_inactivas'] = 100 - porcentaje_activas
 
         return context
+
+@login_required
+def dashboard(request):
+    return render(request, 'Dashboard/dashboard.html')

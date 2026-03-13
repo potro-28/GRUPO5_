@@ -8,8 +8,27 @@
 
 <div class="container-xxl flex-grow-1 container-p-y">
     <div class="card">
-        <div class="card-header d-flex justify-content-between align-items-center">
+        <div class="card-header d-flex justify-content-between align-items-center flex-wrap gap-2">
             <h5 class="mb-0">Listado de Certificaciones Internas</h5>
+                        <div class="d-flex gap-2 flex-wrap">
+            <div class="dropdown">
+                    <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="dropdownExportar" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="icon-base ri ri-file-chart-line icon-18px me-1"></i>Exportar
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="dropdownExportar">
+                        <li>
+                            <a class="dropdown-item" href="{% url 'gimnasio:ExportarCertificacioninternaExcel' %}">
+                                <i class="ri ri-file-excel-2-line me-2 text-success"></i>Exportar a Excel
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="{% url 'gimnasio:ExportarCertificacioninternaPDF' %}">
+                                <i class="ri ri-file-pdf-line me-2 text-danger"></i>Exportar a PDF
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
             <a href="{{ crear_url }}" class="btn btn-primary">
                 <i class="icon-base ri ri-add-line icon-18px me-1"></i>Agregar certificación interna
             </a>
@@ -34,16 +53,20 @@
                             <td>{{ certificacion.fecha_certificacion }}</td>
                             <td>{{ certificacion.fk_Asistencia.fk_membresia.fk_usuario.nombre_usuario }} </td>
                             <td class="text-nowrap">
-
-<a href="{% url 'gimnasio:editar_certificacioninterna' certificacion.id %}"
+                                            <a href="{% url 'gimnasio:editar_certificacioninterna' certificacion.id %}"
                                                 class="btn btn-sm btn-text-secondary rounded-pill btn-icon item-edit">
                                                 <i class="icon-base ri ri-edit-box-line icon-22px"></i>
                                             </a>
                                             <a href="{% url 'gimnasio:eliminar_certificacioninterna' certificacion.id %}"
-                                class="btn btn-sm btn-text-secondary rounded-pill btn-icon item-trash">
-                                                <i class="icon-base ri ri-delete-bin-line icon-22px">                                      </li>
-                                    
+                                    class="btn btn-sm btn-text-secondary rounded-pill btn-icon item-trash">
+                                                    <i class="icon-base ri ri-delete-bin-line icon-22px"> </i>
+                                        </a>
+                                        <a href="{% url 'gimnasio:certificacion_interna' certificacion.id %}"
+                                    class="btn btn-sm btn-text-secondary rounded-pill btn-icon item-download">
+                                                    <i class="icon-base ri ri-download-line icon-22px"> </i>
+                                        </a>                
                             </td>
+
                         </tr>
                         {% empty %}
                         <tr>
