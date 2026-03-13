@@ -22,6 +22,7 @@ class MembresiaListView(ListView):
         # // LOGICA PARA EL GRAFICO ///
         hoy = timezone.now().date()
         
+        
         # Calculamos los estados
         activas = Membresia.objects.filter(estado = 'activo').count()
         vencidas = Membresia.objects.filter(estado = 'inactivo').count()
