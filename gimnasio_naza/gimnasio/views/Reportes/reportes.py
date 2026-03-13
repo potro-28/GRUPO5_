@@ -5,7 +5,9 @@ from django.http import HttpResponse
 from gimnasio.models import *
 from gimnasio.utils import exportar_pdf, exportar_excel
 from datetime import datetime
-
+from gimnasio.views.registrovisitantestemporales.views import *
+from gimnasio.views.turnosdeentrenadores.views import *
+from gimnasio.views.certificacionesinternas.views import *
 # ====== VISTAS PARA EXPORTAR REPORTES ======
 
 class ExportarAsistenciaPDF(DjangoView):
@@ -136,4 +138,376 @@ class ExportarMembresiaExcel(DjangoView):
             datos=datos,
             nombre_archivo=nombre_archivo
         )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+class ExportarRegistrovisitantestemporalesPDF(DjangoView):
+    """
+    VISTA PARA EXPORTAR CERTIFICACIONES INTERNAS A PDF
+    Obtiene todas las certificaciones internas y las exporta en formato PDF
+    """
+    
+    def get(self, request):
+        # Obtener todas las certificaciones internas
+        registro = Registrovisitantestemporales.objects.all()
+        
+        # Definir las columnas que se muestran en el reporte
+        columnas = ['ID', 'fecha_registro' ]
+        
+        # Preparar los datos en formato de tuplas
+        datos = [
+            (visitante.id, visitante.fecha_registro, )
+            for visitante in registro
+        ]
+        
+        # Generar nombre del archivo con timestamp
+        nombre_archivo = f'Registrovisitantestemporales{datetime.now().strftime("%d_%m_%Y")}'
+        
+        # Llamar funcion de exportacion a PDF
+        return exportar_pdf(
+            titulo='REPORTE DE CERTIFICACIONES INTERNAS',
+            columnas=columnas,
+            datos=datos,
+            nombre_archivo=nombre_archivo
+        )
+
+
+class ExportarRegistrovisitantestemporalesExcel(DjangoView):
+    """
+    VISTA PARA EXPORTAR CATEGORIAS A EXCEL
+    Obtiene todas las categorias y las exporta en formato Excel
+    """
+    
+    def get(self, request):
+        # Obtener todas las certificaciones internas
+        registro = Registrovisitantestemporales.objects.all()
+        
+        # Definir las columnas que se mostraran en el reporte
+        columnas = ['ID', 'fecha_registro']
+        
+        # Preparar los datos en  tuplas
+        datos = [
+            (visitante.id, visitante.fecha_registro, )
+            for visitante in registro
+        ]
+        
+        # Generar nombre del archivo con timestamp
+        nombre_archivo = f'Registrovisitantestemporales{datetime.now().strftime("%d_%m_%Y")}'
+        
+        # Llamar funcion de exportacion a Excel
+        return exportar_excel(
+            titulo='REPORTE DE REGISTRO DE VISITANTES TEMPORALES',
+            columnas=columnas,
+            datos=datos,
+            nombre_archivo=nombre_archivo
+        )
+
+class ExportarTurnodeentrenadorPDF(DjangoView):
+    """
+    VISTA PARA EXPORTAR TURNO DE ENTRENADOR A PDF
+    Obtiene todos los turnos de entrenador y los exporta en formato PDF
+    """
+    
+    def get(self, request):
+        # Obtener todas las certificaciones internas
+        registro = Turnosentrenadores.objects.all()
+        
+        # Definir las columnas que se muestran en el reporte
+        columnas = ['ID', 'Administrador', 'fecha_turno_inicio', 'fecha_turno_final', 'Jornada']
+        
+        # Preparar los datos en formato de tuplas
+        datos = [
+            (turno.id, turno.administrador.get_full_name() if turno.administrador else "Sin administrador", turno.fecha_turno_inicio, turno.fecha_turno_final, turno.jornada)
+            for turno in registro
+        ]
+        
+        # Generar nombre del archivo con timestamp
+        nombre_archivo = f'Turnodeentrenador {datetime.now().strftime("%d_%m_%Y")}'
+        
+        # Llamar funcion de exportacion a PDF
+        return exportar_pdf(
+            titulo='REPORTE DE TURNO DE ENTRENADOR ',
+            columnas=columnas,
+            datos=datos,
+            nombre_archivo=nombre_archivo
+        )
+        
+class ExportarTurnodeentrenadorExcel(DjangoView):
+    """
+    VISTA PARA EXPORTAR CATEGORIAS A EXCEL
+    Obtiene todas las categorias y las exporta en formato Excel
+    """
+    
+    def get(self, request):
+        # Obtener todas las certificaciones internas
+        registro = Turnosentrenadores.objects.all()
+        
+        # Definir las columnas que se mostraran en el reporte
+        columnas = ['ID', 'Administrador', 'fecha_turno_inicio', 'fecha_turno_final', 'Jornada']
+        
+        # Preparar los datos en  tuplas
+        datos = [
+            (turno.id, turno.administrador.get_full_name() if turno.administrador else "Sin administrador", turno.fecha_turno_inicio, turno.fecha_turno_final, turno.jornada)
+            for turno in registro
+        ]
+        
+        # Generar nombre del archivo con timestamp
+        nombre_archivo = f'Turnodeentrenador{datetime.now().strftime("%d_%m_%Y")}'
+        
+        # Llamar funcion de exportacion a Excel
+        return exportar_excel(
+            titulo='REPORTE DE TURNO DE ENTRENADOR',
+            columnas=columnas,
+            datos=datos,
+            nombre_archivo=nombre_archivo
+        )
+
+
+class ExportarCertificacioninternaPDF(DjangoView):
+    """
+    VISTA PARA EXPORTAR CERTIFICACIONES INTERNAS A PDF
+    Obtiene todas las certificaciones internas y las exporta en formato PDF
+    """
+    
+    def get(self, request):
+        # Obtener todas las certificaciones internas
+        registro = Certificacion_interna.objects.all()
+        
+        # Definir las columnas que se muestran en el reporte
+        columnas = ['ID', 'descripcion_certificacion', 'fecha_certificacion', 'fk_Asistencia']
+        
+        # Preparar los datos en formato de tuplas
+        datos = [
+            (turno.id, turno.descripcion_certificacion, turno.fecha_certificacion, turno.fk_Asistencia)
+            for turno in registro
+        ]
+        
+        # Generar nombre del archivo con timestamp
+        nombre_archivo = f'CertificacionesInternas {datetime.now().strftime("%d_%m_%Y")}'
+        
+        # Llamar funcion de exportacion a PDF
+        return exportar_pdf(
+            titulo='REPORTE DE CERTIFICACIONES INTERNAS',
+            columnas=columnas,
+            datos=datos,
+            nombre_archivo=nombre_archivo
+        )
+        
+class ExportarCertificacioninternaExcel(DjangoView):
+    """
+    VISTA PARA EXPORTAR CATEGORIAS A EXCEL
+    Obtiene todas las categorias y las exporta en formato Excel
+    """
+    
+    def get(self, request):
+        # Obtener todas las certificaciones internas
+        registro = Certificacion_interna.objects.all()
+        
+        # Definir las columnas que se mostraran en el reporte
+        columnas = ['ID', 'descripcion_certificacion', 'fecha_certificacion', 'fk_Asistencia']
+        
+        # Preparar los datos en  tuplas
+        datos = [
+            (turno.id, turno.descripcion_certificacion, turno.fecha_certificacion, turno.fk_Asistencia)
+            for turno in registro
+        ]
+        
+        # Generar nombre del archivo con timestamp
+        nombre_archivo = f'CertificacionesInternas {datetime.now().strftime("%d_%m_%Y")}'
+        
+        # Llamar funcion de exportacion a Excel
+        return exportar_excel(
+            titulo='REPORTE DE CERTIFICACIONES INTERNAS',
+            columnas=columnas,
+            datos=datos,
+            nombre_archivo=nombre_archivo
+        )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

@@ -81,8 +81,12 @@ WSGI_APPLICATION = 'config.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db2.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'gimnasio_db',
+        'USER': 'root',
+        'PASSWORD': 'mamitas39',
+        'HOST': 'localhost',
+        'PORT' : '3306',
     }
 }
 
