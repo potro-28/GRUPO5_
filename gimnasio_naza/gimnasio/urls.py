@@ -22,6 +22,8 @@ from gimnasio.views.Reportes.reportes import *
 from gimnasio.models import *
 from gimnasio.views.backup.backup import backup,restaurar_datos
 
+
+
 app_name = 'gimnasio'
 
 urlpatterns = [
@@ -108,10 +110,14 @@ urlpatterns = [
     path('crear_masa_corporal/', Masa_corporalCreateView.as_view(), name='crear_masa_corporal'),
     path('eliminar_masa_corporal/<int:pk>/', Masa_corporalDeleteView.as_view(), name='eliminar_masa_corporal'),
     path('editar_masa_corporal/<int:pk>/', Masa_corporalUpdateView.as_view(), name='editar_masa_corporal'),
+    
+    
     path('listar_sanciones_clas/', SacionesListView.as_view(), name='listar_sanciones_clas'),
     path('crear_sancion/', SancionesCreateView.as_view(), name='crear_sancion'),
     path('eliminar_sancion/<int:pk>/', SancionesDeleteView.as_view(), name='eliminar_sancion'),
     path('editar_sancion/<int:pk>/', SancionesUpdateView.as_view(), name='editar_sancion'),
+    path('exportar/sanciones/pdf/', ExportarSancionPDF.as_view(), name='exportar_sanciones_pdf'),
+    path('exportar/sanciones/excel/', ExportarSancionExcel.as_view(), name='exportar_sanciones_excel'),
     
 
     path('listar_registrovisitantetemporal/', RegistrovisitantetemporalListView.as_view(), name='listar_registrovisitante'),
