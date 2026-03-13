@@ -1,14 +1,17 @@
+import json
+from datetime import timedelta
+import django.utils.timezone
 from django.shortcuts import render, redirect
-#from django.http import HttpResponse,JsonResponse
+from django.http import HttpResponse, JsonResponse
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
-from django.views.generic import ListView, CreateView, UpdateView, DeleteView
+from django.views.generic import ListView, TemplateView
+from django.views.generic import CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
 from django.views.decorators.csrf import csrf_exempt
-from django.utils.decorators import method_decorator
 from django.contrib import messages
 
-from gimnasio.models import *
+from gimnasio.models import Reportes_estadisticas, Usuario, Asistencia, Membresia, Elemento
 from gimnasio.forms import Reportes_estadisticasForm
 
 #Listar Reportes y estadisticas
@@ -40,6 +43,58 @@ class Reportes_estadisticasListView(ListView):
         context = super().get_context_data(**kwargs)
         context['titulo'] = 'Listado de reportes de estadistica'
         context['crear_url'] = reverse_lazy('gimnasio:crear_Reportes_estadisticas')
+        
+        # ---------------------------------------------------------
+        # //Grafica de barras 
+        # ---------------------------------------------------------
+        try:
+            labels_estadisticas = [
+                'Reportes',
+                'Membresías',
+                'Asistencias',
+                'Elementos',
+                'Usuarios'
+            ]
+            
+            datos_estadisticas = [
+                Reportes_estadisticas.objects.count(),
+                Membresia.objects.count(),
+                Asistencia.objects.count(),
+                Elemento.objects.count(),
+                Usuario.objects.count()
+            ]
+            
+            context['labels_estadisticas'] = json.dumps(labels_estadisticas)
+            context['datos_estadisticas'] = json.dumps(datos_estadisticas)
+        except Exception as e:
+            print("Error obteniendo datos estadísticas:", str(e))
+            context['labels_estadisticas'] = json.dumps([])
+            context['datos_estadisticas'] = json.dumps([])
+        
+        # Datos para la gráfica de asistencias (en caso de que se usen)
+        hoy = django.utils.timezone.now().date()
+        dias_semana = []
+        asistencias_semana = []
+        
+        # Recorremos los últimos 7 días hacia atrás (6, 5, 4, 3, 2, 1, 0)
+        for i in range(6, -1, -1):
+            fecha = hoy - timedelta(days=i)
+            # Formateamos la fecha (ej. "05 Mar")
+            dias_semana.append(fecha.strftime('%d %b')) 
+            # Contamos cuántas asistencias hubo ese día
+            asistencias_dia = Asistencia.objects.filter(fecha_asistencia=fecha).count()
+            asistencias_semana.append(asistencias_dia)
+            
+        # Convertimos las listas a JSON para que JavaScript (Chart.js) pueda leerlas
+        context['dias_semana'] = json.dumps(dias_semana)
+        context['asistencias_semana'] = json.dumps(asistencias_semana)
+        
+        # Variables para otros gráficos (si existen en el template)
+        context['rutinas_labels'] = json.dumps([])
+        context['rutinas_data'] = json.dumps([])
+        context['porcentaje_activas'] = 0
+        context['porcentaje_inactivas'] = 0
+        
         return context
 
 #Crear Reportes_estadisticas  
@@ -95,3 +150,84 @@ class Reportes_estadisticasDeleteView(DeleteView):
     
 
 
+
+
+class DashboardView1(TemplateView):
+    template_name = 'Reporte_Estadistica/listar.html'
+
+    # @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        # if request.method == 'GET':
+        #     return redirect('gimnasio:listar_categorias')
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        # Llamamos al contexto original
+        context = super().get_context_data(**kwargs)
+        
+        # Obtenemos la fecha de hoy
+        hoy = django.utils.timezone.now().date()
+
+        # ---------------------------------------------------------
+        # //KPIs principales//
+        # ---------------------------------------------------------
+        context['usuarios_activos'] = Usuario.objects.filter(estado='activo').count()
+        context['asistencias_hoy'] = Asistencia.objects.filter(fecha_asistencia=hoy).count()
+        
+        # Membresías vigentes (Iniciaron hoy o antes, y terminan hoy o después)
+        membresias_activas = Membresia.objects.filter(fecha_inicio__lte=hoy, fecha_fin__gte=hoy).count()
+        context['membresias_activas'] = membresias_activas
+
+        # ---------------------------------------------------------
+        # //Estadisticas generales//
+        # ---------------------------------------------------------
+        context['total_usuarios'] = Usuario.objects.count()
+        context['elementos_activos'] = Elemento.objects.filter(estado='activo').count()
+        context['pqrs_pendientes'] = Soporte_PQRS.objects.filter(estado='pendiente').count()
+
+        # ---------------------------------------------------------
+        # //ultimos 7 dias asistencias//
+        # ---------------------------------------------------------
+        dias_semana = []
+        asistencias_semana = []
+        
+        # Recorremos los últimos 7 días hacia atrás (6, 5, 4, 3, 2, 1, 0)
+        for i in range(6, -1, -1):
+            fecha = hoy - timedelta(days=i)
+            # Formateamos la fecha (ej. "05 Mar")
+            dias_semana.append(fecha.strftime('%d %b')) 
+            # Contamos cuántas asistencias hubo ese día
+            asistencias_dia = Asistencia.objects.filter(fecha_asistencia=fecha).count()
+            asistencias_semana.append(asistencias_dia)
+            
+        # Convertimos las listas a JSON para que JavaScript (Chart.js) pueda leerlas
+        context['dias_semana'] = json.dumps(dias_semana)
+        context['asistencias_semana'] = json.dumps(asistencias_semana)
+
+        # ---------------------------------------------------------
+        # //Grafica de barras - Conteo por categorias//
+        # ---------------------------------------------------------
+        labels_estadisticas = [
+            'Reportes',
+            'Membresías',
+            'Asistencias',
+            'Elementos',
+            'Usuarios'
+        ]
+        
+        datos_estadisticas = [
+            Reportes_estadisticas.objects.count(),
+            Membresia.objects.count(),
+            Asistencia.objects.count(),
+            Elemento.objects.count(),
+            Usuario.objects.count()
+        ]
+        
+        context['labels_estadisticas'] = json.dumps(labels_estadisticas)
+        context['datos_estadisticas'] = json.dumps(datos_estadisticas)
+        
+        # Obtenemos el listado de reportes
+        context['object_list'] = Reportes_estadisticas.objects.all()
+
+        return context
+     

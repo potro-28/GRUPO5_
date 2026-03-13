@@ -5,14 +5,90 @@
 <link rel="stylesheet" href="{% static 'lib/datatables-1.10.20/css/dataTables.bootstrap4.min.css' %}">
 <link rel="stylesheet"
     href="{% static 'lib/datatables-1.10.20/plugins/responsive-2.2.3/css/responsive.bootstrap4.min.css' %}">
+<style>
+    /* Animaciones y utilidades de las tarjetas del Dashboard */
+    .stagger-1 { animation: revealBounce 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; animation-delay: 0.1s; opacity: 0; }
+    .stagger-2 { animation: revealBounce 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; animation-delay: 0.2s; opacity: 0; }
+    .stagger-3 { animation: revealBounce 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; animation-delay: 0.3s; opacity: 0; }
+    .stagger-4 { animation: revealBounce 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; animation-delay: 0.4s; opacity: 0; }
+    .stagger-5 { animation: revealBounce 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; animation-delay: 0.5s; opacity: 0; }
 
+    @keyframes revealBounce { 
+        0% { opacity: 0; transform: translateY(40px) scale(0.95); } 
+        70% { transform: translateY(-10px) scale(1.02); } 
+        100% { opacity: 1; transform: translateY(0) scale(1); } 
+    }
+
+    .card-dash { background-color: #ffffff; border-radius: 16px; padding: 35px 30px;width: 230px;height: 180px;box-shadow: 0 10px 30px rgba(0,0,0,0.03); border: 1px solid rgba(255,255,255,0.8); transition: all 0.4s ease; }
+    .card-dash:hover { transform: translateY(-5px); box-shadow: 0 15px 35px rgba(91, 115, 232, 0.08); }
+    
+    .card-title { font-size: 17px; font-weight: 600; color: #2c3e50; margin-bottom: 15px; text-align: center; }
+    .card-subtitle { font-size: 12px; color: #5b73e8; background-color: #eef2fa; padding: 5px 12px; border-radius: 20px; display: inline-block; margin-bottom: 20px; font-weight: 500; }
+
+    /* Grillas */
+    .grid-sparklines { display: grid; grid-template-columns: repeat(3, 1fr); gap: 25px; margin-bottom: 30px; }
+    .sparkline-card { display: flex; align-items: center; justify-content: space-between; }
+    .spark-info { display: flex; align-items: center; gap: 15px; }
+    .spark-icon { width: 50px; height: 50px; border-radius: 14px; display: flex; justify-content: center; align-items: center; color: white; font-size: 20px; box-shadow: 0 8px 15px rgba(0,0,0,0.1); transition: all 0.3s ease;}
+    .sparkline-card:hover .spark-icon { transform: scale(1.1) rotate(5deg); }
+    .spark-text h2 { font-size: 26px; color: #2c3e50; line-height: 1; margin-bottom: 4px; font-weight: 700;}
+    .spark-text p { font-size: 13.5px; color: #8b9eb0; font-weight: 500; margin: 0;}
+
+    .grid-5-stats { display: grid; grid-template-columns: repeat(4, 250px); justify-content: center; gap: 25px; margin-bottom: 30px; }
+    .stat-box{text-align:center;padding:25px 15px;display:flex;flex-direction:column;align-items:center;}
+    .stat-box-icon{width:60px;height:60px;flex:0 0 60px;        display:flex;align-items:center;justify-content:center;border-radius:16px;color:white;font-size:22px;margin:0 auto 15px auto;}
+    .stat-box:hover .stat-box-icon { transform: rotate(-10deg) scale(1.1); }
+    .stat-box h3 { font-size: 24px; color: #2c3e50; margin-bottom: 5px; font-weight: 700; transition: all 0.3s ease;}
+    .stat-box:hover h3 { color: #5b73e8; }
+    .stat-box p { font-size: 14px; color: #8b9eb0; font-weight: 500; margin: 0;}
+
+    .grid-bottom-charts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 25px; }
+    .bottom-chart-card { text-align: center; display: flex; flex-direction: column; align-items: center; }
+    .donut-container { position: relative; width: 220px; height: 220px; margin: 0 auto; }
+    .donut-inner-text { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; }
+    .donut-inner-text span { display: block; font-size: 13px; color: #8b9eb0; font-weight: 500; margin-bottom: 5px;}
+    .donut-inner-text h2 { font-size: 38px; color: #2c3e50; line-height: 1; font-weight: 700; margin: 0;}
+
+    @media (max-width: 1200px) { .grid-5-stats { grid-template-columns: repeat(3, 1fr); } }
+    @media (max-width: 1024px) {
+        .grid-sparklines { grid-template-columns: repeat(2, 1fr); }
+        .grid-bottom-charts { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 768px) {
+        .grid-sparklines, .grid-5-stats, .grid-bottom-charts { grid-template-columns: 1fr; }
+    }
+</style>
+<div class="grid-5-stats stagger-4">
+    <div class="card-dash stat-box">
+        <div class="stat-box-icon" style="background: linear-gradient(135deg, #ff4d4f, #ff7875); box-shadow: 0 8px 20px rgba(255, 77, 79, 0.3);"><i class="fas fa-id-card"></i></div>
+        <h3>{{ total_peticion }}</h3>
+        <p>Petición</p>
+    </div>
+    <div class="card-dash stat-box">
+        <div class="stat-box-icon" style="background: linear-gradient(135deg, #ffc107, #ffcf33); box-shadow: 0 8px 20px rgba(255, 193, 7, 0.3);"><i class="fas fa-dumbbell"></i></div>
+        <h3>{{ total_queja }}</h3>
+        <p>Queja</p>
+    </div>
+    <div class="card-dash stat-box">
+        <div class="stat-box-icon" style="background: linear-gradient(135deg, #00cfd5, #00e4eb); box-shadow: 0 8px 20px rgba(0, 207, 213, 0.3);"><i class="fas fa-headset"></i></div>
+        <h3>{{ total_reclamo }}</h3>
+        <p>Reclamo</p>
+    </div>
+    <div class="card-dash stat-box">
+        <div class="stat-box-icon" style="background: linear-gradient(135deg, #5b73e8, #8b9df3); box-shadow: 0 8px 80px rgba(91, 115, 232, 0.3);"><i class="fas fa-clipboard-check"></i></div>
+        <h3>{{ total_sugerencia }}</h3>
+        <p>Sugerencia</p>
+    </div>
+   
+</div>
+    
 <div class="container-xxl flex-grow-1 container-p-y">
     <div class="card">
     <div class="card-header d-flex justify-content-between align-items-center flex-wrap gap-2">       
             <h5 class="mb-0">Listado de Soportes y pqrs</h5>
             <div class="d-flex gap-2 flex-wrap">
             <div class="dropdown">
-                    <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="dropdownExportar" data-bs-toggle="dropdown" aria-expanded="false">
+                    <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownExportar" data-bs-toggle="dropdown" aria-expanded="false">
                         <i class="icon-base ri ri-file-chart-line icon-18px me-1"></i>Exportar
                     </button>
                     <ul class="dropdown-menu" aria-labelledby="dropdownExportar">
@@ -87,7 +163,7 @@
                         </tr>
                         {% empty %}
                         <tr>
-                            <td colspan="5" class="text-center">No hay encuestas registradas.</td>
+                            <td colspan="5" class="text-center">No hay soporte o pqrs registradas.</td>
                         </tr>
                         {% endfor %}
                     </tbody>
@@ -130,7 +206,143 @@
             });
         {% endfor %}
     {% endif %}
+
+
+
+
+    // 1. VARIABLES DESDE LA VISTA DE DJANGO
+    const diasSemana = {{ dias_semana|safe }};
+    const asistenciasSemana = {{ asistencias_semana|safe }};
+    const rutinasLabels = {{ rutinas_labels|safe }};
+    const rutinasData = {{ rutinas_data|safe }};
+    const pctActivas = {{ porcentaje_activas }};
+    const pctInactivas = {{ porcentaje_inactivas }};
+
+    // Actualizamos el texto central del gráfico gauge
+    document.getElementById('pctActivasText').innerText = pctActivas + '%';
+
+    // 2. CONFIGURACIÓN GLOBAL DE CHART.JS
+    Chart.defaults.plugins.tooltip.backgroundColor = 'rgba(15, 23, 42, 0.9)';
+    Chart.defaults.plugins.tooltip.titleFont = { family: 'Poppins', size: 13, weight: '600' };
+    Chart.defaults.plugins.tooltip.bodyFont = { family: 'Poppins', size: 12 };
+    Chart.defaults.plugins.tooltip.padding = 12;
+    Chart.defaults.plugins.tooltip.cornerRadius = 8;
+    
+    function createGradient(ctx, colorStart, colorEnd, height = 200) {
+        const gradient = ctx.createLinearGradient(0, 0, 0, height);
+        gradient.addColorStop(0, colorStart);
+        gradient.addColorStop(1, colorEnd);
+        return gradient;
+    }
+
+    const progressiveAnimation = {
+        y: {
+            easing: 'easeOutElastic',
+            duration: 1500,
+            from: (ctx) => { if (ctx.type === 'data') { return ctx.chart.scales.y.getPixelForValue(0); } },
+            delay: (ctx) => { return ctx.type === 'data' ? ctx.dataIndex * 150 : 0; }
+        }
+    };
+
+    // 3. GRAFICO PRINCIPAL DE ASISTENCIAS (BARRAS)
+    const ctxAct = document.getElementById('chartActivity').getContext('2d');
+    new Chart(ctxAct, {
+        type: 'bar',
+        data: {
+            labels: diasSemana,
+            datasets: [{
+                label: 'Asistencias por Día',
+                data: asistenciasSemana,
+                backgroundColor: createGradient(ctxAct, '#5b73e8', 'rgba(91, 115, 232, 0.2)', 300),
+                hoverBackgroundColor: '#4a62d8',
+                borderRadius: 8,
+                barThickness: 24
+            }]
+        },
+        options: {
+            responsive: true, maintainAspectRatio: false,
+            animation: progressiveAnimation,
+            plugins: {
+                legend: { position: 'bottom', labels: { usePointStyle: true, boxWidth: 10, padding: 20 } }
+            },
+            scales: {
+                x: { grid: { display: false } },
+                y: { grid: { borderDash: [5, 5], color: '#eaeff5' }, border: {display: false}, beginAtZero: true }
+            }
+        }
+    });
+
+    // 4. GRAFICO PASTEL DE RUTINAS
+    new Chart(document.getElementById('chartProgress'), {
+        type: 'pie',
+        data: {
+            labels: rutinasLabels,
+            datasets: [{
+                data: rutinasData,
+                backgroundColor: ['#5b73e8', '#ff4d4f', '#00cfd5'],
+                hoverBackgroundColor: ['#4a62d8', '#ff3333', '#00b5bb'],
+                borderWidth: 2,
+                borderColor: '#ffffff',
+                hoverOffset: 12
+            }]
+        },
+        options: {
+            responsive: true, maintainAspectRatio: false,
+            animation: { animateScale: true, animateRotate: true, duration: 1500, easing: 'easeOutElastic' },
+            plugins: { legend: { position: 'bottom', labels: { usePointStyle: true, padding: 15 } } }
+        }
+    });
+
+    // 5. GRAFICO  DE MEMBRESIAS
+    new Chart(document.getElementById('chartSleepGauge'), {
+        type: 'doughnut',
+        data: {
+            labels: ['Activas', 'Vencidas'],
+            datasets: [{
+                data: [pctActivas, pctInactivas],
+                backgroundColor: ['#00cfd5', '#eef2fa'],
+                borderWidth: 0,
+                borderRadius: 20,
+                cutout: '82%'
+            }]
+        },
+        options: {
+            responsive: true, maintainAspectRatio: false,
+            plugins: { legend: { display: false }, tooltip: {enabled: true} },
+            rotation: 225,
+            circumference: 270,
+            animation: { animateScale: false, animateRotate: true, duration: 2500, easing: 'easeOutBounce' }
+        }
+    });
+
+    // 6. GRAFICO PLACEHOLDER DE CRECIMIENTO MENSUAL (BARRAS) 
+    const ctxW = document.getElementById('chartWeight').getContext('2d');
+    new Chart(ctxW, {
+        type: 'bar',
+        data: {
+            labels: ['Ene', 'Feb', 'Mar'],
+            datasets: [{
+                label: 'Nuevos Usuarios',
+                data: [15, 22, 18], 
+                backgroundColor: [
+                    createGradient(ctxW, '#10b981', 'rgba(16,185,129,0.2)'),
+                    createGradient(ctxW, '#5b73e8', 'rgba(91,115,232,0.2)'),
+                    createGradient(ctxW, '#ffc107', 'rgba(255,193,7,0.2)')
+                ],
+                borderRadius: 6,
+                borderWidth: 0,
+                barThickness: 25
+            }]
+        },
+        options: {
+            responsive: true, maintainAspectRatio: false,
+            animation: progressiveAnimation,
+            plugins: { legend: { display: false } },
+            scales: { x: { grid: { display: false } }, y: { display: false, beginAtZero: true } }
+        }
+    });
 </script>
+
 
 
 {% endblock %}

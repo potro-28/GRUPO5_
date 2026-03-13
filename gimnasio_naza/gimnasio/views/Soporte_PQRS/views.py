@@ -7,17 +7,12 @@ from django.urls import reverse_lazy
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 from django.contrib import messages
-
+from django.db.models import Count
 from gimnasio.models import *
 from gimnasio.forms import Soporte_PQRSForm
 
 #Listar Soporte_PQRS
-def listar_Soporte_PQRS(request):
-    nombre ={
-        'titulo':'Listado de Soportes y PQRS',
-        'Soporte_PQRS': Soporte_PQRS.objects.all()
-    }
-    return render(request,'Soporte_PQRS/listar.html', nombre)
+
 
 class Soporte_PQRSListView(ListView):
     model = Soporte_PQRS
@@ -38,8 +33,15 @@ class Soporte_PQRSListView(ListView):
     #METODO GET CONTEXT DATA
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+
         context['titulo'] = 'Listado de Soporte y PQRS'
         context['crear_url'] = reverse_lazy('gimnasio:crear_Soporte_PQRS')
+
+        context['total_peticion'] = Soporte_PQRS.objects.filter(tipo="peticion").count()
+        context['total_queja'] = Soporte_PQRS.objects.filter(tipo="queja").count()
+        context['total_reclamo'] = Soporte_PQRS.objects.filter(tipo="reclamo").count()
+        context['total_sugerencia'] = Soporte_PQRS.objects.filter(tipo="sugerencia").count()
+
         return context
 
 #Crear Soporte_PQRS   
@@ -54,6 +56,7 @@ class Soporte_PQRSCreateView(CreateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['titulo'] = 'Crear Soporte y PQRS'
+        context['listar_url'] = reverse_lazy('gimnasio:listar_Soporte_PQRS')
         return context
     
     def form_valid(self, form):

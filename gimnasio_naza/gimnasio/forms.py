@@ -395,6 +395,10 @@ class Reportes_estadisticasForm(forms.ModelForm):
             'tipo_reporte': forms.Select(attrs={ 
                 'class': 'form-control',
             }),
+            'descripcion' : forms.TextInput(attrs={ 
+                'class':'form-control',
+                
+                'placeholder': 'Ingrese la descripcion del reporte o estadistica'}),
             'fecha_generacion': forms.DateInput(attrs={ 
                 'class': 'form-control',
                 'type': 'date'
@@ -418,6 +422,16 @@ class Reportes_estadisticasForm(forms.ModelForm):
         if fecha_generacion < date(2025, 1, 1):
             raise forms.ValidationError("La fecha no puede ser anterior al 1 de enero de 2025.")
         return fecha_generacion
+    
+    def clean_descripcion(self):
+        descripcion = self.cleaned_data['descripcion']
+
+        if len(descripcion) < 10:
+            raise forms.ValidationError("La descripción debe tener mínimo 10 caracteres")
+        if len(descripcion) > 200:
+            raise forms.ValidationError("La descripcion  no debe tener mas de 200 caracteres")
+
+        return descripcion
         
 class CategoriaForm(forms.ModelForm):
 
