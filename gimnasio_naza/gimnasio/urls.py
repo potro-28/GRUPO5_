@@ -53,6 +53,7 @@ urlpatterns = [
     path('crear_asistencia/', AsistenciaCreateView.as_view(), name='crear_asistencia'),
     path('editar_asistencia/<int:pk>/', AsistenciaUpdateView.as_view(), name='editar_asistencia'),
     path('eliminar_asistencia/<int:pk>/', AsistenciaDeleteView.as_view(), name='eliminar_asistencia'),
+    path('registrar_asistencia_qr/',QR_register.as_view(), name='registrarQr'),
     path('exportar_asistencia_pdf', ExportarAsistenciaPDF.as_view(), name='exportar_asistencia_pdf'),
     path('exportar_asistencia_excel', ExportarAsistenciaExcel.as_view(), name='exportar_asistencia_excel'),
     #Membresias
@@ -151,5 +152,4 @@ urlpatterns = [
     path('dashboard/', DashboardView.as_view(), name='dashboard'),
     path('backup/',backup, name='backup'),
     path('backup/restaurar',restaurar_datos, name='restaurar_datos'),
-   
 ]

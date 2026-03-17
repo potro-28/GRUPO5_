@@ -29,6 +29,7 @@ INSTALLED_APPS = [
     'widget_tweaks',
     'login',
     'gimnasio',
+    'qr_code',
 ]
 
 
@@ -74,7 +75,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'gimnasio_db',
         'USER': 'root',
-        'PASSWORD': 'mamitas39',
+        'PASSWORD': '123456789',
         'HOST': 'localhost',
         'PORT' : '3306',
     }
