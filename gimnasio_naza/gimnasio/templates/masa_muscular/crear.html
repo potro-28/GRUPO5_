@@ -15,7 +15,6 @@
         <div class="card-body">
             {% csrf_token %}
 
-            {# Mostrar errores generales del formulario #}
             {% if form.errors %}
             <div class="alert alert-danger alert-dismissible">
                 <button type="button" class="close" data-bs-dismiss="alert">×</button>
@@ -35,15 +34,40 @@
             <div class="form-group">
                 <label for="{{ field.id_for_label }}">{{ field.label }}:</label>
 
-                {% if field.errors %}
-                    {{ field|add_class:'form-control is-invalid'|attr:'autocomplete:off' }}
+                {% if field.name == 'fk_Nutricion' %}
+                    <div class="d-flex">
+                        {% if field.errors %}
+                            {{ field|add_class:'form-control is-invalid' }}
+                        {% else %}
+                            {{ field|add_class:'form-control' }}
+                        {% endif %}
+
+                        <button type="button" class="btn btn-success ms-2" data-bs-toggle="modal" data-bs-target="#modalNutricion">
+                            +
+                        </button>
+                    </div>
+
+                    {% if field.errors %}
                     <div class="invalid-feedback d-block">
                         {% for error in field.errors %}
-                        <div>{{ error }}</div>
+                            <div>{{ error }}</div>
                         {% endfor %}
                     </div>
+                    {% endif %}
+
                 {% else %}
-                    {{ field|add_class:'form-control'|attr:'autocomplete:off' }}
+
+                    {% if field.errors %}
+                        {{ field|add_class:'form-control is-invalid'|attr:'autocomplete:off' }}
+                        <div class="invalid-feedback d-block">
+                            {% for error in field.errors %}
+                                <div>{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ field|add_class:'form-control'|attr:'autocomplete:off' }}
+                    {% endif %}
+
                 {% endif %}
             </div>
             {% endfor %}
@@ -62,9 +86,100 @@
 
     </div>
 </form>
+
+<!-- 🔹 MODAL -->
+<div class="modal fade" id="modalNutricion" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h5>Crear Nutrición</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body">
+
+        <select id="nivel_actividad" class="form-control mb-2">
+            <option value="">Seleccione nivel actividad</option>
+            <option value="bajo">Bajo</option>
+            <option value="medio">Medio</option>
+            <option value="alto">Alto</option>
+        </select>
+
+        <select id="tipo_objetivo" class="form-control mb-2">
+            <option value="">Seleccione objetivo</option>
+            <option value="perder_peso">Perder peso</option>
+            <option value="mantener">Mantener</option>
+            <option value="ganar_masa">Ganar masa</option>
+        </select>
+
+        <select id="tipo_dieta" class="form-control mb-2">
+            <option value="">Seleccione dieta</option>
+            <option value="keto">Keto</option>
+            <option value="balanceada">Balanceada</option>
+            <option value="hiperproteica">Hiperproteica</option>
+        </select>
+
+        <select id="fk_usuario" class="form-control">
+        <option value="">Seleccione usuario</option>
+        {% for u in usuarios %}
+        <option value="{{ u.id }}">{{ u.nombre_usuario }}</option>
+        {% endfor %}
+        </select>
+
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-primary" onclick="crearNutricion()">Guardar</button>
+      </div>
+      <script>
+function crearNutricion() {
+
+    let nivel = document.getElementById("nivel_actividad").value;
+    let objetivo = document.getElementById("tipo_objetivo").value;
+    let dieta = document.getElementById("tipo_dieta").value;
+    let usuario = document.getElementById("fk_usuario").value;
+
+    if (!nivel || !objetivo || !dieta || !usuario) {
+        Swal.fire("Error", "Todos los campos son obligatorios", "error");
+        return;
+    }
+
+    fetch("{% url 'gimnasio:crear_nutricion_ajax' %}", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": "{{ csrf_token }}"
+        },
+        body: JSON.stringify({
+            nivel_actividad: nivel,
+            tipo_objetivo: objetivo,
+            tipo_dieta: dieta,
+            fk_usuario: usuario
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+
+        let select = document.getElementById("id_fk_Nutricion");
+        let option = new Option(data.nombre, data.id, true, true);
+        select.add(option);
+
+        document.querySelector("#modalNutricion .btn-close").click();
+
+        Swal.fire("Correcto", "Nutrición creada", "success");
+    });
+}
+</script>
+
+    </div>
+  </div>
+</div>
+
 {% endblock %}
 
 {% block js %}
+
 {% if form.errors %}
 <script>
 Swal.fire({
@@ -74,4 +189,45 @@ Swal.fire({
 });
 </script>
 {% endif %}
+
+<script>
+function crearNutricion() {
+
+    let nivel = document.getElementById("nivel_actividad").value;
+    let objetivo = document.getElementById("tipo_objetivo").value;
+    let dieta = document.getElementById("tipo_dieta").value;
+    let usuario = document.getElementById("fk_usuario").value;
+
+    if (!nivel || !objetivo || !dieta || !usuario) {
+        Swal.fire("Error", "Todos los campos son obligatorios", "error");
+        return;
+    }
+
+    fetch("{% url 'gimnasio:crear_nutricion_ajax' %}", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": "{{ csrf_token }}"
+        },
+        body: JSON.stringify({
+            nivel_actividad: nivel,
+            tipo_objetivo: objetivo,
+            tipo_dieta: dieta,
+            fk_usuario: usuario
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+
+        let select = document.getElementById("id_fk_Nutricion");
+        let option = new Option(data.nombre, data.id, true, true);
+        select.add(option);
+
+        document.querySelector("#modalNutricion .btn-close").click();
+
+        Swal.fire("Correcto", "Nutrición creada", "success");
+    });
+}
+</script>
+
 {% endblock %}

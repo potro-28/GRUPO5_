@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-#from django.http import HttpResponse,JsonResponse
+from django.http import HttpResponse,JsonResponse
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
@@ -10,6 +10,34 @@ from django.contrib import messages
 from django.db.models import Count
 from gimnasio.models import *
 from gimnasio.forms import Soporte_PQRSForm
+import json
+
+@csrf_exempt
+def crear_usuario_ajax(request):
+    import json
+    from datetime import date
+
+    data = json.loads(request.body)
+
+    usuario = Usuario.objects.create(
+        documento=data['documento'],
+        nombre_usuario=data['nombre'],
+        apellido_usuario=data['apellido'],
+        correo_usuario=data['correo'],
+        telefono_usuario=data.get('telefono', ''),
+        fecha_nacimiento=data.get('fecha_nacimiento', '2000-01-01'),
+        peso_usuario=data.get('peso', 0),
+        altura_usuario=data.get('altura', 0),
+        genero_usuario=data.get('genero', 'M'),
+        rol='cliente',
+        estado='activo',
+        fecha_registro=date.today()
+    )
+
+    return JsonResponse({
+        'id': usuario.id,
+        'nombre': f"{usuario.nombre_usuario} {usuario.apellido_usuario}"
+    })
 
 #Listar Soporte_PQRS
 
