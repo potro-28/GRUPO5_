@@ -227,11 +227,12 @@ class ExportarUsuariosPDF(DjangoView):
         
         # Llamar funcion de exportacion a PDF
         return exportar_pdf(
+            request,
             titulo='REPORTE DE USUARIOS',
             columnas=columnas,
             datos=datos,
             nombre_archivo=nombre_archivo
-        )
+        ) 
 class ExportarUsuariosExcel(DjangoView):
     """
     VISTA PARA EXPORTAR USUARIOS A EXCEL

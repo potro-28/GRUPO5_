@@ -57,18 +57,18 @@
             <h5 class="mb-0">Listado de Mantenimientos</h5>
             <div class="d-flex gap-2 flex-wrap">
                 <div class="dropdown">
-                    <buttonclass="btn btn-primary dropdown-toggle" type="button" id="dropdownExportar" data-bs-toggle="dropdown" aria-expanded="false">
+                    <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownExportar" data-bs-toggle="dropdown" aria-expanded="false">
                         <i class="icon-base ri ri-file-chart-line icon-18px me-1"></i>Exportar
                     </button>
                     <ul class="dropdown-menu" aria-labelledby="dropdownExportar">
                         <li>
                             <a class="dropdown-item" href="{% url 'gimnasio:exportar_mantenimiento_excel' %}">
-                                <i class="ri ri-file-excel-2-line me-2 text-success"></i>Exportar a Excel
+                                <i class="ri ri-file-excel-2-fill me-2 text-success"></i>Exportar a Excel
                             </a>
                         </li>
                         <li>
                             <a class="dropdown-item" href="{% url 'gimnasio:exportar_mantenimiento_pdf' %}">
-                                <i class="ri ri-file-pdf-line me-2 text-danger"></i>Exportar a PDF
+                                <i class="ri ri-file-pdf-fill me-2 text-danger"></i>Exportar a PDF
                             </a>
                         </li>
                     </ul>
