@@ -125,20 +125,15 @@
 
     <!-- ====== ENCABEZADO DEL REPORTE ====== -->
     <div class="header">
-        <div class="header-content">
-            <!-- LOGO GYM NAZARETH -->
-             <div class="logotipo" style="
-             width: 70px;
-             height: 70px;
-             border-radius: 50%;
-             border: 2px solid #1f4788;
-             overflow: hidden;
-             background-image: url('{{ logo_url }}');
-             background-size: cover;
-             background-position: center;
-             flex-shrink: 0;">
-</div>
-        
+       <div class="logotipo" style="
+        width: 70px;
+        height: 70px;
+        background-image: url('{{ logo_url }}');
+        background-size: contain;
+        background-position: center;
+        background-repeat: no-repeat;
+    ">
+    </div>       
             <!-- TÍTULO Y SUBTÍTULO -->
             <div class="header-text">
                 <h1>{{ titulo }}</h1>

@@ -16,21 +16,21 @@ from django.conf import settings
 
 
 # ====== EXPORTACION A PDF ======
-def exportar_pdf(request, titulo, columnas, datos, nombre_archivo):  # ✅ 'título' -> 'titulo' (sin tilde)
-    logo_url = request.build_absolute_uri(static('img/gym-nazaret.jpg'))  # ✅ 'logotipo_url' -> 'logo_url'
+def exportar_pdf(request, titulo, columnas, datos, nombre_archivo):  #  'título' -> 'titulo' (sin tilde)
+    logo_url = request.build_absolute_uri(static('img/gym.jpeg'))  #  'logotipo_url' -> 'logo_url'
 
     # Crear contexto para el template
     contexto = {
         'titulo': titulo,
         'columnas': columnas,
         'datos': datos,
-        'logo_url': logo_url,   # ✅ ahora coincide con la variable definida arriba
+        'logo_url': logo_url,   #  ahora coincide con la variable definida arriba
         'now': timezone.now(),
     }
 
     html_string = render_to_string('reportes/reporte_pdf.html', contexto)
 
-    html_object = HTML(string=html_string, base_url=request.build_absolute_uri('/'))  # ✅ base_url correcta
+    html_object = HTML(string=html_string, base_url=request.build_absolute_uri('/'))  # base_url correcta
 
     pdf_bytes = html_object.write_pdf()
 

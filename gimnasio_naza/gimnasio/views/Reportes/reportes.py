@@ -37,6 +37,7 @@ class ExportarAsistenciaPDF(DjangoView):
         
         # Llamar funcion de exportacion a PDF
         return exportar_pdf(
+            request,
             titulo='REPORTE DE ASISTENCIAS',
             columnas=columnas,
             datos=datos,
@@ -103,6 +104,7 @@ class ExportarMembresiaPDF(DjangoView):
         
         # Llamar funcion de exportacion a PDF
         return exportar_pdf(
+            request,
             titulo='REPORTE DE MEMBRESIAS',
             columnas=columnas,
             datos=datos,
@@ -168,6 +170,7 @@ class ExportarElementosPDF(DjangoView):
         
         # Llamar funcion de exportacion a PDF
         return exportar_pdf(
+            request,
             titulo='REPORTE DE ELEMENTOS',
             columnas=columnas,
             datos=datos,
@@ -287,6 +290,7 @@ class ExportarmantenimientoPDF(DjangoView):
         
         # Llamar funcion de exportacion a PDF
         return exportar_pdf(
+            request,
             titulo='REPORTE DE MANTENIMIENTO',
             columnas=columnas,
             datos=datos,
@@ -345,6 +349,7 @@ class ExportarRegistrovisitantestemporalesPDF(DjangoView):
         
         # Llamar funcion de exportacion a PDF
         return exportar_pdf(
+            request,
             titulo='REPORTE DE CERTIFICACIONES INTERNAS',
             columnas=columnas,
             datos=datos,
@@ -406,6 +411,7 @@ class ExportarTurnodeentrenadorPDF(DjangoView):
         
         # Llamar funcion de exportacion a PDF
         return exportar_pdf(
+            request,
             titulo='REPORTE DE TURNO DE ENTRENADOR ',
             columnas=columnas,
             datos=datos,
@@ -467,6 +473,7 @@ class ExportarCertificacioninternaPDF(DjangoView):
         
         # Llamar funcion de exportacion a PDF
         return exportar_pdf(
+            request,
             titulo='REPORTE DE CERTIFICACIONES INTERNAS',
             columnas=columnas,
             datos=datos,
@@ -528,6 +535,7 @@ class ExportarReportes_estadisticasPDF(DjangoView):
         
         # Llamar funcion de exportacion a PDF
         return exportar_pdf(
+            request,
             titulo='REPORTE Y ESTADISTICAS',
             columnas=columnas,
             datos=datos,
@@ -591,6 +599,7 @@ class ExportarSoporte_PQRSPDF(DjangoView):
         
         # Llamar funcion de exportacion a PDF
         return exportar_pdf(
+            request,
             titulo='SOPORTE Y PQRS',
             columnas=columnas,
             datos=datos,
@@ -647,6 +656,7 @@ class ExportarSancionPDF(DjangoView):
         nombre_archivo = f'Reporte_sanciones_{datetime.now().strftime("%d_%m_%Y")}'
 
         return exportar_pdf(
+            request,
             titulo='REPORTE DE SANCIONES',
             columnas=columnas,
             datos=datos,
