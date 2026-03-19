@@ -251,28 +251,7 @@
     </div>
 </div>
     <div class="card">
-    <div class="card-header d-flex justify-content-between align-items-center flex-wrap gap-2">       
-            <h5 class="mb-0">Listado de Reportes y Estadisticas</h5>
-            <div class="d-flex gap-2 flex-wrap">
-            <div class="dropdown">
-                    <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownExportar" data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="icon-base ri ri-file-chart-line icon-18px me-1"></i>Exportar
-                    </button>
-                    <ul class="dropdown-menu" aria-labelledby="dropdownExportar">
-                        <li>
-                            <a class="dropdown-item" href="{% url 'gimnasio:ExportarReportes_estadisticasEXCEL' %}">
-                                <i class="ri ri-file-excel-2-line me-2 text-success"></i>Exportar a Excel
-                            </a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item" href="{% url 'gimnasio:ExportarReportes_estadisticasPDF' %}">
-                                <i class="ri ri-file-pdf-line me-2 text-danger"></i>Exportar a PDF
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-        </div>
-    </div>
+    
 </div>
 
 
@@ -317,8 +296,53 @@
             </div>
         </div>
     </div>
+</div>
+
+<div class="row mt-3">
+
+    
+    <div class="col-md-3">
+        <div class="card indicador h-100">
+            <div class="card-body text-center">
+                <h6>
+                    <i class="fa-solid fa-square-poll-vertical"></i> Encuestas
+                </h6>
+                <h3>{{ total_encuestas }}</h3>
+                <p>Encuestas registradas</p>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="col-md-3">
+        <div class="card indicador h-100">
+            <div class="card-body text-center">
+                <h6>
+                    <i class="fa-solid fa-bell"></i> Notificaciones
+                </h6>
+                <h3>{{ total_notificaciones }}</h3>
+                <p>Notificaciones</p>
+            </div>
+        </div>
+    </div>
+
+    
+    <div class="col-md-3">
+        <div class="card indicador h-100">
+            <div class="card-body text-center">
+                <h6>
+                    <i class="fa-solid fa-gavel"></i> Sanciones
+                </h6>
+                <h3>{{ total_sanciones }}</h3>
+                <p>Sanciones registradas</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3"></div>
 
 </div>
+
 
 <div class="card card-vencer mt-4">
 
@@ -371,7 +395,6 @@
 
     <div class="row cards-mantenimiento">
 
-        <!-- Pendientes -->
         <div class="col-md-4">
             <div class="card card-mini card-pendiente">
                 <div class="card-body text-center">
@@ -386,7 +409,6 @@
             </div>
         </div>
 
-        <!-- En proceso -->
         <div class="col-md-4">
             <div class="card card-mini card-proceso">
                 <div class="card-body text-center">
@@ -401,7 +423,6 @@
             </div>
         </div>
 
-        <!-- Completados -->
         <div class="col-md-4">
             <div class="card card-mini card-completado">
                 <div class="card-body text-center">

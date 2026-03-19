@@ -115,7 +115,6 @@ function crearUsuario() {
     };
 
     if (!data.documento || !data.nombre || !data.apellido || !data.correo) {
-        Swal.fire("Error", "Todos los campos son obligatorios", "error");
         return;
     }
 

@@ -11,7 +11,7 @@ from django.urls import reverse_lazy
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib import messages
 
-from gimnasio.models import Reportes_estadisticas, Usuario, Asistencia, Membresia, Elemento, Soporte_PQRS, Mantenimiento
+from gimnasio.models import *
 from gimnasio.forms import Reportes_estadisticasForm
 
 #Listar Reportes y estadisticas
@@ -95,8 +95,9 @@ class Reportes_estadisticasListView(ListView):
         context['rutinas_data'] = json.dumps([])
         context['porcentaje_activas'] = 0
         context['porcentaje_inactivas'] = 0
-        
         return context
+    
+    
 
 #Crear Reportes_estadisticas  
 class Reportes_estadisticasCreateView(CreateView):
@@ -195,6 +196,9 @@ class DashboardView1(TemplateView):
         context['usuarios_activos'] = Usuario.objects.filter(estado='activo').count()
         context['elementos_mantenimiento'] = Mantenimiento.objects.filter(
         estado__in=['pendiente', 'en proceso']).count()
+        context['total_encuestas'] = Encuesta.objects.count()
+        context['total_notificaciones'] = Notificacion.objects.count()
+        context['total_sanciones'] = Sancion.objects.count()
         
         # Membresías vigentes (Iniciaron hoy o antes, y terminan hoy o después)
         membresias_activas = Membresia.objects.filter(fecha_inicio__lte=hoy, fecha_fin__gte=hoy).count()

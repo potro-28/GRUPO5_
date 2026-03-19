@@ -6,15 +6,14 @@
 <form method="post" action=".">
     <div class="card card-default">
 
-```
-    <div class="card-header">
-        <h3 class="card-title">
-            <i class="fas fa-search"></i>
-            {{ titulo }}
-        </h3>
-    </div>
+        <div class="card-header">
+            <h3 class="card-title">
+                <i class="fas fa-search"></i>
+                {{ titulo.Encuesta }}
+            </h3>
+        </div>
 
-    <div class="card-body">
+        <div class="card-body">
             {% csrf_token %}
 
             {% if form.errors %}
@@ -31,21 +30,20 @@
                 <div class="d-flex">
                     {{ field|add_class:'form-control' }}
 
-                    
-                    <button type="button" class="btn btn-success ms-2" data-bs-toggle="modal" data-bs-target="#modalUsuario">
+                    <button type="button" class="btn btn-success ms-2"
+                        data-bs-toggle="modal" data-bs-target="#modalUsuario">
                         +
                     </button>
                 </div>
                 {% else %}
-                    {{ field|add_class:'form-control' }}
+                {{ field|add_class:'form-control' }}
                 {% endif %}
 
                 {% for error in field.errors %}
-                    <div class="text-danger">{{ error }}</div>
+                <div class="text-danger">{{ error }}</div>
                 {% endfor %}
             </div>
             {% endfor %}
-
         </div>
 
         <div class="card-footer">
@@ -53,7 +51,7 @@
                 Guardar
             </button>
 
-            <a href="{% url 'gimnasio:listar_masa_corporal_clas' %}" class="btn btn-danger">
+            <a href="{% url 'gimnasio:listar_Soporte_PQRS' %}" class="btn btn-danger">
                 Cancelar
             </a>
         </div>
@@ -61,42 +59,40 @@
     </div>
 </form>
 
-
+<!-- MODAL -->
 <div class="modal fade" id="modalUsuario" tabindex="-1">
-  <div class="modal-dialog">
-    <div class="modal-content">
+    <div class="modal-dialog">
+        <div class="modal-content">
 
-      <div class="modal-header">
-        <h5>Crear Usuario</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-      </div>
+            <div class="modal-header">
+                <h5>Crear Usuario</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
 
-      <div class="modal-body">
+            <div class="modal-body">
 
-        <input type="text" id="documento" class="form-control mb-2" placeholder="Documento">
-        <input type="text" id="nombre" class="form-control mb-2" placeholder="Nombre">
-        <input type="text" id="apellido" class="form-control mb-2" placeholder="Apellido">
-        <input type="email" id="correo" class="form-control mb-2" placeholder="Correo">
-        <input type="text" id="telefono" class="form-control mb-2" placeholder="Teléfono">
+                <input type="text" id="documento" class="form-control mb-2" placeholder="Documento">
+                <input type="text" id="nombre" class="form-control mb-2" placeholder="Nombre">
+                <input type="text" id="apellido" class="form-control mb-2" placeholder="Apellido">
+                <input type="email" id="correo" class="form-control mb-2" placeholder="Correo">
+                <input type="text" id="telefono" class="form-control mb-2" placeholder="Teléfono">
+                <input type="date" id="fecha_nacimiento" class="form-control mb-2">
+                <input type="number" id="peso" class="form-control mb-2" placeholder="Peso">
+                <input type="number" id="altura" class="form-control mb-2" placeholder="Altura">
 
-        <input type="date" id="fecha_nacimiento" class="form-control mb-2">
+                <select id="genero" class="form-control mb-2">
+                    <option value="M">Masculino</option>
+                    <option value="F">Femenino</option>
+                </select>
 
-        <input type="number" id="peso" class="form-control mb-2" placeholder="Peso">
-        <input type="number" id="altura" class="form-control mb-2" placeholder="Altura">
+            </div>
 
-        <select id="genero" class="form-control mb-2">
-            <option value="M">Masculino</option>
-            <option value="F">Femenino</option>
-        </select>
+            <div class="modal-footer">
+                <button class="btn btn-primary" onclick="crearUsuario()">Guardar</button>
+            </div>
 
-      </div>
-
-      <div class="modal-footer">
-        <button class="btn btn-primary" onclick="crearUsuario()">Guardar</button>
-      </div>
-
+        </div>
     </div>
-  </div>
 </div>
 
 {% endblock %}
@@ -118,8 +114,9 @@ function crearUsuario() {
         genero: document.getElementById("genero").value
     };
 
+    // ✅ VALIDACIÓN MEJORADA
     if (!data.documento || !data.nombre || !data.apellido || !data.correo) {
-        Swal.fire("Error", "Todos los campos son obligatorios", "error");
+        Swal.fire("Error", "Completa los campos obligatorios", "error");
         return;
     }
 
@@ -127,14 +124,20 @@ function crearUsuario() {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
-            "X-CSRFToken": "{{ csrf_token }}"
+        
+            "X-CSRFToken": document.querySelector('[name=csrfmiddlewaretoken]').value
         },
         body: JSON.stringify(data)
     })
     .then(response => response.json())
     .then(data => {
 
-        let select = document.getElementById("id_fk_Usuario");
+        if (data.error) {
+            Swal.fire("Error", data.error, "error");
+            return;
+        }
+
+        let select = document.getElementById("id_fk_usuario");
 
         let option = new Option(data.nombre, data.id, true, true);
         select.add(option);
@@ -142,7 +145,10 @@ function crearUsuario() {
         let modal = bootstrap.Modal.getInstance(document.getElementById('modalUsuario'));
         modal.hide();
 
-        Swal.fire("Correcto", "usuaio creado", "success");
+        Swal.fire("Correcto", "Usuario creado correctamente", "success");
+    })
+    .catch(error => {
+        Swal.fire("Error", "Ocurrió un error en la petición", "error");
     });
 }
 </script>
