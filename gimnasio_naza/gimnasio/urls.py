@@ -63,6 +63,7 @@ urlpatterns = [
     path('eliminar_membresia/<int:pk>/', MembresiaDeleteView.as_view(), name='eliminar_membresia'),
     path('exportar_membresia_pdf', ExportarMembresiaPDF.as_view(), name='exportar_membresia_pdf'),
     path('exportar_membresia_excel', ExportarMembresiaExcel.as_view(), name='exportar_membresia_excel'),
+    path('crear-usuario-ajax/', crear_usuario_ajax, name='crear_usuario_ajax'),
 
     #Notificaciones
     path('listar_notificacion/', NotificacionListView.as_view(), name='listar_notificacion'),

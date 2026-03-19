@@ -2,77 +2,141 @@
 {% load widget_tweaks %}
 
 {% block contenido %}
+
 <form method="post" action=".">
     <div class="card card-default">
 
-        <div class="card-header">
-            <h3 class="card-title">
-                <i class="fas fa-search"></i>
-                {{ titulo }}
-            </h3>
-        </div>
 
-        <div class="card-body">
+    <div class="card-header">
+        <h3 class="card-title">
+            <i class="fas fa-search"></i>
+            {{ titulo }}
+        </h3>
+    </div>
+
+    <div class="card-body">
             {% csrf_token %}
 
-            
             {% if form.errors %}
-            <div class="alert alert-danger alert-dismissible">
-                <button type="button" class="close" data-bs-dismiss="alert">×</button>
-                <h5><i class="icon fas fa-ban"></i> Error! Verifica los siguientes campos.</h5>
-
-                {% if form.non_field_errors %}
-                <ul class="mb-0">
-                    {% for error in form.non_field_errors %}
-                    <li>{{ error }}</li>
-                    {% endfor %}
-                </ul>
-                {% endif %}
+            <div class="alert alert-danger">
+                <strong>Error:</strong> Verifica los campos.
             </div>
             {% endif %}
 
-            
             {% for field in form.visible_fields %}
-            <div class="form-group">
-                <label for="{{ field.id_for_label }}">{{ field.label }}:</label>
+            <div class="form-group mb-3">
+                <label>{{ field.label }}</label>
 
-                {% if field.errors %}
-                    {{ field|add_class:'form-control is-invalid'|attr:'autocomplete:off' }}
-                    <div class="invalid-feedback d-block">
-                        {% for error in field.errors %}
-                        <div>{{ error }}</div>
-                        {% endfor %}
-                    </div>
+                {% if field.name == 'fk_membresia' %}
+                <div class="d-flex">
+                    {{ field|add_class:'form-control' }}
+
+                    
+                    <button type="button" class="btn btn-success ms-2" data-bs-toggle="modal" data-bs-target="#modalmembresia">
+                        +
+                    </button>
+                </div>
                 {% else %}
-                    {{ field|add_class:'form-control'|attr:'autocomplete:off' }}
+                    {{ field|add_class:'form-control' }}
                 {% endif %}
+
+                {% for error in field.errors %}
+                    <div class="text-danger">{{ error }}</div>
+                {% endfor %}
             </div>
             {% endfor %}
 
         </div>
 
         <div class="card-footer">
-            <button type="submit" class="btn btn-p rimary">
-                <i class="fas fa-save"></i> Guardar registro
+            <button type="submit" class="btn btn-primary">
+                Guardar
             </button>
 
             <a href="{% url 'gimnasio:listar_asistencia' %}" class="btn btn-danger">
-                <i class="fas fa-times"></i> Cancelar
+                Cancelar
             </a>
         </div>
 
     </div>
 </form>
+
+
+<div class="modal fade" id="modalmembresia" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h5>Crear Membresia</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body">
+
+        <input type="text" id="fecha_inicio" class="form-control mb-2" placeholder="Documento">
+        <input type="text" id="fecha_fin" class="form-control mb-2" placeholder="Nombre">
+          <select id="estado" class="form-control mb-2">
+            <option value="inactivo">Inactivo</option>
+            <option value="activo">Activo</option>
+        </select>
+        <input type="text" id="codigo_qr" class="form-control mb-2" placeholder="Codigo QR">
+        
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-primary" onclick="crearMembresia()">Guardar</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
 {% endblock %}
 
 {% block js %}
-{% if form.errors %}
+
 <script>
-Swal.fire({
-    title: "Error!",
-    text: "Verifica los campos ingresados",
-    icon: "error"
-});
+function crearUsuario() {
+
+    let data = {
+        documento: document.getElementById("documento").value,
+        nombre: document.getElementById("nombre").value,
+        apellido: document.getElementById("apellido").value,
+        correo: document.getElementById("correo").value,
+        telefono: document.getElementById("telefono").value,
+        fecha_nacimiento: document.getElementById("fecha_nacimiento").value,
+        peso: document.getElementById("peso").value,
+        altura: document.getElementById("altura").value,
+        genero: document.getElementById("genero").value
+    };
+
+    if (!data.documento || !data.nombre || !data.apellido || !data.correo) {
+        Swal.fire("Error", "Todos los campos son obligatorios", "error");
+        return;
+    }
+
+    fetch("{% url 'gimnasio:crear_usuario_ajax' %}", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": "{{ csrf_token }}"
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(data => {
+
+        let select = document.getElementById("id_fk_Usuario");
+
+        let option = new Option(data.nombre, data.id, true, true);
+        select.add(option);
+
+        let modal = bootstrap.Modal.getInstance(document.getElementById('modalUsuario'));
+        modal.hide();
+
+        Swal.fire("Correcto", "usuaio creado", "success");
+    });
+}
 </script>
-{% endif %}
+
 {% endblock %}
