@@ -74,14 +74,7 @@ class ElementoForm(forms.ModelForm):
 class UsuarioForm(forms.ModelForm):
     class Meta:
         model = Usuario
-        fields = '__all__'
-        widgets = {
-            'fecha_nacimiento': forms.DateInput(attrs={'type': 'date'}),
-            'fecha_inicio': forms.DateInput(attrs={'type': 'date'}),
-            'fecha_registro': forms.DateInput(attrs={'type': 'date'}),
-            
-        }
-
+        exclude = ['user', 'estado', 'fecha_registro']
     def clean(self):
         cleaned_data = super().clean()
         documento = cleaned_data.get('documento')
@@ -711,7 +704,7 @@ class RegistrovisitantetemporalForm(ModelForm):
     
 class TurnodeentrenadorForm(ModelForm):
     administrador = forms.ModelChoiceField(
-        queryset=User.objects.filter(is_active=True, is_superuser=True),
+        queryset=Usuario.objects.filter(rol='Admin'),
         empty_label="Seleccione un administrador",
         widget=forms.Select(attrs={'class': 'form-control'}),
         label="Administrador",
@@ -813,3 +806,12 @@ class CertificacioninternaForm(ModelForm):
             "La fecha de certificación no puede ser una fecha futura."
         )
         return fecha_certificacion    
+
+class UserForm(forms.ModelForm):
+    password = forms.CharField(widget=forms.PasswordInput, required=False)
+    
+    class Meta:
+        model = User
+        fields = ['username','password']
+        
+

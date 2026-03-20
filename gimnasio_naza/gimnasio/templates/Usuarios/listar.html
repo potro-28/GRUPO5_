@@ -110,10 +110,12 @@
                                     class="btn btn-sm btn-text-secondary rounded-pill btn-icon item-edit">
                                     <i class="icon-base ri ri-edit-box-line icon-22px"></i>
                                 </a>
-                                <a href="{% url 'gimnasio:eliminar_usuario' u.id %}"
-                                    class="btn btn-sm btn-text-secondary rounded-pill btn-icon item-trash">
-                                    <i class="icon-base ri ri-delete-bin-line icon-22px"></i>
-                                </a>
+                                <form action="{% url 'gimnasio:eliminar_usuario' u.id %}" method="post" class="d-inline">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-sm btn-text-secondary rounded-pill btn-icon item-trash" onclick="return confirm('¿Estás seguro de eliminar este usuario {{u.nombre}}');">
+                                        <i class="icon-base ri ri-delete-bin-line icon-22px"></i>
+                                    </button>
+                                </form>
                             </td>
                         </tr>
                         {% empty %}
