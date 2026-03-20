@@ -19,7 +19,7 @@
     .card-dash { background-color: #ffffff; border-radius: 16px; padding: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.03); border: 1px solid rgba(255,255,255,0.8); transition: all 0.4s ease; }
     .card-dash:hover { transform: translateY(-5px); box-shadow: 0 15px 35px rgba(91, 115, 232, 0.08); }
     
-    .card-title { font-size: 17px; font-weight: 600; color: #2c3e50; margin-bottom: 15px; text-align: center; }
+    .card-title { font-size: 17px; font-weight: 600; color: #ffffff; margin-bottom: 15px; text-align: center; }
     .card-subtitle { font-size: 12px; color: #5b73e8; background-color: #eef2fa; padding: 5px 12px; border-radius: 20px; display: inline-block; margin-bottom: 20px; font-weight: 500; }
 
     /* Grillas */
@@ -42,7 +42,7 @@
     .grid-bottom-charts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 25px; }
     .bottom-chart-card { text-align: center; display: flex; flex-direction: column; align-items: center; }
     .donut-container { position: relative; width: 220px; height: 220px; margin: 0 auto; }
-    .donut-inner-text { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; }
+    .donut-inner-text { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center;color: #0582f8; }
     .donut-inner-text span { display: block; font-size: 13px; color: #8b9eb0; font-weight: 500; margin-bottom: 5px;}
     .donut-inner-text h2 { font-size: 38px; color: #2c3e50; line-height: 1; font-weight: 700; margin: 0;}
 
@@ -233,10 +233,10 @@
     new Chart(document.getElementById('chartSleepGauge'), {
         type: 'doughnut',
         data: {
-            labels: ['Activas', 'Vencidas'],
+            labels: ['Activas', 'Inactivas'],
             datasets: [{
                 data: [pctActivas, pctInactivas],
-                backgroundColor: ['#00cfd5', '#eef2fa'],
+                backgroundColor: ['#00cfd5', '#ff3333'],
                 borderWidth: 0,
                 borderRadius: 20,
                 cutout: '82%'
@@ -253,13 +253,14 @@
 
     // 6. GRAFICO PLACEHOLDER DE CRECIMIENTO MENSUAL (BARRAS) 
     const ctxW = document.getElementById('chartWeight').getContext('2d');
+
     new Chart(ctxW, {
         type: 'bar',
         data: {
-            labels: ['Ene', 'Feb', 'Mar'],
+            labels: {{ meses_labels|safe }},
             datasets: [{
                 label: 'Nuevos Usuarios',
-                data: [15, 22, 18], 
+                data: {{ usuarios_mensuales|safe }},
                 backgroundColor: [
                     createGradient(ctxW, '#10b981', 'rgba(16,185,129,0.2)'),
                     createGradient(ctxW, '#5b73e8', 'rgba(91,115,232,0.2)'),
@@ -271,10 +272,14 @@
             }]
         },
         options: {
-            responsive: true, maintainAspectRatio: false,
+            responsive: true,
+            maintainAspectRatio: false,
             animation: progressiveAnimation,
             plugins: { legend: { display: false } },
-            scales: { x: { grid: { display: false } }, y: { display: false, beginAtZero: true } }
+            scales: {
+                x: { grid: { display: false } },
+                y: { display: false, beginAtZero: true }
+            }
         }
     });
 </script>
