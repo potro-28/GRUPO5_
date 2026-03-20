@@ -812,4 +812,4 @@ class CertificacioninternaForm(ModelForm):
             raise forms.ValidationError(
             "La fecha de certificación no puede ser una fecha futura."
         )
-        return fecha_certificacion    
+        return fecha_certificacion

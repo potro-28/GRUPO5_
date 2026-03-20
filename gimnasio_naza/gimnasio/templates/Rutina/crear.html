@@ -15,37 +15,33 @@
         <div class="card-body">
             {% csrf_token %}
 
-            {# Mostrar errores generales del formulario #}
             {% if form.errors %}
-            <div class="alert alert-danger alert-dismissible">
-                <button type="button" class="close" data-bs-dismiss="alert">×</button>
-                <h5><i class="icon fas fa-ban"></i> Error! Verifica los siguientes campos.</h5>
-
-                {% if form.non_field_errors %}
-                <ul class="mb-0">
-                    {% for error in form.non_field_errors %}
-                    <li>{{ error }}</li>
-                    {% endfor %}
-                </ul>
-                {% endif %}
+            <div class="alert alert-danger">
+                <strong>Error:</strong> Verifica los campos.
             </div>
             {% endif %}
 
-            {# Iterar campos del formulario con validación visual #}
             {% for field in form.visible_fields %}
-            <div class="form-group">
-                <label for="{{ field.id_for_label }}">{{ field.label }}:</label>
+            <div class="form-group mb-3">
+                <label>{{ field.label }}</label>
 
-                {% if field.errors %}
-                    {{ field|add_class:'form-control is-invalid'|attr:'autocomplete:off' }}
-                    <div class="invalid-feedback d-block">
-                        {% for error in field.errors %}
-                        <div>{{ error }}</div>
-                        {% endfor %}
-                    </div>
+                {% if field.name == 'fk_imc' %}
+                <div class="d-flex">
+                    {{ field|add_class:'form-control' }}
+
+                    <button type="button" class="btn btn-success ms-2"
+                        data-bs-toggle="modal"
+                        data-bs-target="#modalMasa_corporal">
+                        +
+                    </button>
+                </div>
                 {% else %}
-                    {{ field|add_class:'form-control'|attr:'autocomplete:off' }}
+                    {{ field|add_class:'form-control' }}
                 {% endif %}
+
+                {% for error in field.errors %}
+                    <div class="text-danger">{{ error }}</div>
+                {% endfor %}
             </div>
             {% endfor %}
 
@@ -53,26 +49,101 @@
 
         <div class="card-footer">
             <button type="submit" class="btn btn-primary">
-                <i class="fas fa-save"></i> Guardar registro
+                Guardar
             </button>
 
             <a href="{% url 'gimnasio:listar_rutinas' %}" class="btn btn-danger">
-                <i class="fas fa-times"></i> Cancelar
+                Cancelar
             </a>
         </div>
 
     </div>
 </form>
+
+<!-- MODAL -->
+<div class="modal fade" id="modalMasa_corporal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h5>Crear Masa Corporal</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body">
+
+        <input type="number" id="peso_cliente" class="form-control mb-2" placeholder="Peso cliente">
+        
+        <input type="date" id="fecha_control" class="form-control mb-2">
+
+        <input type="number" id="altura_cliente" class="form-control mb-2" placeholder="Altura cliente">
+        
+        <!-- 🔥 SELECT CORREGIDO -->
+        <select id="fk_Nutricion" class="form-control">
+            <option value="">Seleccione usuario</option>
+            {% for nutricion in nutriciones %}
+            <option value="{{ nutricion.id }}">
+                {{ nutricion.fk_Usuario.nombre_usuario }} {{ nutricion.fk_Usuario.apellido_usuario }}
+            </option>
+            {% endfor %}
+        </select>
+
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" onclick="crear_Masa_corporal()">
+            Guardar
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
 {% endblock %}
 
 {% block js %}
-{% if form.errors %}
 <script>
-Swal.fire({
-    title: "Error!",
-    text: "Verifica los campos ingresados",
-    icon: "error"
-});
+function crear_Masa_corporal() {
+
+    let data = {
+        peso_cliente: document.getElementById("peso_cliente").value,
+        altura_cliente: document.getElementById("altura_cliente").value,
+        fecha_control: document.getElementById("fecha_control").value,
+        fk_Nutricion: document.getElementById("fk_Nutricion").value
+    };
+
+    if (!data.peso_cliente || !data.altura_cliente || !data.fecha_control || !data.fk_Nutricion) {
+        Swal.fire("Error", "Todos los campos son obligatorios", "error");
+        return;
+    }
+
+    fetch("{% url 'gimnasio:crear_masa_corporal_ajax' %}", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": "{{ csrf_token }}"
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(data => {
+
+        let select = document.getElementById("id_fk_imc");
+
+        let option = new Option(data.nombre, data.id);
+        option.selected = true;
+        select.add(option);
+
+        let modal = bootstrap.Modal.getInstance(document.getElementById('modalMasa_corporal'));
+        modal.hide();
+
+        Swal.fire("Correcto", "Masa corporal creada", "success");
+    })
+    .catch(error => {
+        console.error(error);
+        Swal.fire("Error", "Ocurrió un error", "error");
+    });
+}
 </script>
-{% endif %}
 {% endblock %}

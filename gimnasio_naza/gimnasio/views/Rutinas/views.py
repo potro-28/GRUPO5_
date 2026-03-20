@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-#from django.http import HttpResponse,JsonResponse
+from django.http import HttpResponse,JsonResponse
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
@@ -7,10 +7,31 @@ from django.urls import reverse_lazy
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 from django.contrib import messages
-
-
 from gimnasio.models import *
 from gimnasio.forms import RutinaForm
+import json
+
+@csrf_exempt
+def crear_masa_corporal_ajax(request):
+    data = json.loads(request.body)
+
+    try:
+        masa = Masa_corporal.objects.create(
+            peso_cliente=data['peso_cliente'],
+            altura_cliente=data['altura_cliente'],
+            fecha_control=data['fecha_control'],
+            fk_Nutricion_id=data['fk_Nutricion']
+        )
+
+        usuario = masa.fk_Nutricion.fk_Usuario
+
+        return JsonResponse({
+            'id': masa.id,
+            'nombre': f"{usuario.nombre_usuario} {usuario.apellido_usuario}"
+        })
+
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=400)
 
 #Listar rutinas
 def listar_rutinas(request):
@@ -50,14 +71,13 @@ class RutinaCreateView(CreateView):
     template_name = 'rutina/crear.html'
     form_class = RutinaForm
     success_url = reverse_lazy('gimnasio:listar_rutinas')
-    
-    
-    #@method_decorator(csrf_exempt)
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['titulo'] = 'Crear Rutina'
-        return super().get_context_data(**kwargs)
-    
+        context['nutriciones'] = Nutricion.objects.all()  # 🔥 CLAVE
+        return context
+
     def form_valid(self, form):
         messages.success(self.request, "Rutina guardada correctamente")
         return super().form_valid(form)
