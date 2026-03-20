@@ -55,6 +55,7 @@ class Membresia(models.Model):
         ('inactivo', 'Inactivo'),
     ]
     estado = models.CharField(max_length=30, choices=ESTADO_CHOICES)
+    codigo_qr = models.TextField(max_length=30,null=False)
     fk_usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
 
     def __str__(self):
@@ -70,7 +71,6 @@ class Membresia(models.Model):
 class Asistencia(models.Model):
     fecha_asistencia = models.DateField(default=date.today, verbose_name='Fecha de Asistencia')
     hora_ingreso = models.TimeField(null=True, blank=True, verbose_name='Hora de Ingreso')
-    hora_salida = models.TimeField(null=True, blank=True, verbose_name='Hora de Salida')
     fk_membresia = models.ForeignKey(Membresia, on_delete=models.CASCADE)
 
 

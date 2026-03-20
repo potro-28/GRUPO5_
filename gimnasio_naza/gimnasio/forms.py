@@ -208,25 +208,19 @@ class AsistenciaForm(forms.ModelForm):
                 'class': 'form-control',
                 'type': 'time'
             }),
-              'hora_salida': forms.TimeInput(attrs={ 
-                'class': 'form-control',
-                'type': 'time'
-            }),
+             
         }
     def clean(self):
         cleaned_data = super().clean()
         fecha_asistencia = cleaned_data.get('fecha_asistencia')
         hora_ingreso = cleaned_data.get('hora_ingreso')
-        hora_salida = cleaned_data.get('hora_salida')
+       
 
         if fecha_asistencia > forms.fields.datetime.date.today():
             self.add_error('fecha_asistencia','La fecha de asistencia no puede ser futura')
         if fecha_asistencia < forms.fields.datetime.date.today():
             self.add_error('fecha_asistencia','La fecha de asistencia no puede ser anterior al día de hoy')
-        if hora_salida == hora_ingreso:
-            self.add_error('hora_salida','La hora de salida no puede ser igual a la hora de entrada')
-        if hora_salida < hora_ingreso:
-            self.add_error('hora_salida','La hora de salida no puede ser anterior a la hora de entrada')
+        
 
 class MembresiaForm(ModelForm):
     class Meta:

@@ -24,11 +24,11 @@ class ExportarAsistenciaPDF(DjangoView):
         asistencia = Asistencia.objects.all()
         
         # Definir las columnas que se muestran en el reporte
-        columnas = ['ID','Fecha de asistencia','Hora de ingreso','Hora de salida','Membresia','Documento de usuario']
+        columnas = ['ID','Fecha de asistencia','Hora de ingreso','Membresia','Documento de usuario']
         
         # Preparar los datos en formato de tuplas
         datos = [
-            (a.id,a.fecha_asistencia,a.hora_ingreso,a.hora_salida,f"{a.fk_membresia.fk_usuario.nombre_usuario, a.fk_membresia.fk_usuario.apellido_usuario}",a.fk_membresia.fk_usuario.documento)
+            (a.id,a.fecha_asistencia,a.hora_ingreso,f"{a.fk_membresia.fk_usuario.nombre_usuario, a.fk_membresia.fk_usuario.apellido_usuario}",a.fk_membresia.fk_usuario.documento)
             for a in asistencia
         ]
         
@@ -55,11 +55,11 @@ class ExportarAsistenciaExcel(DjangoView):
         asistencia = Asistencia.objects.all()
         
         # Definir las columnas que se muestran en el reporte
-        columnas = ['ID', 'Fecha de asistencia', 'Hora de ingreso', 'Hora de salida', 'Membresia','Documento de usuario']
+        columnas = ['ID', 'Fecha de asistencia', 'Hora de ingreso', 'Membresia','Documento de usuario']
         
         # Preparar los datos en formato de tuplas
         datos = [
-            (a.id,a.fecha_asistencia,a.hora_ingreso,a.hora_salida,f"{a.fk_membresia.fk_usuario.nombre_usuario, a.fk_membresia.fk_usuario.apellido_usuario}",a.fk_membresia.fk_usuario.documento)
+            (a.id,a.fecha_asistencia,a.hora_ingreso,f"{a.fk_membresia.fk_usuario.nombre_usuario, a.fk_membresia.fk_usuario.apellido_usuario}",a.fk_membresia.fk_usuario.documento)
             for a in asistencia
         ]
         
