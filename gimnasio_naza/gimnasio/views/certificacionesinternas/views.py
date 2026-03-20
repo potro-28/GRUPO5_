@@ -9,6 +9,7 @@ from django.http import HttpResponse
 from django.template.loader import render_to_string
 from weasyprint import HTML
 from django.utils import timezone
+from django.shortcuts import redirect
 
 class CertificacioninternaListView(ListView):
     model = Certificacion_interna
@@ -72,6 +73,9 @@ class CertificacioninternaUser(View):
     template_name = 'certificacioninterna/diploma.html'
     def get(self,request,pk,*args,**kwargs):
         certificaciones = get_object_or_404(Certificacion_interna,pk=pk)
+        if certificaciones.descargado:
+            messages.error(self.request,'ya fue descargada')
+            return redirect('gimnasio:listar_certificacioninterna')
         context = {
             'nombre' : certificaciones.fk_Asistencia.fk_membresia.fk_usuario.nombre_usuario,
             'apellido' : certificaciones.fk_Asistencia.fk_membresia.fk_usuario.apellido_usuario,
@@ -82,6 +86,8 @@ class CertificacioninternaUser(View):
         print(context)
         html_content = render_to_string(self.template_name,context)
         pdf = HTML(string=html_content,base_url=request.build_absolute_uri()).write_pdf()
+        certificaciones.descargado = True
+        certificaciones.save()
         response = HttpResponse(pdf,content_type='application/pdf')
         response['Content-Disposition'] = f'attachment;filename="Certificacion_{certificaciones.fk_Asistencia.fk_membresia.fk_usuario.nombre_usuario}_{timezone.now().strftime("%Y-%m-%d")}.pdf"'
         return response
