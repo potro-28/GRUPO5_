@@ -42,6 +42,181 @@
     .stat-box:hover h3 { color: #5b73e8; }
     .stat-box p { font-size: 14px; color: #8b9eb0; font-weight: 500; margin: 0;}
 
+    /* tabla membresicas vencidas */
+    /* Contenedor tipo card */
+    .card-vencer{
+        border-radius:16px;
+        box-shadow:0 8px 25px rgba(0,0,0,0.05);
+        border:none;
+        overflow:hidden;
+    }
+
+    /* Tabla bonita */
+        .tabla-vencer{
+            width:100%;
+            border-collapse:separate;
+            border-spacing:0 10px; /* separa filas como tarjetas */
+        }
+
+    .tabla-vencer thead th{
+        background:linear-gradient(135deg,#498aaa,#498aaa);
+        color:white;
+        font-weight:600;
+        font-size:14px;
+        text-align:left;
+        padding:12px 16px;
+        border:none;
+    }
+
+    .tabla-vencer tbody tr{
+        background:#ffffff;
+        box-shadow:0 4px 12px rgba(0,0,0,0.04);
+        transition:0.25s;
+    }
+
+    .tabla-vencer tbody tr:hover{
+        transform:translateY(-2px);
+        box-shadow:0 8px 20px rgba(0,0,0,0.08);
+    }
+
+    .tabla-vencer td{
+        padding:14px 16px;
+        border:none;
+        font-size:14px;
+        color:#4a5568;
+    }
+
+    /* primera y última celda redondeadas */
+    .tabla-vencer tbody tr td:first-child{
+        border-radius:10px 0 0 10px;
+    }
+
+    .tabla-vencer tbody tr td:last-child{
+        border-radius:0 10px 10px 0;
+    }
+
+    /* badge para fecha */
+    .badge-vencer{
+        background:#ff6b6b;
+        color:white;
+        padding:5px 10px;
+        border-radius:12px;
+        font-size:12px;
+        font-weight:600;
+    }
+
+    /* Cards */
+    .card {
+        transition: all 0.3s ease;
+    }
+
+    /* cuando pasas el mouse */
+    .card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    }
+    .card.indicador{
+        border-radius:14px;
+    }
+
+    /* Reduce el espacio interno */
+    .card.indicador .card-body{
+        padding:10px !important;
+    }
+
+    /* Número más pequeño */
+    .card.indicador h3{
+        font-size:20px;
+        margin:2px 0;
+    }
+
+    /* Texto pequeño */
+    .card.indicador p{
+        font-size:12px;
+        margin:0;
+    }
+
+    /* Icono más pequeño */
+    .icon-box{
+        width:40px;
+        height:40px;
+        font-size:18px;
+        margin-bottom:5px;
+    }
+
+        /* contenedor */
+    .contenedor-mantenimientos{
+        justify-content:center;
+        align-items:center;
+        margin: auto;
+        background:#f6f8fc;
+        padding:15px;
+        border-radius:10px;
+        margin-top:20px;
+        width:1000px;
+    }
+
+    /* titulo */
+    .titulo-mantenimiento{
+        font-size:16px;
+        font-weight:600;
+        margin-bottom:10px;
+        color:#444;
+        text-align: center;
+    }
+
+    /* tamaño mucho más pequeño */
+
+    .card-mini{
+        height:100px;
+        width: 300px;
+        padding:5px;
+        border-radius:10px;
+    }
+    .card-mini h3{
+        padding:5px;
+        font-size:20px;
+        font-weight:bold;
+        margin:3px 0;
+    }
+
+    .card-mini h6{
+        font-size:16px;
+        margin:0;
+    }
+
+    /* icono */
+    .icon-card{
+        font-size:18px;
+        margin-bottom:3px;
+    }
+
+    /* efecto hover */
+    .card-mini:hover{
+        transform:translateY(-4px);
+        box-shadow:0 6px 12px rgba(0,0,0,0.08);
+    }
+
+    /* colores pastel */
+
+    .card-pendiente{
+        background:#FFE5B8;   /* pastel naranja */
+    }
+
+    .card-proceso{
+        background:#D6ECFF;   /* pastel azul */
+    }
+
+    .card-completado{
+        background:#DFF5E1;   /* pastel verde */
+    }
+    .icon-card{
+        font-size:26px;
+        margin-bottom:5px;
+    }
+    .indicador i{
+        font-size:30px;
+    }
     .grid-bottom-charts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 25px; }
     .bottom-chart-card { text-align: center; display: flex; flex-direction: column; align-items: center; }
     .donut-container { position: relative; width: 220px; height: 220px; margin: 0 auto; }
@@ -67,7 +242,7 @@
     <div style="text-align: center;">
         <div class="card-title">Estadísticas del Gimnasio</div>
         <div class="card-subtitle">
-            Resumen general de reportes, membresías, asistencias, elementos y
+            Resumen general de reportes, membresías, asistencias, elementos y Usuarios
         </div>
     </div>
 
@@ -76,79 +251,195 @@
     </div>
 </div>
     <div class="card">
-    <div class="card-header d-flex justify-content-between align-items-center flex-wrap gap-2">       
-            <h5 class="mb-0">Listado de Reportes y Estadisticas</h5>
-            <div class="d-flex gap-2 flex-wrap">
-            <div class="dropdown">
-                    <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownExportar" data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="icon-base ri ri-file-chart-line icon-18px me-1"></i>Exportar
-                    </button>
-                    <ul class="dropdown-menu" aria-labelledby="dropdownExportar">
-                        <li>
-                            <a class="dropdown-item" href="{% url 'gimnasio:ExportarReportes_estadisticasEXCEL' %}">
-                                <i class="ri ri-file-excel-2-line me-2 text-success"></i>Exportar a Excel
-                            </a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item" href="{% url 'gimnasio:ExportarReportes_estadisticasPDF' %}">
-                                <i class="ri ri-file-pdf-line me-2 text-danger"></i>Exportar a PDF
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            <a href="{{ crear_url }}" class="btn btn-primary">
-                <i class="icon-base ri ri-add-line icon-18px me-1"></i>Agregar reporte o estadistica
-            </a>
+    
+</div>
+
+
+<div class="row mt-3">
+
+    <div class="col-md-3">
+        <div class="card indicador h-100">
+            <div class="card-body text-center">
+                <h6> <i class="fa-solid fa-users"></i> Usuarios registrados</h6>
+                <h3>{{ total_usuarios }}</h3>
+                <p>Usuarios</p>
+            </div>
         </div>
-        
-        <div class="card-body">
-            <div class="table-responsive">
-                <table id="tabla-reporte" class="table table-bordered table-striped w-100">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Tipo reporte</th>
-                            <th>Descripcion</th>
-                            <th>Fecha generacion</th>
-                            <th>Usuario</th>
-                            <th>Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for reporte in object_list %}
-                        <tr>
-                            <td>{{ reporte.id }}</td>
-                            <td>{{ reporte.tipo_reporte }}</td>
-                            <td>{{ reporte.descripcion }}</td>
-                            <td>{{ reporte.fecha_generacion }}</td>
-                            <td>{{ reporte.fk_usuario }}</td>
-                            
-                            
-                            <td class="text-nowrap">
-                               
-<a href="{% url 'gimnasio:editar_Reportes_estadisticas' reporte.id %}"
-                                                class="btn btn-sm btn-text-secondary rounded-pill btn-icon item-pdf">
-                                                <i class="icon-base ri ri-edit-box-line icon-22px"></i>
-                                            </a>
-                                       
-                                            <a href="{% url 'gimnasio:eliminar_Reportes_estadisticas' reporte.id %}"
-                              class="btn btn-sm btn-text-secondary rounded-pill btn-icon item-trash">
-                                                <i class="icon-base ri ri-delete-bin-line icon-22px">                                      </li>
-                                    
-                            </td>
-                        </tr>
-                        {% empty %}
-                        <tr>
-                            <td colspan="5" class="text-center">No hay reportes y estadisticas registradas.</td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card indicador h-100">
+            <div class="card-body text-center">
+                <h6> <i class="fa-brands fa-rockrms"></i>    Membresías activas</h6>
+                <h3>{{ membresias_activas }}</h3>
+                <p>Membresías</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card indicador h-100">
+            <div class="card-body text-center">
+                <h6> <i class="fa-solid fa-gears"></i> Elementos en mantenimiento</h6>
+                <h3>{{ elementos_mantenimiento }}</h3>
+                <p>Mantenimientos</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card indicador h-100">
+            <div class="card-body text-center">
+                <h6><i class="fa-brands fa-elementor"></i> Elementos registrados</h6>
+                <h3>{{ total_elementos }}</h3>
+                <p>Elementos</p>
             </div>
         </div>
     </div>
 </div>
 
+<div class="row mt-3">
+
+    
+    <div class="col-md-3">
+        <div class="card indicador h-100">
+            <div class="card-body text-center">
+                <h6>
+                    <i class="fa-solid fa-square-poll-vertical"></i> Encuestas
+                </h6>
+                <h3>{{ total_encuestas }}</h3>
+                <p>Encuestas registradas</p>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="col-md-3">
+        <div class="card indicador h-100">
+            <div class="card-body text-center">
+                <h6>
+                    <i class="fa-solid fa-bell"></i> Notificaciones
+                </h6>
+                <h3>{{ total_notificaciones }}</h3>
+                <p>Notificaciones</p>
+            </div>
+        </div>
+    </div>
+
+    
+    <div class="col-md-3">
+        <div class="card indicador h-100">
+            <div class="card-body text-center">
+                <h6>
+                    <i class="fa-solid fa-gavel"></i> Sanciones
+                </h6>
+                <h3>{{ total_sanciones }}</h3>
+                <p>Sanciones registradas</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3"></div>
+
+</div>
+
+
+<div class="card card-vencer mt-4">
+
+    <div class="card-header bg-white border-0">
+        <h5 class="mb-0"><i class="fa-brands fa-slack"></i>  Membresías próximas a vencer</h5>
+    </div>
+
+    <div class="card-body">
+
+        <table class="tabla-vencer">
+
+            <thead>
+                <tr>
+                    <th><i class="fa-solid fa-user"></i>  Usuario</th>
+                    <th>Inicio</th>
+                    <th>Vence</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                {% for m in membresias_por_vencer %}
+                <tr>
+                    <td>{{ m.fk_usuario }}</td>
+                    <td>{{ m.fecha_inicio }}</td>
+                    <td>
+                        <span class="badge-vencer">
+                            {{ m.fecha_fin }}
+                        </span>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="3">No hay membresías por vencer</td>
+                </tr>
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+<div class="contenedor-mantenimientos">
+
+    <h4 class="titulo-mantenimiento">
+        Mantenimientos
+    </h4>
+
+    <div class="row cards-mantenimiento">
+
+        <div class="col-md-4">
+            <div class="card card-mini card-pendiente">
+                <div class="card-body text-center">
+
+                    <i class="mdi mdi-wrench icon-card"></i>
+
+                    <h6>Pendientes</h6>
+
+                    <h3>{{ mant_pendientes }}</h3>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card card-mini card-proceso">
+                <div class="card-body text-center">
+
+                    <i class="mdi mdi-cog icon-card"></i>
+
+                    <h6>En proceso</h6>
+
+                    <h3>{{ mant_proceso }}</h3>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card card-mini card-completado">
+                <div class="card-body text-center">
+
+                    <i class="mdi mdi-check-circle icon-card"></i>
+
+                    <h6>Completados</h6>
+
+                    <h3>{{ mant_completados }}</h3>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
 {% endblock %}
 
 {% block js %}

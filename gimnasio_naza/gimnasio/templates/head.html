@@ -5,7 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gimnasio Nazá</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <!-- Sweetalert2 -->
+    <script src="{% static 'lib/sweetalert2/sweetalert2.all.min.js' %}"></script>
+    <!-- Tell the browser to be responsive to screen width -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="{% static 'lib/adminlte-3.0.4/plugins/font-awesome-5.11.1/css/all.min.css' %}">
+    <!-- Theme style -->
+    <link rel="stylesheet" href="{% static 'lib/adminlte-3.0.4/css/adminlte.min.css' %}">
+    <!-- Google Font: Source Sans Pro -->
+    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">    
     <style>
         :root {
             --bg-body: #f4f7fa;
@@ -58,13 +68,22 @@
         .stagger-4 { animation: revealBounce 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; animation-delay: 0.55s; opacity: 0; }
 
         /* ==================== TOPBAR ==================== */
-        .topbar { background-color: #267CA7; height: 70px; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; color: white; z-index: 1000; box-shadow: 0 4px 15px rgba(91, 115, 232, 0.3); }
+        .topbar { background-color: #267CA7; height: 70px; display: flex; align-items: center; gap:15px; justify-content: space-between; padding: 0 20px; color: white; z-index: 1000; box-shadow: 0 4px 15px rgba(91, 115, 232, 0.3); position: relative; }
         .topbar-left { display: flex; align-items: center; gap: 5px; width: var(--sidebar-width); transition: var(--transition); }
         .menu-toggle { cursor: pointer; font-size: 20px; transition: var(--transition); }
         .menu-toggle:hover { transform: scale(1.2) rotate(180deg); }
-        .logo { font-size: 22px; font-weight: bold; display: flex; align-items: center; gap: 0px;  }
+        .logo { font-size: 22px; font-weight: bold; display: flex; align-items: center; margin-left:auto;  }
         
-        .topbar-right { display: flex; align-items: center; gap: 25px; flex-grow: 1; justify-content: space-between; }
+        .topbar-right{
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
         
         /* Buscador Dinámico */
         .search-container { background: rgba(255, 255, 255, 0.2); border-radius: 20px; padding: 6px 15px; display: flex; align-items: center; width: 300px; transition: var(--transition); margin-left: auto; max-width: 250px }
@@ -87,7 +106,7 @@
         .main-container { display: flex; flex-grow: 1; overflow: hidden; }
         
         /* SIDEBAR PREMIUM */
-        .sidebar { width: var(--sidebar-width); background-color: var(--bg-white); display: flex; flex-direction: column; transition: var(--transition); box-shadow: 2px 0 20px rgba(0,0,0,0.04); z-index: 100; overflow-y: auto; overflow-x: hidden; border-right: 1px solid var(--border-color); }
+        .sidebar { width: var(--sidebar-width); background-color: var(--bg-white); transition: var(--transition); box-shadow: 2px 0 20px rgba(0,0,0,0.04); z-index: 100; overflow-y: auto; overflow-x: hidden; border-right: 1px solid var(--border-color); }
         .sidebar::-webkit-scrollbar { width: 4px; }
         .sidebar::-webkit-scrollbar-thumb { background-color: #d1d8ff; border-radius: 10px; }
 
@@ -140,8 +159,8 @@
             background-repeat: no-repeat;
         }  
         .page-header { margin-bottom: 30px; }
-        .page-header h1 { color: var(--text-dark); font-size: 28px; font-weight: 700; letter-spacing: -0.5px; margin-bottom: 5px;}
-        .page-header p { color: var(--text-muted); font-size: 15px; }
+        .page-header h1 { color: #ffffff; font-size: 28px; font-weight: 700; letter-spacing: -0.5px; margin-bottom: 5px;}
+        .page-header p { color: #ffffff; font-size: 15px; }
 
         /* ----- CATEGORY STATS GRID (Top 4 Cards) ----- */
         .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 25px; margin-bottom: 35px; }

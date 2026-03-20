@@ -359,10 +359,10 @@ class Soporte_PQRSForm(ModelForm):
         fields = '__all__'
         widgets = {
             'tipo' : forms.Select(attrs={ 
-                'class':'form-control',
-                'placeholder': 'Ingrese el tipo de soporte pqr'}),
+            'class':'form-control',
+            'placeholder': 'Ingrese el tipo de soporte pqr'}),
             'descripcion' : forms.TextInput(attrs={ 
-                'class':'form-control',
+            'class':'form-control',
                 
                 'placeholder': 'Ingrese la descripcion del soporte pqr'}),
             'fecha_ingreso': forms.DateInput(attrs={ 

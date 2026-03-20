@@ -92,6 +92,7 @@ urlpatterns = [
     path('eliminar_Reportes_estadisticas/<int:pk>/', Reportes_estadisticasDeleteView.as_view(), name='eliminar_Reportes_estadisticas'),
     path('ExportarReportes_estadisticasPDF /',ExportarReportes_estadisticasPDF.as_view(), name='ExportarReportes_estadisticasPDF' ),
     path('ExportarReportes_estadisticasEXCEL /',ExportarReportes_estadisticasEXCEL.as_view(), name='ExportarReportes_estadisticasEXCEL'),
+    path('reportes/', DashboardView1.as_view(), name='listar_Reportes_estadisticas'),
     #Categoria
     path('listar_categorias/', categoriaListView.as_view(), name='listar_categorias'),
     path('crear_categoria/', CategoriaCreateView.as_view(), name='crear_categoria'),
@@ -103,6 +104,7 @@ urlpatterns = [
     path('crear_nutricion/', NutricionCreateView.as_view(), name='crear_nutricion'),
     path('editar_nutricion/<int:pk>/', NutricionUpdateView.as_view(), name='editar_nutricion'),
     path('eliminar_nutricion/<int:pk>/', NutricionDeleteView.as_view(), name='eliminar_nutricion'),
+    path('crear-usuario-ajax/', crear_usuario_ajax, name='crear_usuario_ajax'),
     
     
     #Rutina
@@ -116,6 +118,7 @@ urlpatterns = [
     path('crear_masa_corporal/', Masa_corporalCreateView.as_view(), name='crear_masa_corporal'),
     path('eliminar_masa_corporal/<int:pk>/', Masa_corporalDeleteView.as_view(), name='eliminar_masa_corporal'),
     path('editar_masa_corporal/<int:pk>/', Masa_corporalUpdateView.as_view(), name='editar_masa_corporal'),
+    path('crear-nutricion-ajax/', crear_nutricion_ajax, name='crear_nutricion_ajax'),
     
     
     path('listar_sanciones_clas/', SacionesListView.as_view(), name='listar_sanciones_clas'),

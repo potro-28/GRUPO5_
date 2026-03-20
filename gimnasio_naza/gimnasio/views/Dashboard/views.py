@@ -9,6 +9,8 @@ from django.views.generic import ListView, TemplateView
 from django.views.generic import CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
 from django.views.decorators.csrf import csrf_exempt
+from django.db.models.functions import ExtractMonth
+from django.db.models import Count
 
 
 # Importamos SOLO los modelos que vamos a usar explícitamente, evitando colisiones
@@ -37,8 +39,10 @@ class DashboardView(TemplateView):
         context['asistencias_hoy'] = Asistencia.objects.filter(fecha_asistencia=hoy).count()
         
         # Membresías vigentes (Iniciaron hoy o antes, y terminan hoy o después)
-        membresias_activas = Membresia.objects.filter(fecha_inicio__lte=hoy, fecha_fin__gte=hoy).count()
-        context['membresias_activas'] = membresias_activas
+        membresias_activas = Membresia.objects.filter(estado='activo').count()
+        membresias_inactivas = Membresia.objects.filter(estado='inactivo').count()
+
+        total_membresias = membresias_activas + membresias_inactivas
 
         # ---------------------------------------------------------
         # //Estadisticas generales//
@@ -79,17 +83,48 @@ class DashboardView(TemplateView):
         # ---------------------------------------------------------
         # //Estado de las Membresias (Porcentajes)//
         # ---------------------------------------------------------
-        total_membresias = Membresia.objects.count()
+        total_membresias = membresias_activas + membresias_inactivas
+
         if total_membresias > 0:
             porcentaje_activas = int((membresias_activas / total_membresias) * 100)
+            porcentaje_inactivas = int((membresias_inactivas / total_membresias) * 100)
         else:
             porcentaje_activas = 0
-            
-        context['porcentaje_activas'] = porcentaje_activas
-        context['porcentaje_inactivas'] = 100 - porcentaje_activas
+            porcentaje_inactivas = 0
 
+        context['porcentaje_activas'] = porcentaje_activas
+        context['porcentaje_inactivas'] = porcentaje_inactivas
+
+
+        # ---------------------------------------------------------
+        # // CRECIMIENTO MENSUAL USUARIOS //
+        # ---------------------------------------------------------
+
+        usuarios_por_mes = (
+            Usuario.objects
+            .annotate(mes=ExtractMonth('fecha_registro'))
+            .values('mes')
+            .annotate(total=Count('id'))
+            .order_by('mes')
+        )
+
+        # Inicializamos meses
+        meses = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun',
+                'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic']
+
+        datos_meses = [0] * 12
+
+        for item in usuarios_por_mes:
+            mes_index = item['mes'] - 1
+            datos_meses[mes_index] = item['total']
+
+        # SOLO mostramos los últimos 3 meses (como tu gráfica)
+        context['meses_labels'] = json.dumps(meses[:3])
+        context['usuarios_mensuales'] = json.dumps(datos_meses[:3])
         return context
 
 @login_required
 def dashboard(request):
     return render(request, 'Dashboard/dashboard.html')
+
+       

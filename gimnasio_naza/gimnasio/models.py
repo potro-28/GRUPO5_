@@ -35,7 +35,7 @@ class Usuario(models.Model):
     fecha_registro = models.DateField()
 
     def __str__(self):
-        return str(self.id)
+        return str(self.documento)+("/")+(self.nombre_usuario) 
 
     class Meta:
         verbose_name = 'Usuario'
@@ -54,7 +54,7 @@ class Membresia(models.Model):
     fk_usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
 
     def __str__(self):
-        return str(self.id)
+        return str(self.fk_usuario.documento)+ ("/")+(self.fk_usuario.nombre_usuario)
 
     class Meta:
         verbose_name = 'Membresia'

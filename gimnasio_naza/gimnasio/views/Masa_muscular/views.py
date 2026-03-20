@@ -10,6 +10,25 @@ from django.utils.decorators import method_decorator
 from gimnasio.models import *
 from gimnasio.forms import Masa_muscularForm
 from django.contrib import messages
+import json
+
+@csrf_exempt
+def crear_nutricion_ajax(request):
+    import json
+
+    data = json.loads(request.body)
+
+    nutricion = Nutricion.objects.create(
+        nivel_actividad=data['nivel_actividad'],
+        tipo_objetivo=data['tipo_objetivo'],
+        tipo_dieta=data['tipo_dieta'],
+        fk_Usuario_id=data['fk_usuario']
+    )
+
+    return JsonResponse({
+        'id': nutricion.id,
+        'nombre': f"Nutrición {nutricion.id}"
+    })
 
 #Listar asistencia 
 def Listar_masa_corporal(request):
@@ -55,6 +74,7 @@ class Masa_corporalCreateView(CreateView):
         context = super().get_context_data(**kwargs)
         context['titulo'] = 'Crear masa corporal'
         context['listar_url'] = reverse_lazy('gimnasio:listar_masa_corporal_clas')
+        context['usuarios'] = Usuario.objects.all()
         return context
 class Masa_corporalUpdateView(UpdateView):
     model = Masa_corporal
