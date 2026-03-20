@@ -9,6 +9,7 @@ from django.contrib.auth.models import User
 #---------------------------------MODELO USUARIO-----------------------------------------       
 
 class Usuario(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='usuario')
     documento = models.CharField(max_length=45, unique=True)
     nombre_usuario = models.CharField(max_length=45)
     apellido_usuario = models.CharField(max_length=45)
@@ -24,7 +25,7 @@ class Usuario(models.Model):
         ('cliente', 'Cliente'),
         ('admin', 'Administrador'),
     ]
-    rol = models.CharField(max_length=30, choices=ROL_CHOICES)
+    rol = models.CharField(max_length=30, choices=ROL_CHOICES,null=True, blank=True)
 
     ESTADO_CHOICES = [
         ('activo', 'Activo'),
@@ -37,10 +38,13 @@ class Usuario(models.Model):
     def __str__(self):
         return str(self.documento)+("/")+(self.nombre_usuario) 
 
+    fecha_registro = models.DateField(default=datetime.now)
     class Meta:
         verbose_name = 'Usuario'
         verbose_name_plural = 'Usuarios'
         db_table = 'usuario'
+    def __str__(self):
+        return self.user.username
 #-----------------------------MODELO MEMBRESIA---------------------------------------------------
 class Membresia(models.Model):
     
@@ -71,7 +75,7 @@ class Asistencia(models.Model):
 
 
     def __str__(self):
-        return str(self.id)
+        return str(f"{self.id}-{self.fecha_asistencia}/{self.fk_membresia.fk_usuario.nombre_usuario}")
 
     class Meta:
         verbose_name = 'Asistencia'
@@ -300,7 +304,7 @@ class Registrovisitantestemporales(models.Model):
     fk_usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
 
     def _str_(self):
-        return str(self.id)
+        return str(self.fk_usuario.nombre_usuario)
 
     class Meta:
         verbose_name = 'Registro_Visitante'
@@ -389,6 +393,7 @@ class Certificacion_interna(models.Model):
     descripcion_certificacion=models.CharField(max_length=500)
     fecha_certificacion=models.DateField(auto_now=False, auto_now_add=False)
     fk_Asistencia=models.ForeignKey(Asistencia, on_delete=models.CASCADE, verbose_name='Asistencia')
+    descargado = models.BooleanField(default=False)
     def __str__(self):
         return str(self.id) 
     class Meta:

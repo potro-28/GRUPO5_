@@ -127,6 +127,8 @@ urlpatterns = [
     path('editar_sancion/<int:pk>/', SancionesUpdateView.as_view(), name='editar_sancion'),
     path('exportar/sanciones/pdf/', ExportarSancionPDF.as_view(), name='exportar_sanciones_pdf'),
     path('exportar/sanciones/excel/', ExportarSancionExcel.as_view(), name='exportar_sanciones_excel'),
+    path('crear-usuario-ajax/', crear_usuario_ajax, name='crear_usuario_ajax'),
+    
     
 
     path('listar_registrovisitantetemporal/', RegistrovisitantetemporalListView.as_view(), name='listar_registrovisitante'),

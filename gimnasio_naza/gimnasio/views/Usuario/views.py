@@ -1,9 +1,10 @@
 from django.shortcuts import get_object_or_404, redirect
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
+from django.views import View
 from django.urls import reverse_lazy
 from django.contrib import messages
 from gimnasio.models import Usuario
-from gimnasio.forms import UsuarioForm
+from gimnasio.forms import UsuarioForm, UserForm
 
 
 # =============================
@@ -12,7 +13,8 @@ from gimnasio.forms import UsuarioForm
 class UsuarioListView(ListView):
     model = Usuario
     template_name = 'usuarios/listar.html'
-    context_object_name = 'object_list'  # Cambiado de 'usuarios' para que coincida con el template
+    # Cambiado de 'usuarios' para que coincida con el template
+    context_object_name = 'object_list'
     ordering = ['-id']
 
     def get_queryset(self):
@@ -21,7 +23,8 @@ class UsuarioListView(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['titulo'] = 'Listado de Usuarios'
-        context['crear_url'] = reverse_lazy('gimnasio:crear_usuario')  # Sin el '2'
+        context['crear_url'] = reverse_lazy(
+            'gimnasio:crear_usuario')  # Sin el '2'
         return context
 
 
@@ -33,16 +36,39 @@ class UsuarioCreateView(CreateView):
     form_class = UsuarioForm
     template_name = 'usuarios/crear.html'
     success_url = reverse_lazy('gimnasio:listar_usuario')
- 
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        if self.request.POST:
+            context['user_form'] = UserForm(self.request.POST)
+        else:
+            context['user_form'] = UserForm()
         context['titulo'] = 'Crear Usuario'
         return context
 
-    def form_valid(self, form):
-        messages.success(self.request, "Usuario creado correctamente")
-        return super().form_valid(form)
+    def post(self, request, *args, **kwargs):
+        self.object = None
+        usuario_form = self.get_form()
+        user_form = UserForm(request.POST)
+        if usuario_form.is_valid() and user_form.is_valid():
+            return self.form_valid(usuario_form, user_form)
+        else:
+            return self.form_invalid(usuario_form, user_form)
 
+    def form_valid(self, usuario_form, user_form):
+        user = user_form.save(commit=False)
+        user.set_password(user_form.cleaned_data['password'])
+        user.save()
+        usuario = usuario_form.save(commit=False)
+        usuario.user = user
+        usuario.estado = 'activo'
+        usuario.save()
+        messages.success(self.request, "Usuario Creado Correctamente")
+        return redirect(self.success_url)
+    def form_invalid(self, usuario_form,user_form):
+        return self.render_to_response(self.get_context_data(form = usuario_form , user_form = user_form))
+
+    
 
 # =============================
 # ACTUALIZAR USUARIO
@@ -56,42 +82,54 @@ class UsuarioUpdateView(UpdateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['titulo'] = 'Editar Usuario'
-        return context
-
-    def form_valid(self, form):
-        usuario = form.save(commit=False)
-        
-        # Lógica extra si deseas
-        if hasattr(usuario, 'activo'):
-            if usuario.activo:
-                messages.success(self.request, "Usuario ACTIVADO correctamente")
-            else:
-                messages.warning(self.request, "Usuario INACTIVADO correctamente")
+        usuario = self.object
+        user = usuario.user
+        if self.request.POST:
+            context['user_form'] = UserForm(self.request.POST,instance=user)
         else:
-            messages.success(self.request, "Usuario actualizado correctamente")
-        
-        usuario.save()
-        return super().form_valid(form)
-
+            context['user_form'] = UserForm(instance=user)
+        return context
+    
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        usuario_form = self.get_form()
+        user_form = UserForm(request.POST, instance=self.object.user)
+        if usuario_form.is_valid() and user_form.is_valid():
+            return self.form_valid(usuario_form,user_form)
+        else :
+            return self.form_invalid(usuario_form,user_form)
+    def form_valid(self,usuario_form,user_form):
+        user = user_form.save(commit=False)
+        password = user_form.cleaned_data.get('password')
+        print(password)
+        if password:
+            user.set_password(password)
+        user.save()
+        usuario_form.save()
+        messages.success(self.request,"Se Actualizo con exito")
+        return super().form_valid(usuario_form)
+    def form_invalid(self,usuario_form,user_form):
+        return self.render_to_response(
+            self.get_context_data(
+                form = usuario_form,
+                user_form = user_form
+            )
+        )
+    
 
 # =============================
 # ELIMINAR USUARIO
 # =============================
-class UsuarioDeleteView(DeleteView):
-    model = Usuario
-    template_name = 'usuarios/eliminar.html'
-    success_url = reverse_lazy('gimnasio:listar_usuario')
-    context_object_name = 'object'  # Cambiado para que coincida con el template
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['titulo'] = 'Eliminar Usuario'
-        context['listar_url'] = reverse_lazy('gimnasio:listar_usuario')
-        return context
-
-    def delete(self, request, *args, **kwargs):
-        messages.success(self.request, "Usuario eliminado correctamente")
-        return super().delete(request, *args, **kwargs)
+class UsuarioDeleteView(View):
+    def post(self, request,pk):
+        usuario = get_object_or_404(Usuario,pk=pk)
+        usuario.user.is_active = not usuario.user.is_active
+        usuario.user.save()
+        usuario.estado = "activo" if usuario.user.is_active else "desactivo"
+        usuario.save()
+        estado = estado = "activado" if usuario.user.is_active else "desactivado"
+        messages.success(request,f"Usuario {estado} correctamente")
+        return redirect('gimnasio:listar_usuario')
 
 
 # =============================
