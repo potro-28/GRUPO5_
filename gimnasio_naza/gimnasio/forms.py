@@ -67,8 +67,8 @@ class ElementoForm(forms.ModelForm):
         imagen = self.cleaned_data.get('imagen')
         if imagen:
             ext = os.path.splitext(imagen.name)[1].lower()
-            if ext != '.png':
-                raise forms.ValidationError('Solo se permiten imágenes en formato PNG.')
+            if ext != '.png' and ext != '.jpg' and ext != '.jpeg':
+                raise forms.ValidationError('Solo se permiten imágenes en formato PNG, JPG o JPEG.')
         return imagen
 
 class UsuarioForm(forms.ModelForm):

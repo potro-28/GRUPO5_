@@ -24,15 +24,16 @@ from gimnasio.views.backup.backup import backup,restaurar_datos
 
 
 app_name = 'gimnasio'
-
+ 
 urlpatterns = [
     # Rutas existentes
     path('crear_elemento/', ElementoCreateView.as_view(), name='crear_elemento'),
     path('listar_elemento/', ElementoListView.as_view(), name='listar_elementos'),
     path('modificar_estado/<int:pk>/', ElementoUpdateView.as_view(), name='editar_elemento'),
     path('eliminar_elemento/<int:pk>/', ElementoDeleteView.as_view(), name='eliminar_elemento'),
-     path('exportar_elementos_pdf/', ExportarElementosPDF.as_view(), name='exportar_elementos_pdf'),
+    path('exportar_elementos_pdf/', ExportarElementosPDF.as_view(), name='exportar_elementos_pdf'),
     path('exportar_elementos_excel/', ExportarElementosExcel.as_view(), name='exportar_elementos_excel'),
+    path('crear-categoria-ajax/', crear_categoria_ajax, name='crear_categoria_ajax'),
 #============================usuario============================#
     path('crear_usuario/', UsuarioCreateView.as_view(), name='crear_usuario'),
     path('listar_usuario/', UsuarioListView.as_view(), name='listar_usuario'),
@@ -48,6 +49,7 @@ urlpatterns = [
     path('eliminar_mantenimiento/<int:pk>/', MantenimientoDeleteView.as_view(), name='eliminar_mantenimiento'),
     path('exportar_mantenimiento_pdf/', ExportarmantenimientoPDF.as_view(), name='exportar_mantenimiento_pdf'),
     path('exportar_mantenimiento_excel/', ExportarMantenimientoExcel.as_view(), name='exportar_mantenimiento_excel'),   
+    path('crear_elemento_ajax/', crear_elemento_ajax, name='crear_elemento_ajax'),
 #==============================asistencia==============================#
     path('listar_asistencia/', AsistenciaListView.as_view(), name='listar_asistencia'),
     path('crear_asistencia/', AsistenciaCreateView.as_view(), name='crear_asistencia'),
