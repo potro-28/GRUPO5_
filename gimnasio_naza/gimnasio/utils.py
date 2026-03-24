@@ -3,50 +3,41 @@ UTILIDADES PARA EXPORTACION DE REPORTES
 Modulo con funciones para exportar datos a PDF y Excel
 """
 
+
 from weasyprint import HTML, CSS
 from openpyxl import Workbook
 from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
 from django.http import HttpResponse
 from django.template.loader import render_to_string
-import io
+from django.templatetags.static import static
+from django.utils import timezone
+from datetime import datetime
+from django.conf import settings
+
 
 # ====== EXPORTACION A PDF ======
-def exportar_pdf(titulo, columnas, datos, nombre_archivo):
-    """
-    FUNCION PARA EXPORTAR DATOS A PDF USANDO WEASYPRINT
-    
-    Args:
-        titulo: Titulo del reporte
-        columnas: Lista de nombres de columnas
-        datos: Lista de tuplas o diccionarios con los datos
-        nombre_archivo: Nombre del archivo PDF a descargar
-    
-    Returns:
-        HttpResponse con el PDF generado
-    """
-    
+def exportar_pdf(request, titulo, columnas, datos, nombre_archivo):  #  'título' -> 'titulo' (sin tilde)
+    logo_url = request.build_absolute_uri(static('img/gym.jpeg'))  #  'logotipo_url' -> 'logo_url'
+
     # Crear contexto para el template
     contexto = {
         'titulo': titulo,
         'columnas': columnas,
         'datos': datos,
+        'logo_url': logo_url,   #  ahora coincide con la variable definida arriba
+        'now': timezone.now(),
     }
-    
-    # Generar HTML desde el template
+
     html_string = render_to_string('reportes/reporte_pdf.html', contexto)
-    
-    # Crear documento PDF desde el HTML
-    html_object = HTML(string=html_string, base_url='.')
-    
-    # Generar PDF en memoria
+
+    html_object = HTML(string=html_string, base_url=request.build_absolute_uri('/'))  # base_url correcta
+
     pdf_bytes = html_object.write_pdf()
-    
-    # Crear respuesta HTTP con el PDF
+
     response = HttpResponse(pdf_bytes, content_type='application/pdf')
     response['Content-Disposition'] = f'attachment; filename="{nombre_archivo}.pdf"'
-    
-    return response
 
+    return response
 
 # ====== EXPORTACION A EXCEL ======
 def exportar_excel(titulo, columnas, datos, nombre_archivo):
