@@ -58,6 +58,7 @@ urlpatterns = [
     path('registrar_asistencia_qr/',QR_register.as_view(), name='registrarQr'),
     path('exportar_asistencia_pdf', ExportarAsistenciaPDF.as_view(), name='exportar_asistencia_pdf'),
     path('exportar_asistencia_excel', ExportarAsistenciaExcel.as_view(), name='exportar_asistencia_excel'),
+    path('crear-membresia-ajax/', crear_membresia_ajax, name='crear_membresia_ajax'),
     #Membresias
     path('listar_membresia/', MembresiaListView.as_view(), name='listar_membresia'),
     path('crear_membresia/', MembresiaCreateView.as_view(), name='crear_membresia'),

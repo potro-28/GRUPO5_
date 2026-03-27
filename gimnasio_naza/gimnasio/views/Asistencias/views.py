@@ -12,7 +12,34 @@ from gimnasio.models import *
 from gimnasio.forms import AsistenciaForm
 
 # Listar asistencia ##
+def crear_membresia_ajax(request):
+    if request.method != "POST":
+        return JsonResponse({'error': 'Método no permitido'}, status=405)
 
+    try:
+        data = json.loads(request.body)
+
+        if not data.get('fecha_inicio') or not data.get('fecha_fin') or not data.get('estado'):
+            return JsonResponse({'error': 'Faltan campos obligatorios'})
+
+
+        fecha_inicio = datetime.strptime(data['fecha_inicio'], "%Y-%m-%d").date() \
+            if data.get('fecha_inicio') else date(2000, 1, 1)
+
+        membresia = Membresia.objects.create(                 
+            fecha_inicio =data['fecha_inicio '],
+            fecha_fin=data['fecha_fin'],
+            estado=data['estado'],
+            codigo_qr=data['codigo_qr']
+        )
+
+        return JsonResponse({
+            'id': membresia.id,               
+            'nombre': f"{membresia.nombre_usuario} {membresia.apellido_usuario}"
+        })
+
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=400)
 
 def Listar_asistencia(request):
     nombre = {

@@ -196,45 +196,67 @@ class MantenimientoForm(forms.ModelForm):
     
     
 class AsistenciaForm(forms.ModelForm):
+                
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['fecha_asistencia'].initial = datetime.now().date()
+        self.fields['hora_ingreso'].initial = datetime.now().strftime('%H:%M') 
     class Meta:
+ 
         model = Asistencia
         fields = '__all__'
         widgets = {
-            'fecha_asistencia': forms.DateInput(attrs={ 
-                'class': 'form-control',
-                'type': 'date'
+            'hora_ingreso': forms.TimeInput(attrs={
+            'class': 'form-control',
+            'type': 'time',
+            'value': datetime.now().strftime('%H:%M'),
             }),
-             'hora_ingreso': forms.TimeInput(attrs={ 
+            'fecha_asistencia': forms.DateInput(attrs={
                 'class': 'form-control',
-                'type': 'time'
-            }),
-             
+                'type': 'date',
+                'value': datetime.now().strftime('%d-%m-%Y'),     
+            }),        
         }
     def clean(self):
         cleaned_data = super().clean()
         fecha_asistencia = cleaned_data.get('fecha_asistencia')
-        hora_ingreso = cleaned_data.get('hora_ingreso')
+        fk_membresia = cleaned_data.get('fk_membresia')
        
-
+    
         if fecha_asistencia > forms.fields.datetime.date.today():
             self.add_error('fecha_asistencia','La fecha de asistencia no puede ser futura')
         if fecha_asistencia < forms.fields.datetime.date.today():
             self.add_error('fecha_asistencia','La fecha de asistencia no puede ser anterior al día de hoy')
         
 
+        asistencia_existente = Asistencia.objects.filter(fk_membresia__fk_usuario=fk_membresia.fk_usuario, fecha_asistencia=fecha_asistencia)
+
+        if asistencia_existente.exists():
+            self.add_error('fk_membresia', f'Ya existe una asistencia registrada para este usuario el día de hoy')
+
+        
+
+
 class MembresiaForm(ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['fecha_inicio'].initial = datetime.now().date()
+       
     class Meta:
         model = Membresia
         fields = '__all__'
         widgets = {
-            'fecha_inicio': forms.DateInput(attrs={ 
+            
+            'fecha_inicio': forms.DateInput(attrs={
                 'class': 'form-control',
-                'type': 'date'
-            }),
-            'fecha_fin': forms.DateInput(attrs={ 
+                'type': 'date',
+                'value': datetime.now().strftime('%d-%m-%Y'),     
+            }),  
+                'fecha_fin': forms.DateInput(attrs={
                 'class': 'form-control',
-                'type': 'date'
-            }),
+                'type': 'date',
+                'value': datetime.now().strftime('%d-%m-%Y'),     
+            }),  
         }
         
     def clean(self):
@@ -268,6 +290,8 @@ class NotificacionForm(forms.ModelForm):
         model = Notificacion
         fields = '__all__'
         widgets ={
+            'fk_usuario': forms.Select(attrs={'class': 'form-control'}),
+            
             'tipo_notificacion': forms.Select(attrs={
                 'class': 'form-control',
             }),
