@@ -1,16 +1,10 @@
 import os
 import re 
-from dataclasses import fields
-from django.forms import ModelForm
+from django.forms import ModelForm, formset_factory, inlineformset_factory
 from gimnasio.models import *
 from django import forms
 from datetime import date
-from django.contrib import messages
-from django.core.exceptions import ValidationError
-from datetime import *
 from django.utils import timezone
-from django.contrib.auth.models import User
-from django.shortcuts import render
 
 class ElementoForm(forms.ModelForm):
     class Meta:
@@ -67,8 +61,8 @@ class ElementoForm(forms.ModelForm):
         imagen = self.cleaned_data.get('imagen')
         if imagen:
             ext = os.path.splitext(imagen.name)[1].lower()
-            if ext != '.png':
-                raise forms.ValidationError('Solo se permiten imágenes en formato PNG.')
+            if ext != '.png' and ext != '.jpg' and ext != '.jpeg':
+                raise forms.ValidationError('Solo se permiten imágenes en formato PNG, JPG o JPEG.')
         return imagen
 
 class UsuarioForm(forms.ModelForm):
@@ -301,9 +295,16 @@ class NotificacionForm(forms.ModelForm):
 
 
 class EncuestaForm(forms.ModelForm):
+    miembros = forms.ModelMultipleChoiceField(
+        queryset=Usuario.objects.filter(estado='activo'),
+        widget=forms.SelectMultiple(attrs={'class': 'form-control'}),
+        required=False,
+        label="Seleccionar Miembros"
+    )
+    
     class Meta:
         model = Encuesta
-        fields = '__all__'
+        fields = ['nombre', 'estado', 'fk_usuario', 'miembros']
         widgets = {
             'nombre' : forms.TextInput(attrs={ 
                 'class':'form-control',
@@ -311,10 +312,7 @@ class EncuestaForm(forms.ModelForm):
             
             'estado':
                 forms.Select(attrs={
-                'class':'form-control',  
-                'placeholder': 'Ingrese la descripcion de la encuesta',
-                'rows':3,
-                'cols':3}),
+                'class':'form-control'}),
             'fk_usuario':
                 forms.Select(attrs={
                     'class':'form-control',
@@ -339,7 +337,37 @@ class EncuestaForm(forms.ModelForm):
                 'Ya existe una encuesta con ese nombre'
             )
         return nombre
+
+class PreguntaForm(forms.ModelForm):
+    opciones = forms.CharField(
+        required=False,
+        widget=forms.Textarea(attrs={
+            'class': 'form-control',
+            'placeholder': 'Opciones separadas por comas (para opciones múltiples)',
+            'rows': 3
+        })
+    )
+
+    class Meta:
+        model = Pregunta
+        fields = ['pregunta', 'tipo', 'opciones', 'requerida']
+        widgets = {
+            'pregunta': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ingrese la pregunta'}),
+            'tipo': forms.Select(attrs={'class': 'form-control'}),
+            'requerida': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+        }
     
+    def clean_opciones(self):
+        opciones = self.cleaned_data.get('opciones')
+        tipo = self.cleaned_data.get('tipo')
+        if tipo in ['multiple_choice', 'check_boxes', 'dropdown'] and not opciones:
+            raise forms.ValidationError("Debe proporcionar opciones para este tipo de pregunta")
+        if opciones:
+            return [op.strip() for op in opciones.split(',') if op.strip()]
+        return None
+
+PreguntaFormSet = inlineformset_factory(Encuesta, Pregunta, form=PreguntaForm, extra=1, can_delete=True)
+
 class Soporte_PQRSForm(ModelForm):
     class Meta:
         model = Soporte_PQRS

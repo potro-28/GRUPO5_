@@ -2,10 +2,7 @@ from django.db import models
 from datetime import *
 from decimal import Decimal  
 from django.contrib.auth.models import User
-
 # Create your models here.
-
-
 #---------------------------------MODELO USUARIO-----------------------------------------       
 
 class Usuario(models.Model):
@@ -92,6 +89,7 @@ class Categoria(models.Model):
         ('accesorios', 'Accesorios'),
         ('barras', 'Barras'),
     ]
+    
 
     nombre_categoria = models.CharField(max_length=45, choices=NOMBRE_CATEGORIA)
     descripcion = models.CharField(max_length=250)
@@ -127,7 +125,7 @@ class Elemento(models.Model):
     estado = models.CharField(max_length=20, choices=ESTADO_CHOICES)
     fecha_ingreso = models.DateField()
     categoria = models.ForeignKey(Categoria, on_delete=models.CASCADE)
-    imagen = models.ImageField(upload_to='elementos/', null=True, blank=True)
+    imagen = models.ImageField(upload_to='elementos', null=True, blank=True)
 
     def __str__(self):
         return self.nombre_elemento
@@ -153,7 +151,6 @@ class Mantenimiento(models.Model):
     estado = models.CharField(max_length=20, choices=ESTADO_CHOICES)
     elemento = models.ForeignKey(Elemento, on_delete=models.CASCADE)
     descripcion = models.TextField()
-
     def __str__(self):
         return str(self.id)
     
@@ -200,6 +197,10 @@ class Encuesta(models.Model):
     nombre = models.CharField(max_length=100,unique=True)
     estado = models.CharField(max_length=20,choices=ESTADO_CHOICES,default='activa')
     fk_usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
+    form_id = models.CharField(max_length=100, blank=True, null=True)  # ID del formulario de Google Forms
+    fecha_creacion = models.DateTimeField(auto_now_add=True)
+    fecha_envio = models.DateTimeField(blank=True, null=True)  # Fecha cuando se envía la encuesta
+    miembros = models.ManyToManyField(Usuario, related_name='encuestas', blank=True)  # Miembros seleccionados para la encuesta
        
       
     def __str__(self):
@@ -209,6 +210,34 @@ class Encuesta(models.Model):
         verbose_name = 'Encuesta'
         verbose_name_plural = 'Encuestas'
         db_table = 'encuesta'
+
+class Pregunta(models.Model):
+    TIPO_CHOICES = [
+        ('short_answer', 'Respuesta corta'),
+        ('paragraph', 'Párrafo'),
+        ('multiple_choice', 'Opción múltiple'),
+        ('check_boxes', 'Casillas de verificación'),
+        ('dropdown', 'Lista desplegable'),
+        ('linear_scale', 'Escala lineal'),
+        ('date', 'Fecha'),
+        ('time', 'Hora'),
+    ]
+    
+    encuesta = models.ForeignKey(Encuesta, on_delete=models.CASCADE, related_name='preguntas')
+    pregunta = models.CharField(max_length=500)
+    tipo = models.CharField(max_length=20, choices=TIPO_CHOICES)
+    opciones = models.JSONField(blank=True, null=True)  # Para opciones en multiple_choice, check_boxes, dropdown
+    requerida = models.BooleanField(default=False)
+    orden = models.PositiveIntegerField(default=0)
+    
+    def __str__(self):
+        return self.pregunta
+    
+    class Meta:
+        verbose_name = 'Pregunta'
+        verbose_name_plural = 'Preguntas'
+        db_table = 'pregunta'
+        ordering = ['orden']
    
  #--------------------------------Modulo Gestión de reportes estadisticas----------------------------
 class Reportes_estadisticas(models.Model):

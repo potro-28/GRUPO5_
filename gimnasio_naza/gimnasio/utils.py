@@ -3,50 +3,41 @@ UTILIDADES PARA EXPORTACION DE REPORTES
 Modulo con funciones para exportar datos a PDF y Excel
 """
 
+
 from weasyprint import HTML, CSS
 from openpyxl import Workbook
 from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
 from django.http import HttpResponse
 from django.template.loader import render_to_string
-import io
+from django.templatetags.static import static
+from django.utils import timezone
+from datetime import datetime
+from django.conf import settings
+
 
 # ====== EXPORTACION A PDF ======
-def exportar_pdf(titulo, columnas, datos, nombre_archivo):
-    """
-    FUNCION PARA EXPORTAR DATOS A PDF USANDO WEASYPRINT
-    
-    Args:
-        titulo: Titulo del reporte
-        columnas: Lista de nombres de columnas
-        datos: Lista de tuplas o diccionarios con los datos
-        nombre_archivo: Nombre del archivo PDF a descargar
-    
-    Returns:
-        HttpResponse con el PDF generado
-    """
-    
+def exportar_pdf(request, titulo, columnas, datos, nombre_archivo):  #  'título' -> 'titulo' (sin tilde)
+    logo_url = request.build_absolute_uri(static('img/gym.jpeg'))  #  'logotipo_url' -> 'logo_url'
+
     # Crear contexto para el template
     contexto = {
         'titulo': titulo,
         'columnas': columnas,
         'datos': datos,
+        'logo_url': logo_url,   #  ahora coincide con la variable definida arriba
+        'now': timezone.now(),
     }
-    
-    # Generar HTML desde el template
+
     html_string = render_to_string('reportes/reporte_pdf.html', contexto)
-    
-    # Crear documento PDF desde el HTML
-    html_object = HTML(string=html_string, base_url='.')
-    
-    # Generar PDF en memoria
+
+    html_object = HTML(string=html_string, base_url=request.build_absolute_uri('/'))  # base_url correcta
+
     pdf_bytes = html_object.write_pdf()
-    
-    # Crear respuesta HTTP con el PDF
+
     response = HttpResponse(pdf_bytes, content_type='application/pdf')
     response['Content-Disposition'] = f'attachment; filename="{nombre_archivo}.pdf"'
-    
-    return response
 
+    return response
 
 # ====== EXPORTACION A EXCEL ======
 def exportar_excel(titulo, columnas, datos, nombre_archivo):
@@ -152,3 +143,133 @@ def exportar_excel(titulo, columnas, datos, nombre_archivo):
     workbook.save(response)
     
     return response
+
+
+# ====== GOOGLE FORMS API FUNCTIONS ======
+
+import os
+from googleapiclient.discovery import build
+from google.oauth2.credentials import Credentials
+from google.auth.transport.requests import Request
+from google_auth_oauthlib.flow import InstalledAppFlow
+
+SCOPES = ['https://www.googleapis.com/auth/forms.body', 'https://www.googleapis.com/auth/forms.responses.readonly']
+
+def get_google_forms_service():
+    """
+    Obtiene el servicio de Google Forms API.
+    Requiere credenciales OAuth 2.0.
+    """
+    creds = None
+    # El archivo token.json almacena los tokens de acceso y refresco del usuario
+    if os.path.exists('token.json'):
+        creds = Credentials.from_authorized_user_file('token.json', SCOPES)
+    # Si no hay credenciales válidas disponibles, permite al usuario iniciar sesión
+    if not creds or not creds.valid:
+        if creds and creds.expired and creds.refresh_token:
+            creds.refresh(Request())
+        else:
+            flow = InstalledAppFlow.from_client_secrets_file(
+                'credentials.json', SCOPES)
+            # Usar puerto fijo permite que el redirect URI coincida con el registrado en Google Cloud
+            creds = flow.run_local_server(port=8000)
+        # Guarda las credenciales para la próxima ejecución
+        with open('token.json', 'w') as token:
+            token.write(creds.to_json())
+
+    service = build('forms', 'v1', credentials=creds)
+    return service
+
+def crear_formulario_google(titulo, descripcion=""):
+    """
+    Crea un nuevo formulario en Google Forms.
+    """
+    service = get_google_forms_service()
+    
+    form = {
+        "info": {
+            "title": titulo,
+            "description": descripcion,
+        }
+    }
+    
+    result = service.forms().create(body=form).execute()
+    return result
+
+def actualizar_formulario_google(form_id, updates):
+    """
+    Actualiza un formulario existente en Google Forms.
+    updates debe ser un diccionario con los cambios.
+    """
+    service = get_google_forms_service()
+    
+    request = service.forms().batchUpdate(formId=form_id, body=updates)
+    response = request.execute()
+    return response
+
+def obtener_formulario_google(form_id):
+    """
+    Obtiene la información de un formulario.
+    """
+    service = get_google_forms_service()
+    
+    result = service.forms().get(formId=form_id).execute()
+    return result
+
+def agregar_preguntas_a_formulario(form_id, formset):
+    """
+    Agrega preguntas al formulario de Google Forms.
+    """
+    service = get_google_forms_service()
+    
+    requests = []
+    for form in formset:
+        if form.cleaned_data and not form.cleaned_data.get('DELETE', False):
+            pregunta = form.cleaned_data['pregunta']
+            tipo = form.cleaned_data['tipo']
+            opciones = form.cleaned_data.get('opciones')
+            requerida = form.cleaned_data.get('requerida', False)
+            
+            # Mapear tipos de Django a tipos de Google Forms
+            tipo_mapping = {
+                'short_answer': 'SHORT_ANSWER',
+                'paragraph': 'PARAGRAPH',
+                'multiple_choice': 'RADIO',
+                'check_boxes': 'CHECKBOX',
+                'dropdown': 'DROP_DOWN',
+                'date': 'DATE',
+                'time': 'TIME',
+            }
+            
+            item = {
+                'title': pregunta,
+                'questionItem': {
+                    'question': {
+                        'required': requerida,
+                    }
+                }
+            }
+            
+            if tipo in ['multiple_choice', 'check_boxes', 'dropdown']:
+                if opciones:
+                    choices = [{'value': op} for op in opciones]
+                    item['questionItem']['question']['choiceQuestion'] = {
+                        'type': tipo_mapping[tipo],
+                        'options': choices
+                    }
+                else:
+                    # Si no hay opciones, usar texto
+                    item['questionItem']['question']['textQuestion'] = {}
+            else:
+                item['questionItem']['question']['textQuestion'] = {}
+            
+            requests.append({
+                'createItem': {
+                    'item': item,
+                    'location': {'index': 0}
+                }
+            })
+    
+    if requests:
+        body = {'requests': requests}
+        service.forms().batchUpdate(formId=form_id, body=body).execute()

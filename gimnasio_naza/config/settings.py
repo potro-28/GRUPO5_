@@ -75,7 +75,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'gimnasio_db',
         'USER': 'root',
-        'PASSWORD': '123456789',
+        'PASSWORD': 'F4b14n89',
         'HOST': 'localhost',
         'PORT' : '3306',
     }
@@ -130,3 +130,12 @@ LOGIN_URL = 'login:login'
 LOGOUT_URL = 'login:logout'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+# EMAIL CONFIGURATION
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'XXXXX@gmail.com'  # Reemplaza con tu email
+EMAIL_HOST_PASSWORD = 'XXXXXXXX'  # Reemplaza con tu contraseña de aplicación
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER

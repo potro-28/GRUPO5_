@@ -44,6 +44,30 @@
                 {% endfor %}
             </div>
             {% endfor %}
+
+            <!-- Preguntas -->
+            <div class="form-group mb-3">
+                <label>Preguntas</label>
+                {{ formset.management_form }}
+                <div id="preguntas-container">
+                    {% for form_pregunta in formset %}
+                    <div class="pregunta-item border p-3 mb-3">
+                        {% for field in form_pregunta.visible_fields %}
+                        <div class="form-group mb-2">
+                            <label>{{ field.label }}</label>
+                            {{ field|add_class:'form-control' }}
+                            {% for error in field.errors %}
+                            <div class="text-danger">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                        {% endfor %}
+                        {% if form_pregunta.instance.pk %}{{ form_pregunta.DELETE }}{% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+                <button type="button" class="btn btn-secondary" id="add-pregunta">Agregar Pregunta</button>
+            </div>
+
         </div>
 
         <div class="card-footer">
@@ -151,6 +175,37 @@ function crearUsuario() {
         Swal.fire("Error", "Ocurrió un error en la petición", "error");
     });
 }
+
+// JavaScript para manejar el formset de preguntas
+document.getElementById('add-pregunta').addEventListener('click', function() {
+    let container = document.getElementById('preguntas-container');
+    let totalForms = document.querySelector('input[name="pregunta_set-TOTAL_FORMS"]');
+    let formNum = parseInt(totalForms.value);
+    
+    // Clonar la primera pregunta como template
+    let template = container.querySelector('.pregunta-item');
+    if (!template) return;
+    
+    let newForm = template.cloneNode(true);
+    
+    // Actualizar índices
+    newForm.innerHTML = newForm.innerHTML.replace(/pregunta_set-0-/g, `pregunta_set-${formNum}-`);
+    newForm.innerHTML = newForm.innerHTML.replace(/id_pregunta_set-0-/g, `id_pregunta_set-${formNum}-`);
+    
+    // Limpiar valores
+    let inputs = newForm.querySelectorAll('input, select, textarea');
+    inputs.forEach(input => {
+        if (input.type !== 'checkbox') {
+            input.value = '';
+        } else {
+            input.checked = false;
+        }
+    });
+    
+    container.appendChild(newForm);
+    totalForms.value = formNum + 1;
+});
+
 </script>
 
 {% endblock %}

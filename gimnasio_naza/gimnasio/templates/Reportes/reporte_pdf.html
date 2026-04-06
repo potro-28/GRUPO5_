@@ -1,4 +1,4 @@
- {% load static %}
+{% load static %}
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -30,20 +30,31 @@
 
         /* ====== ENCABEZADO DEL REPORTE ====== */
         .header {
-            text-align: center;
             margin-bottom: 20px;
             border-bottom: 2px solid #333;
             padding-bottom: 10px;
         }
 
-        .header h1 {
+        /* ====== LAYOUT FLEX DEL ENCABEZADO ====== */
+        .header-content {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }        
+        /* ====== TEXTO CENTRADO DEL ENCABEZADO ====== */
+        .header-text {
+            flex: 1;
+            text-align: center;
+        }
+
+        .header-text h1 {
             font-size: 18px;
             font-weight: bold;
             color: #1f4788;
             margin-bottom: 5px;
         }
 
-        .header p {
+        .header-text p {
             font-size: 10px;
             color: #666;
         }
@@ -106,16 +117,33 @@
             text-align: right;
             margin-top: 10px;
         }
-</style>
+        
+    </style>
+</head>
 
 <body>
-    <!-- ENCABEZADO DEL REPORTE -->
+
+    <!-- ====== ENCABEZADO DEL REPORTE ====== -->
     <div class="header">
-        <h1>{{ titulo }}</h1>
-        <p>Reporte generado automáticamente</p>
+       <div class="logotipo" style="
+        width: 70px;
+        height: 70px;
+        background-image: url('{{ logo_url }}');
+        background-size: contain;
+        background-position: center;
+        background-repeat: no-repeat;
+    ">
+    </div>       
+            <!-- TÍTULO Y SUBTÍTULO -->
+            <div class="header-text">
+                <h1>{{ titulo }}</h1>
+                <p>Reporte generado automáticamente</p>
+            </div>
+
+        </div>
     </div>
 
-    <!-- TABLA CON LOS DATOS -->
+    <!-- ====== TABLA CON LOS DATOS ====== -->
     <table>
         <!-- ENCABEZADOS DE LAS COLUMNAS -->
         <thead>
@@ -138,15 +166,16 @@
         </tbody>
     </table>
 
-    <!-- PIE DE PAGINA -->
+    <!-- ====== PIE DE PAGINA ====== -->
     <div class="footer">
         <p>Total de registros: {{ datos|length }}</p>
     </div>
 
-    <!-- INFORMACION DEL REPORTE -->
+    <!-- ====== INFORMACION DEL REPORTE ====== -->
     <div class="info">
         {% load tz %}
-        Generado el: {{ 'now'|date:'d/m/Y H:i:s' }}
+        Generado el: {% now "d/m/Y H:i:s" %}
     </div>
+
 </body>
 </html>

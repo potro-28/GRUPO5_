@@ -24,6 +24,8 @@
                             <th>Nombre</th>
                             <th>Estado</th>
                             <th>Usuario</th>
+                            <th>Fecha Creación</th>
+                            <th>Fecha Envío</th>
                             <th>Acciones</th>
                         </tr>
                     </thead>
@@ -41,27 +43,87 @@
                                 {% endif %}
                             </td>
                             <td>{{ encuesta.fk_usuario.nombre_usuario }} {{ encuesta.fk_usuario.apellido_usuario }}</td>
+                            <td>{{ encuesta.fecha_creacion|date:"d/m/Y H:i" }}</td>
+                            <td>
+                                {% if encuesta.fecha_envio %}
+                                    {{ encuesta.fecha_envio|date:"d/m/Y H:i" }}
+                                {% else %}
+                                    No enviada
+                                {% endif %}
+                            </td>
                             <td class="text-nowrap">
-                               
-<a href="{% url 'gimnasio:editar_encuesta' encuesta.id %}"
-                                                class="btn btn-sm btn-text-secondary rounded-pill btn-icon item-edit">
-                                                <i class="icon-base ri ri-edit-box-line icon-22px"></i>
-                                            </a>
-                                       
-                                            <a href="{% url 'gimnasio:eliminar_encuesta' encuesta.id %}"
-                              class="btn btn-sm btn-text-secondary rounded-pill btn-icon item-trash">
-                                                <i class="icon-base ri ri-delete-bin-line icon-22px">                                      </li>
-                                    
+                                {% if not encuesta.fecha_envio %}
+                                <form method="post" action="{% url 'gimnasio:enviar_encuesta' encuesta.id %}" class="d-inline-flex align-items-center">
+                                    {% csrf_token %}
+                                    <select name="usuario_id" class="form-select form-select-sm me-1" style="width: 170px;">
+                                        <option value="">Usuario</option>
+                                        {% if encuesta.miembros.exists %}
+                                            {% for usuario in encuesta.miembros.all %}
+                                            <option value="{{ usuario.id }}">{{ usuario.nombre_usuario }} {{ usuario.apellido_usuario }}</option>
+                                            {% endfor %}
+                                        {% else %}
+                                            {% for usuario in usuarios_activos %}
+                                            <option value="{{ usuario.id }}">{{ usuario.nombre_usuario }} {{ usuario.apellido_usuario }}</option>
+                                            {% endfor %}
+                                        {% endif %}
+                                    </select>
+                                    <button type="submit" class="btn btn-sm btn-text-secondary rounded-pill btn-icon">
+                                        <i class="icon-base ri ri-send-plane-line icon-22px"></i>
+                                    </button>
+                                </form>
+                                {% endif %}
+                                <a href="{% url 'gimnasio:editar_encuesta' encuesta.id %}"
+                                    class="btn btn-sm btn-text-secondary rounded-pill btn-icon item-edit">
+                                    <i class="icon-base ri ri-edit-box-line icon-22px"></i>
+                                </a>
+                                <a href="{% url 'gimnasio:eliminar_encuesta' encuesta.id %}"
+                                    class="btn btn-sm btn-text-secondary rounded-pill btn-icon item-trash">
+                                    <i class="icon-base ri ri-delete-bin-line icon-22px"></i>
+                                </a>
                             </td>
                         </tr>
                         {% empty %}
                         <tr>
-                            <td colspan="5" class="text-center">No hay encuestas registradas.</td>
+                            <td colspan="7" class="text-center">No hay encuestas registradas.</td>
                         </tr>
                         {% endfor %}
                     </tbody>
                 </table>
             </div>
+
+            <!-- Sección para enviar encuestas -->
+            <div class="mt-4">
+                <h5>Enviar Encuesta</h5>
+                <form method="post" action="{% url 'gimnasio:enviar_encuesta_usuarios' %}">
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="col-md-4">
+                            <label for="encuesta_select">Seleccionar Encuesta:</label>
+                            <select name="encuesta_id" id="encuesta_select" class="form-control" required>
+                                <option value="">-- Seleccionar --</option>
+                                {% for encuesta in object_list %}
+                                <option value="{{ encuesta.id }}">{{ encuesta.nombre }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-8">
+                            <label>Seleccionar Usuarios:</label>
+                            <div class="border p-3" style="max-height: 200px; overflow-y: auto;">
+                                {% for usuario in usuarios_activos %}
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="usuarios" value="{{ usuario.id }}" id="usuario_{{ usuario.id }}">
+                                    <label class="form-check-label" for="usuario_{{ usuario.id }}">
+                                        {{ usuario.nombre_usuario }} {{ usuario.apellido_usuario }} ({{ usuario.correo_usuario }})
+                                    </label>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-success mt-3">Enviar Encuesta</button>
+                </form>
+            </div>
+
         </div>
     </div>
 </div>

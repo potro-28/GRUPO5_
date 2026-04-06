@@ -1,10 +1,30 @@
-from django.shortcuts import get_object_or_404, render, redirect
-from django.views.generic import ListView, CreateView, UpdateView, DeleteView
+import json
+from django.views import generic
+from django.utils import timezone
+from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
-from gimnasio.models import Elemento
+from django.views.generic import ListView, CreateView, UpdateView, DeleteView
+from gimnasio.models import *
 from gimnasio.forms import ElementoForm
+from django.http import HttpResponse,JsonResponse
+from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import csrf_exempt
+@csrf_exempt
+def crear_categoria_ajax(request):
+    import json
+    from datetime import date
 
+    data = json.loads(request.body)
 
+    categoria = Categoria.objects.create(
+        nombre_categoria=data['nombre_categoria'],
+        descripcion=data['descripcion']
+    )
+
+    return JsonResponse({
+        'id': categoria.id,
+        'nombre': categoria.nombre_categoria
+    })
 
 # ==============================
 # LISTAR ELEMENTOS
