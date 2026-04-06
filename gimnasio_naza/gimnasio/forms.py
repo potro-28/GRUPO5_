@@ -74,6 +74,21 @@ class ElementoForm(forms.ModelForm):
 class UsuarioForm(forms.ModelForm):
     class Meta:
         model = Usuario
+        fields = '__all__'
+        widgets = {
+            'fecha_nacimiento': forms.DateInput(
+                attrs={
+                    'type': 'date',
+                    'class': 'form-control'
+                }
+            ),
+            'peso_usuario': forms.NumberInput(
+                attrs={'placeholder':'kg'}
+            ),
+            'altura_usuario': forms.NumberInput(
+                attrs={'placeholder':'M'}
+            ),
+        }
         exclude = ['user', 'estado', 'fecha_registro']
     def clean(self):
         cleaned_data = super().clean()
@@ -83,6 +98,8 @@ class UsuarioForm(forms.ModelForm):
         fecha_nacimiento = cleaned_data.get('fecha_nacimiento')
         telefono = cleaned_data.get('telefono')
         correo = cleaned_data.get('correo')
+        peso_usuario = cleaned_data.get('peso_usuario')
+        altura_usuario = cleaned_data.get('altura_usuario')
         fecha_inicio = cleaned_data.get('fecha_inicio')
         fecha_registro = cleaned_data.get('fecha_registro')
 
@@ -165,7 +182,24 @@ class UsuarioForm(forms.ModelForm):
         if re.search(r'[^a-zA-Z0-9._%+\-@]', correo):
             raise forms.ValidationError('El correo solo puede contener letras, números y los caracteres especiales permitidos (. _ % + -).')
         return correo
+    def peso_usuario(self):
+        peso_usuario = self.cleaned_data.get('peso_usuario')
+        if peso_usuario is not None:
+            if peso_usuario <= 0:
+                raise forms.ValidationError('El peso debe ser un número positivo.')
+            if peso_usuario < 30 or peso_usuario > 150:
+                raise forms.ValidationError('El peso debe estar entre 30kg y 150kg.')
+        return peso_usuario
     
+    def altura_usuario(self):
+        altura_usuario = self.cleaned_data.get('altura_usuario')
+        if altura_usuario is not None:
+            if altura_usuario <= 0:
+                raise forms.ValidationError('La altura debe ser un número positivo.')
+            if altura_usuario < 100 or altura_usuario > 230:
+                raise forms.ValidationError('La altura debe estar entre 100m y 230m.')
+        return altura_usuario
+
 
 class MantenimientoForm(forms.ModelForm):
     class Meta:

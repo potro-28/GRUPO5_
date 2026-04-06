@@ -1,6 +1,5 @@
 {% extends 'body.html' %}
 {% load widget_tweaks %}
-
 {% block contenido %}
 
 <div class="container-xxl flex-grow-1 container-p-y">
@@ -13,66 +12,137 @@
         </div>
 
         <div class="card-body">
-            <form method="post" action=".">
+            <form method="POST" action="." enctype="multipart/form-data">
                 {% csrf_token %}
-
+                
                 {% if form.errors %}
-                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                        <h5 class="alert-heading">
-                            <i class="ri-error-warning-line me-2"></i>¡Atención!
-                        </h5>
-                        <ul class="mb-0">
-                            {% for field in form %}
-                                {% for error in field.errors %}
-                                    <li>{{ field.label }}: {{ error }}</li>
-                                {% endfor %}
-                            {% endfor %}
-                        </ul>
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
+            <div class="alert alert-danger">
+                <strong>Error:</strong> Verifica los campos.
+            </div>
+            {% endif %}
+
+            {% for field in form.visible_fields %}
+            <div class="form-group mb-3">
+                <label>{{ field.label }}</label>
+
+                {% if field.name == 'elemento' %}
+                <div class="d-flex">
+                    {{ field|add_class:'form-control' }}
+                    <button type="button" class="btn btn-success ms-2" data-bs-toggle="modal" data-bs-target="#modalelemento">
+                        +
+                    </button>
+                </div>
+                {% else %}
+                    {{ field|add_class:'form-control' }}
                 {% endif %}
 
-                <div class="row">
-                    {% for field in form.visible_fields %}
-                        <div class="col-md-6 mb-3">
-                            <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}:</label>
-                            {% render_field field class="form-control" %}
-                            {% if field.help_text %}
-                                <small class="form-text text-muted">{{ field.help_text }}</small>
-                            {% endif %}
-                        </div>
-                    {% endfor %}
-                </div>
+                {% for error in field.errors %}
+                    <div class="text-danger">{{ error }}</div>
+                {% endfor %}
+            </div>
+            {% endfor %}
 
-                <div class="mt-4">
-                    <button type="submit" class="btn btn-primary me-2">
-                        <i class="ri-save-line me-1"></i>
-                        Guardar Registro
-                    </button>
-                    <a href="{% url 'gimnasio:listar_mantenimiento' %}" class="btn btn-danger">
-                        <i class="ri-close-line me-1"></i>
-                        Cancelar
-                    </a>
-                </div>
-            </form>
         </div>
+
+        <div class="card-footer">
+            <button type="submit" class="btn btn-primary">
+                Guardar
+            </button>
+            <a href="{% url 'gimnasio:listar_mantenimiento' %}" class="btn btn-danger">
+                Cancelar
+            </a>
+        </div>
+
     </div>
+</form>
+
+
+<!-- Modal Crear Elemento -->
+<div class="modal fade" id="modalelemento" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h5>Crear Elemento</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body">
+        <input type="text" id="serial" class="form-control mb-2" placeholder="Serial">
+        <input type="text" id="marca" class="form-control mb-2" placeholder="Marca">
+
+        <select id="nombre_elemento" class="form-control mb-2">
+            <option value="" disabled selected>-- Selecciona --</option>
+            <option value="maquina">Máquina</option>
+            <option value="disco">Disco</option>
+            <option value="mancuerna">Mancuerna</option>
+            <option value="barra">Barra</option>
+            <option value="otro">Otro</option>
+        </select>
+
+        <input type="number" id="peso_elemento" class="form-control mb-2" placeholder="Peso Elemento">
+
+        <select id="estado" class="form-control mb-2">
+            <option value="" disabled selected>-- Selecciona --</option>
+            <option value="activo">Activo</option>
+            <option value="inactivo">Inactivo</option>
+        </select>
+
+        <input type="date" id="fecha_ingreso" class="form-control mb-2">
+        <input type="file" id="imagen" class="form-control mb-2" accept="image/*">
+
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-primary" onclick="crearElemento()">Guardar</button>
+      </div>
+
+    </div>
+  </div>
 </div>
 
 {% endblock %}
 
 {% block js %}
-    {% if form.errors %}
-    <script>
-        {% for field, errors in form.errors.items %}
-            {% for error in errors %}
-                Swal.fire({
-                    title: "Error",
-                    text: "{{ error }}",
-                    icon: "error",
-                });
-            {% endfor %}
-        {% endfor %}
-    </script>
-    {% endif %}
+<script>
+function crearElemento() {
+
+    let data = {
+        serial: document.getElementById("serial").value,
+        marca: document.getElementById("marca").value,
+        nombre_elemento: document.getElementById("nombre_elemento").value,
+        peso_elemento: document.getElementById("peso_elemento").value,
+        estado: document.getElementById("estado").value,
+        fecha_ingreso: document.getElementById("fecha_ingreso").value,
+        imagen: document.getElementById("imagen").files[0]
+    };
+
+    if (!data.serial || !data.marca || !data.nombre_elemento || !data.peso_elemento || !data.estado || !data.fecha_ingreso || !data.imagen) {
+        Swal.fire("Error", "Todos los campos son obligatorios", "error");
+        return;
+    }
+
+    fetch("{% url 'gimnasio:crear_elemento_ajax' %}", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": "{{ csrf_token }}"
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(data => {
+        let select = document.getElementById("elemento");
+        let option = new Option(data.nombre, data.id, true, true);
+        select.add(option);
+
+
+        let modal = bootstrap.Modal.getInstance(document.getElementById('modalelemento'));
+        modal.hide();
+
+        Swal.fire("Correcto", "Elemento creado exitosamente", "success");
+
+    });
+}
+</script>
 {% endblock %}

@@ -5,9 +5,9 @@
             <i class="fas fa-bars menu-toggle" id="menuToggle"></i>
             <div class="logo">
                 <img src="{% static 'assets/img/avatars/logo.png' %}" alt="Logo"style="width:110px; height:auto; cursor:pointer; transition: transform 0.3s;"onmouseover="this.style.transform='scale(1.1)'"onmouseout="this.style.transform='scale(1)'">
-                <i class></i> <span>GYM NAZARETH</span>
-            </div>
-        </div>
+          <a href="{% url 'gimnasio:dashboard' %}" style="color: white; text-decoration: none;">
+              <span>GYM NAZARETH</span>
+          </a>
         
         <div class="topbar-right">
             <div class="btn-group">
@@ -49,9 +49,10 @@
                             <button type="submit" class="btn btn-default btn-flat">Cerrar Sesión</button>
                           </form>
 
+
                           <i class="ri ri-logout-box-r-line ms-2 ri-xs"></i>
                         </a>
-                >
+              
                   </div>
                 </div>
             </div>
