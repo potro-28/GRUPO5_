@@ -23,10 +23,12 @@
                   </form>
                 </ul>
               </div>
-            <div class="search-container">
+            <div class="search-container position-relative">
                 <i class="fa-solid fa-magnifying-glass"></i>
-                <input type="text" 
-                placeholder="Buscar...">
+                <input type="text" id="input-buscar" placeholder="Buscar" autocomplete="off">
+                <!-- Dropdown resultados -->
+                <div id="resultados-buscar" class="resultados-dropdown d-none">
+                </div>
             </div>
             
 
