@@ -9,29 +9,72 @@ from django.utils.decorators import method_decorator
 from django.contrib import messages
 from gimnasio.models import *
 from gimnasio.forms import RutinaForm
+from django.contrib.auth.models import User
+from datetime import datetime,date
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
 import json
 
 @csrf_exempt
-def crear_masa_corporal_ajax(request):
-    data = json.loads(request.body)
+def wizard_crear_todo(request):
+    if request.method == "POST":
+        data = json.loads(request.body)
 
-    try:
-        masa = Masa_corporal.objects.create(
-            peso_cliente=data['peso_cliente'],
-            altura_cliente=data['altura_cliente'],
-            fecha_control=data['fecha_control'],
-            fk_Nutricion_id=data['fk_Nutricion']
-        )
+        try:
+            # ======================
+            # USER DJANGO
+            # ======================
+            user = User.objects.create_user(
+                username=data['username'],
+                password=data['password']
+            )
 
-        usuario = masa.fk_Nutricion.fk_Usuario
+            # ======================
+            # USUARIO
+            # ======================
+            usuario = Usuario.objects.create(
+                user=user,
+                documento=data['documento'],
+                nombre_usuario=data['nombre'],
+                apellido_usuario=data['apellido'],
+                correo_usuario=data['correo'],
+                telefono_usuario=data['telefono'],
+                fecha_nacimiento=data['fecha_nacimiento'],
+                peso_usuario=data['peso'],
+                altura_usuario=data['altura'],
+                genero_usuario=data['genero'],
+                estado='activo'
+            )
 
-        return JsonResponse({
-            'id': masa.id,
-            'nombre': f"{usuario.nombre_usuario} {usuario.apellido_usuario}"
-        })
+            # ======================
+            # NUTRICION
+            # ======================
+            nutricion = Nutricion.objects.create(
+                nivel_actividad=data['nivel_actividad'],
+                tipo_objetivo=data['tipo_objetivo'],
+                tipo_dieta=data['tipo_dieta'],
+                fk_Usuario=usuario
+            )
 
-    except Exception as e:
-        return JsonResponse({'error': str(e)}, status=400)
+            # ======================
+            # MASA CORPORAL
+            # ======================
+            masa = Masa_corporal.objects.create(
+                peso_cliente=data['peso_cliente'],
+                altura_cliente=data['altura_cliente'],
+                fecha_control=data['fecha_control'],
+                fk_Nutricion=nutricion
+            )
+
+            return JsonResponse({
+                "id": masa.id,
+                "nombre": f"IMC {masa.id}"
+            })
+
+        except Exception as e:
+            return JsonResponse({
+                "error": str(e)
+            }, status=400)
 
 #Listar rutinas
 def listar_rutinas(request):
@@ -75,7 +118,8 @@ class RutinaCreateView(CreateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['titulo'] = 'Crear Rutina'
-        context['nutriciones'] = Nutricion.objects.all()  # 🔥 CLAVE
+        context['nutriciones'] = Nutricion.objects.all()
+        context['usuarios'] = Usuario.objects.all()  # 🔥 IMPORTANTE
         return context
 
     def form_valid(self, form):

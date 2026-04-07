@@ -3,9 +3,15 @@
 <aside class="sidebar" id="sidebar">
   <div class="user-panel">
     <div class="profile-img-wrapper">
-      <img src="{% static 'img/img_usuario.png' %}" alt="Usuario" />
+        
+      {% if request.user.usuario.foto %}
+          <img src="{{ request.user.usuario.foto.url }}" alt="Usuario" />
+      {% else %}
+        <img src="{% static 'img/img_usuario.png' %}" alt="Usuario" />
+      {% endif %}
     </div>
     <h3>Administrador</h3>
+    <h3>{{ request.user.username }}</h3>
     <div class="badge-plan">Gym Nazareth</div>
   </div>
 
