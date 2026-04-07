@@ -106,12 +106,12 @@ class AsistenciaDeleteView(DeleteView):
 
 
 def Qr(request):
-    return render(request, 'Asistencia/qr.html')
+    return render(request, 'Asistencia/listar.html')
 
 
 class QR_register(View):
     def get(self, request):
-        return render(request, 'Asistencia/qr.html')
+        return render(request, 'Asistencia/listar.html')
 
     def post(self, request):
         try:
