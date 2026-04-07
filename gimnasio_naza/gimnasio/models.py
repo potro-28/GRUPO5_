@@ -143,7 +143,6 @@ class Mantenimiento(models.Model):
         ('preventivo', 'Preventivo'),
         ('correctivo', 'Correctivo'),
     ]
-
     tipo_mantenimiento = models.CharField(max_length=20, choices=TIPO_CHOICES)
 
     ESTADO_CHOICES = [
@@ -151,14 +150,13 @@ class Mantenimiento(models.Model):
         ('en_proceso', 'En proceso'),
         ('completado', 'Completado'),
     ]
-
     estado = models.CharField(max_length=20, choices=ESTADO_CHOICES)
 
-    elemento = models.ForeignKey(Elemento, on_delete=models.CASCADE)  # ✅ CORREGIDO
+    nombre_elemento = models.ForeignKey(Elemento, on_delete=models.CASCADE)
     descripcion = models.TextField()
 
     def __str__(self):
-        return str(self.id)
+        return str(self.id) 
 #---------------------------------MODELO NOTIFCACIONES-----------------------------------------
 TIPO_NOTIFICACION = [
     ('MEMBRESIA', 'Membresía'),

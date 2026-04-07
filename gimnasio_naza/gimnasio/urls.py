@@ -50,6 +50,8 @@ urlpatterns = [
     path('exportar_mantenimiento_pdf/', ExportarmantenimientoPDF.as_view(), name='exportar_mantenimiento_pdf'),
     path('exportar_mantenimiento_excel/', ExportarMantenimientoExcel.as_view(), name='exportar_mantenimiento_excel'),   
     path('crear_elemento_ajax/', crear_elemento_ajax, name='crear_elemento_ajax'),
+    path('crear_categoria_ajax/', crear_categoria_ajax, name='crear_categoria_ajax'),
+
 #==============================asistencia==============================#
     path('listar_asistencia/', AsistenciaListView.as_view(), name='listar_asistencia'),
     path('crear_asistencia/', AsistenciaCreateView.as_view(), name='crear_asistencia'),

@@ -14,59 +14,55 @@
         <div class="card-body">
             <form method="POST" action="." enctype="multipart/form-data">
                 {% csrf_token %}
-                
+
                 {% if form.errors %}
-            <div class="alert alert-danger">
-                <strong>Error:</strong> Verifica los campos.
-            </div>
-            {% endif %}
-
-            {% for field in form.visible_fields %}
-            <div class="form-group mb-3">
-                <label>{{ field.label }}</label>
-
-                {% if field.name == 'elemento' %}
-                <div class="d-flex">
-                    {{ field|add_class:'form-control' }}
-                    <button type="button" class="btn btn-success ms-2" data-bs-toggle="modal" data-bs-target="#modalelemento">
-                        +
-                    </button>
+                <div class="alert alert-danger">
+                    <strong>Error:</strong> Verifica los campos.
                 </div>
-                {% else %}
-                    {{ field|add_class:'form-control' }}
                 {% endif %}
 
-                {% for error in field.errors %}
-                    <div class="text-danger">{{ error }}</div>
+                {% for field in form.visible_fields %}
+                <div class="form-group mb-3">
+                    <label>{{ field.label }}</label>
+
+                    {% if field.name == 'nombre_elemento' %}
+                    <div class="d-flex">
+                        {{ field|add_class:'form-control' }}
+                        <button type="button" class="btn btn-success ms-2"
+                            data-bs-toggle="modal" data-bs-target="#modalelemento">
+                            +
+                        </button>
+                    </div>
+                    {% else %}
+                        {{ field|add_class:'form-control' }}
+                    {% endif %}
+
+                    {% for error in field.errors %}
+                        <div class="text-danger">{{ error }}</div>
+                    {% endfor %}
+                </div>
                 {% endfor %}
+
             </div>
-            {% endfor %}
+
+            <div class="card-footer">
+                <button type="submit" class="btn btn-primary">Guardar</button>
+                <a href="{% url 'gimnasio:listar_mantenimiento' %}" class="btn btn-danger">Cancelar</a>
+            </div>
 
         </div>
-
-        <div class="card-footer">
-            <button type="submit" class="btn btn-primary">
-                Guardar
-            </button>
-            <a href="{% url 'gimnasio:listar_mantenimiento' %}" class="btn btn-danger">
-                Cancelar
-            </a>
-        </div>
-
-    </div>
-</form>
+    </form>
+</div>
 
 
 <!-- Modal Crear Elemento -->
 <div class="modal fade" id="modalelemento" tabindex="-1">
   <div class="modal-dialog">
     <div class="modal-content">
-
       <div class="modal-header">
         <h5>Crear Elemento</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
-
       <div class="modal-body">
         <input type="text" id="serial" class="form-control mb-2" placeholder="Serial">
         <input type="text" id="marca" class="form-control mb-2" placeholder="Marca">
@@ -89,40 +85,93 @@
         </select>
 
         <input type="date" id="fecha_ingreso" class="form-control mb-2">
+
+        <div class="mb-2">
+            <label class="form-label mb-1">Categoría:</label>
+            <div class="d-flex">
+                <select id="categoria" class="form-control">
+                    <option value="" disabled selected>-- Selecciona --</option>
+                </select>
+                <button type="button" class="btn btn-success ms-2" onclick="abrirModalCategoria()">+</button>
+            </div>
+        </div>
+
         <input type="file" id="imagen" class="form-control mb-2" accept="image/*">
-
       </div>
-
       <div class="modal-footer">
         <button class="btn btn-primary" onclick="crearElemento()">Guardar</button>
       </div>
-
     </div>
   </div>
+</div>
+
+
+<!-- Modal Crear Categoría -->
+<div class="modal fade" id="modalcategoria" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="ri-price-tag-3-line me-2"></i>Crear Categoría
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label class="form-label">Nombre Categoría:</label>
+                    <select id="nombre_categoria_modal" class="form-control">
+                        <option value="" disabled selected>-- Selecciona --</option>
+                        <option value="maquinas">Máquinas</option>
+                        <option value="mancuernas">Mancuernas</option>
+                        <option value="discos">Discos</option>
+                        <option value="accesorios">Accesorios</option>
+                        <option value="barras">Barras</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Descripción:</label>
+                    <textarea id="descripcion_modal" class="form-control" rows="3"
+                        maxlength="250" placeholder="Descripción de la categoría..."></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button class="btn btn-primary" onclick="crearcategoria()">
+                    <i class="ri-save-line me-1"></i>Guardar
+                </button>
+            </div>
+        </div>
+    </div>
 </div>
 
 {% endblock %}
 
 {% block js %}
 <script>
-function crearElemento() {
 
+function abrirModalCategoria() {
+    let modalElem = bootstrap.Modal.getInstance(document.getElementById('modalelemento'));
+    modalElem.hide();
+
+    document.getElementById('modalelemento').addEventListener('hidden.bs.modal', function handler() {
+        this.removeEventListener('hidden.bs.modal', handler);
+        let modalCat = bootstrap.Modal.getOrCreateInstance(document.getElementById('modalcategoria'));
+        modalCat.show();
+    });
+}
+
+function crearcategoria() {
     let data = {
-        serial: document.getElementById("serial").value,
-        marca: document.getElementById("marca").value,
-        nombre_elemento: document.getElementById("nombre_elemento").value,
-        peso_elemento: document.getElementById("peso_elemento").value,
-        estado: document.getElementById("estado").value,
-        fecha_ingreso: document.getElementById("fecha_ingreso").value,
-        imagen: document.getElementById("imagen").files[0]
+        nombre_categoria: document.getElementById("nombre_categoria_modal").value,
+        descripcion: document.getElementById("descripcion_modal").value,
     };
 
-    if (!data.serial || !data.marca || !data.nombre_elemento || !data.peso_elemento || !data.estado || !data.fecha_ingreso || !data.imagen) {
+    if (!data.nombre_categoria || !data.descripcion) {
         Swal.fire("Error", "Todos los campos son obligatorios", "error");
         return;
     }
 
-    fetch("{% url 'gimnasio:crear_elemento_ajax' %}", {
+    fetch("{% url 'gimnasio:crear_categoria_ajax' %}", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -132,16 +181,86 @@ function crearElemento() {
     })
     .then(response => response.json())
     .then(data => {
-        let select = document.getElementById("elemento");
+        if (data.error) {
+            Swal.fire("Error", data.error, "error");
+            return;
+        }
+
+        let select = document.getElementById("categoria");
         let option = new Option(data.nombre, data.id, true, true);
         select.add(option);
 
+        let modalCat = bootstrap.Modal.getInstance(document.getElementById('modalcategoria'));
+        modalCat.hide();
+
+        document.getElementById('modalcategoria').addEventListener('hidden.bs.modal', function handler() {
+            this.removeEventListener('hidden.bs.modal', handler);
+
+            let modalElem = bootstrap.Modal.getOrCreateInstance(document.getElementById('modalelemento'));
+            modalElem.show();
+
+            document.getElementById('modalelemento').addEventListener('shown.bs.modal', function handlerElem() {
+                this.removeEventListener('shown.bs.modal', handlerElem);
+                Swal.fire("Correcto", "Categoría creada exitosamente", "success");
+            });
+        });
+    })
+    .catch(() => {
+        Swal.fire("Error", "Ocurrió un problema al crear la categoría", "error");
+    });
+}
+
+function crearElemento() {
+    const serial     = document.getElementById("serial").value;
+    const marca      = document.getElementById("marca").value;
+    const nombre     = document.getElementById("nombre_elemento").value;
+    const peso       = document.getElementById("peso_elemento").value;
+    const estado     = document.getElementById("estado").value;
+    const fecha      = document.getElementById("fecha_ingreso").value;
+    const categoria  = document.getElementById("categoria").value;
+    const imagenFile = document.getElementById("imagen").files[0];
+
+    if (!serial || !marca || !nombre || !peso || !estado || !fecha || !categoria || !imagenFile) {
+        Swal.fire("Error", "Todos los campos son obligatorios", "error");
+        return;
+    }
+
+    const formData = new FormData();
+    formData.append("serial",          serial);
+    formData.append("marca",           marca);
+    formData.append("nombre_elemento", nombre);
+    formData.append("peso_elemento",   peso);
+    formData.append("estado",          estado);
+    formData.append("fecha_ingreso",   fecha);
+    formData.append("categoria",       categoria);
+    formData.append("imagen",          imagenFile);
+
+    fetch("{% url 'gimnasio:crear_elemento_ajax' %}", {
+        method: "POST",
+        headers: {
+            "X-CSRFToken": "{{ csrf_token }}"
+        },
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.error) {
+            Swal.fire("Error", data.error, "error");
+            return;
+        }
+
+        // ✅ CORREGIDO: id_nombre_elemento (Django genera id_<nombre_campo>)
+        let select = document.getElementById("id_nombre_elemento");
+        let option = new Option(data.nombre, data.id, true, true);
+        select.add(option);
 
         let modal = bootstrap.Modal.getInstance(document.getElementById('modalelemento'));
         modal.hide();
 
         Swal.fire("Correcto", "Elemento creado exitosamente", "success");
-
+    })
+    .catch(() => {
+        Swal.fire("Error", "Ocurrió un problema al crear el elemento", "error");
     });
 }
 </script>
