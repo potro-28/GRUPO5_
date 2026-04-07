@@ -357,14 +357,17 @@ class PreguntaForm(forms.ModelForm):
             'requerida': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
         }
     
-    def clean_opciones(self):
-        opciones = self.cleaned_data.get('opciones')
-        tipo = self.cleaned_data.get('tipo')
-        if tipo in ['multiple_choice', 'check_boxes', 'dropdown'] and not opciones:
-            raise forms.ValidationError("Debe proporcionar opciones para este tipo de pregunta")
-        if opciones:
-            return [op.strip() for op in opciones.split(',') if op.strip()]
-        return None
+# forms.py
+def clean_opciones(self):
+    opciones = self.cleaned_data.get('opciones')
+    tipo = self.cleaned_data.get('tipo')
+    # Validar que si es opción múltiple, existan opciones
+    if tipo in ['multiple_choice', 'check_boxes', 'dropdown'] and not opciones:
+        raise forms.ValidationError("Debe proporcionar opciones para este tipo de pregunta")
+    if opciones:
+        # Convierte el texto "1,2" en una lista de Python ['1', '2'] para el JSONField
+        return [op.strip() for op in opciones.split(',') if op.strip()]
+    return None
 
 PreguntaFormSet = inlineformset_factory(Encuesta, Pregunta, form=PreguntaForm, extra=1, can_delete=True)
 

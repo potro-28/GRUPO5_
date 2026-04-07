@@ -148,6 +148,7 @@ def exportar_excel(titulo, columnas, datos, nombre_archivo):
 # ====== GOOGLE FORMS API FUNCTIONS ======
 
 import os
+from django.conf import settings
 from googleapiclient.discovery import build
 from google.oauth2.credentials import Credentials
 from google.auth.transport.requests import Request
@@ -161,24 +162,61 @@ def get_google_forms_service():
     Requiere credenciales OAuth 2.0.
     """
     creds = None
-    # El archivo token.json almacena los tokens de acceso y refresco del usuario
-    if os.path.exists('token.json'):
-        creds = Credentials.from_authorized_user_file('token.json', SCOPES)
+    credentials_path = os.path.join(settings.BASE_DIR, 'credentials.json')
+    token_path = os.path.join(settings.BASE_DIR, 'token.json')
+
+    if os.path.exists(token_path):
+        creds = Credentials.from_authorized_user_file(token_path, SCOPES)
     # Si no hay credenciales válidas disponibles, permite al usuario iniciar sesión
     if not creds or not creds.valid:
         if creds and creds.expired and creds.refresh_token:
             creds.refresh(Request())
         else:
             flow = InstalledAppFlow.from_client_secrets_file(
-                'credentials.json', SCOPES)
+                credentials_path, SCOPES)
             # Usar puerto fijo permite que el redirect URI coincida con el registrado en Google Cloud
             creds = flow.run_local_server(port=8000)
         # Guarda las credenciales para la próxima ejecución
-        with open('token.json', 'w') as token:
+        with open(token_path, 'w') as token:
             token.write(creds.to_json())
 
     service = build('forms', 'v1', credentials=creds)
     return service
+
+
+def validar_credenciales_google_forms():
+    """
+    Valida que el proyecto tenga credenciales válidas para Google Forms.
+    Devuelve una tupla (conectado, mensaje).
+    """
+    credentials_path = os.path.join(settings.BASE_DIR, 'credentials.json')
+    token_path = os.path.join(settings.BASE_DIR, 'token.json')
+
+    if not os.path.exists(credentials_path):
+        return False, f"No se encuentra el archivo credentials.json en {settings.BASE_DIR}."
+
+    if not os.path.exists(token_path):
+        return False, "No se encuentra token.json. Autoriza la aplicación con Google para generar el token."
+
+    try:
+        creds = Credentials.from_authorized_user_file(token_path, SCOPES)
+    except Exception as e:
+        return False, f"Token inválido o corrupto: {str(e)}"
+
+    if creds.valid:
+        return True, "Credenciales válidas."
+
+    if creds.expired and creds.refresh_token:
+        try:
+            creds.refresh(Request())
+            with open(token_path, 'w') as token:
+                token.write(creds.to_json())
+            return True, "Credenciales válidas (token renovado)."
+        except Exception as e:
+            return False, f"No se pudo renovar el token: {str(e)}"
+
+    return False, "Credenciales expiradas o inválidas."
+
 
 def crear_formulario_google(titulo, descripcion=""):
     """

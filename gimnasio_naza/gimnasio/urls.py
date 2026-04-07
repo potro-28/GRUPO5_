@@ -21,6 +21,7 @@ from gimnasio.views.Dashboard.views import DashboardView
 from gimnasio.views.Reportes.reportes import *
 from gimnasio.models import *
 from gimnasio.views.backup.backup import backup,restaurar_datos
+from gimnasio.views.Encuestas import views as encuesta_views
 
 
 app_name = 'gimnasio'

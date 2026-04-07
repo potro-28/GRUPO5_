@@ -2,119 +2,144 @@
 {% load widget_tweaks %}
 
 {% block contenido %}
-
-<form method="post" action=".">
-    <div class="card card-default">
-
-        <div class="card-header">
-            <h3 class="card-title">
-                <i class="fas fa-search"></i>
-                {{ titulo }}
-            </h3>
-        </div>
-
-        <div class="card-body">
-            {% csrf_token %}
-
-            {% if form.errors %}
-            <div class="alert alert-danger">
-                <strong>Error:</strong> Verifica los campos.
+<div class="container-fluid">
+    <form method="post" action="." id="formEncuesta">
+        {% csrf_token %}
+        <div class="card card-primary card-outline">
+            <div class="card-header">
+                <h3 class="card-title">
+                    <i class="fas fa-edit"></i>
+                    {{ titulo }}
+                </h3>
             </div>
-            {% endif %}
 
-            {% for field in form.visible_fields %}
-            <div class="form-group mb-3">
-                <label>{{ field.label }}</label>
+            <div class="card-body">
+                {% if form.errors or formset.errors or formset.non_form_errors %}
+                <div class="alert alert-danger alert-dismissible shadow">
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    <h5><i class="icon fas fa-ban"></i> Error en el formulario:</h5>
+                    <ul class="mb-0">
+                        {# Errores del formulario de Encuesta #}
+                        {% for field in form %}
+                            {% for error in field.errors %}
+                                <li><strong>{{ field.label }}:</strong> {{ error }}</li>
+                            {% endfor %}
+                        {% endfor %}
 
-                {% if field.name == 'fk_usuario' %}
-                <div class="d-flex">
-                    {{ field|add_class:'form-control' }}
+                        {# Errores generales del formset #}
+                        {% for error in formset.non_form_errors %}
+                            <li><strong>Configuración de Preguntas:</strong> {{ error }}</li>
+                        {% endfor %}
 
-                    <button type="button" class="btn btn-success ms-2"
-                        data-bs-toggle="modal" data-bs-target="#modalUsuario">
-                        +
-                    </button>
+                        {# Errores específicos de cada pregunta dentro del formset #}
+                        {% for f_pregunta in formset %}
+                            {% for field in f_pregunta.visible_fields %}
+                                {% for error in field.errors %}
+                                    <li><strong>Pregunta {{ forloop.parentloop.parentloop.counter }} - {{ field.label }}:</strong> {{ error }}</li>
+                                {% endfor %}
+                            {% endfor %}
+                        {% endfor %}
+                    </ul>
                 </div>
-                {% else %}
-                {{ field|add_class:'form-control' }}
                 {% endif %}
 
-                {% for error in field.errors %}
-                <div class="text-danger">{{ error }}</div>
-                {% endfor %}
-            </div>
-            {% endfor %}
-
-            <!-- Preguntas -->
-            <div class="form-group mb-3">
-                <label>Preguntas</label>
-                {{ formset.management_form }}
-                <div id="preguntas-container">
-                    {% for form_pregunta in formset %}
-                    <div class="pregunta-item border p-3 mb-3">
-                        {% for field in form_pregunta.visible_fields %}
-                        <div class="form-group mb-2">
-                            <label>{{ field.label }}</label>
+                <div class="row">
+                    {% for field in form.visible_fields %}
+                    <div class="col-md-6 form-group mb-3">
+                        <label class="form-label font-weight-bold">{{ field.label }}</label>
+                        
+                        {% if field.name == 'fk_usuario' %}
+                        <div class="input-group">
                             {{ field|add_class:'form-control' }}
-                            {% for error in field.errors %}
-                            <div class="text-danger">{{ error }}</div>
-                            {% endfor %}
+                            <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalUsuario">
+                                <i class="fas fa-plus"></i>
+                            </button>
                         </div>
-                        {% endfor %}
-                        {% if form_pregunta.instance.pk %}{{ form_pregunta.DELETE }}{% endif %}
+                        {% else %}
+                            {{ field|add_class:'form-control' }}
+                        {% endif %}
+                        
+                        {% if field.help_text %}
+                        <small class="form-text text-muted">{{ field.help_text }}</small>
+                        {% endif %}
                     </div>
                     {% endfor %}
                 </div>
-                <button type="button" class="btn btn-secondary" id="add-pregunta">Agregar Pregunta</button>
+
+                <hr>
+
+                <div class="form-group mt-4">
+                    <h5 class="mb-3"><i class="fas fa-question-circle"></i> Configuración de Preguntas</h5>
+                    
+                    {{ formset.management_form }}
+                    
+                    <div id="preguntas-container">
+                        {% for form_pregunta in formset %}
+                        <div class="pregunta-item border rounded p-3 mb-3 bg-light shadow-sm">
+                            <div class="row">
+                                {% for field in form_pregunta.visible_fields %}
+                                <div class="col-md-4 mb-2">
+                                    <label class="small font-weight-bold">{{ field.label }}</label>
+                                    {{ field|add_class:'form-control form-control-sm' }}
+                                </div>
+                                {% endfor %}
+                            </div>
+                            {% if form_pregunta.instance.pk %}
+                                <div class="text-end mt-2">
+                                    <label class="text-danger small">{{ form_pregunta.DELETE }} Eliminar pregunta</label>
+                                </div>
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+                    </div>
+                    
+                    <button type="button" class="btn btn-outline-primary btn-sm" id="add-pregunta">
+                        <i class="fas fa-plus-circle"></i> Agregar otra pregunta
+                    </button>
+                </div>
             </div>
 
+            <div class="card-footer text-right">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save"></i> Guardar Encuesta en Google Forms
+                </button>
+                <a href="{% url 'gimnasio:listar_encuestas' %}" class="btn btn-secondary">
+                    Cancelar
+                </a>
+            </div>
         </div>
+    </form>
+</div>
 
-        <div class="card-footer">
-            <button type="submit" class="btn btn-primary">
-                Guardar
-            </button>
-
-            <a href="{% url 'gimnasio:listar_masa_corporal_clas' %}" class="btn btn-danger">
-                Cancelar
-            </a>
-        </div>
-
-    </div>
-</form>
-
-<!-- MODAL -->
-<div class="modal fade" id="modalUsuario" tabindex="-1">
-    <div class="modal-dialog">
+<div class="modal fade" id="modalUsuario" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content">
-
-            <div class="modal-header">
-                <h5>Crear Usuario</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            <div class="modal-header bg-success text-white">
+                <h5 class="modal-title"><i class="fas fa-user-plus"></i> Registrar Nuevo Usuario</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-
             <div class="modal-body">
-
-                <input type="text" id="documento" class="form-control mb-2" placeholder="Documento">
-                <input type="text" id="nombre" class="form-control mb-2" placeholder="Nombre">
-                <input type="text" id="apellido" class="form-control mb-2" placeholder="Apellido">
-                <input type="email" id="correo" class="form-control mb-2" placeholder="Correo">
-                <input type="text" id="telefono" class="form-control mb-2" placeholder="Teléfono">
-                <input type="date" id="fecha_nacimiento" class="form-control mb-2">
-                <input type="number" id="peso" class="form-control mb-2" placeholder="Peso">
-                <input type="number" id="altura" class="form-control mb-2" placeholder="Altura">
-
-                <select id="genero" class="form-control mb-2">
-                    <option value="M">Masculino</option>
-                    <option value="F">Femenino</option>
-                </select>
-
+                <div class="row">
+                    <div class="col-md-6 mb-2"><input type="text" id="documento" class="form-control" placeholder="Documento *"></div>
+                    <div class="col-md-6 mb-2"><input type="text" id="nombre" class="form-control" placeholder="Nombres *"></div>
+                    <div class="col-md-6 mb-2"><input type="text" id="apellido" class="form-control" placeholder="Apellidos *"></div>
+                    <div class="col-md-6 mb-2"><input type="email" id="correo" class="form-control" placeholder="Correo Electrónico *"></div>
+                    <div class="col-md-6 mb-2"><input type="text" id="telefono" class="form-control" placeholder="Teléfono"></div>
+                    <div class="col-md-6 mb-2"><input type="date" id="fecha_nacimiento" class="form-control"></div>
+                    <div class="col-md-4 mb-2"><input type="number" id="peso" class="form-control" placeholder="Peso (kg)"></div>
+                    <div class="col-md-4 mb-2"><input type="number" id="altura" class="form-control" placeholder="Altura (cm)"></div>
+                    <div class="col-md-4 mb-2">
+                        <select id="genero" class="form-control">
+                            <option value="M">Masculino</option>
+                            <option value="F">Femenino</option>
+                        </select>
+                    </div>
+                </div>
             </div>
-
             <div class="modal-footer">
-                <button class="btn btn-primary" onclick="crearUsuario()">Guardar</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-primary" onclick="crearUsuario()">Guardar Usuario</button>
             </div>
-
         </div>
     </div>
 </div>
@@ -122,90 +147,74 @@
 {% endblock %}
 
 {% block js %}
-
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
-function crearUsuario() {
-
-    let data = {
-        documento: document.getElementById("documento").value,
-        nombre: document.getElementById("nombre").value,
-        apellido: document.getElementById("apellido").value,
-        correo: document.getElementById("correo").value,
-        telefono: document.getElementById("telefono").value,
-        fecha_nacimiento: document.getElementById("fecha_nacimiento").value,
-        peso: document.getElementById("peso").value,
-        altura: document.getElementById("altura").value,
-        genero: document.getElementById("genero").value
-    };
-
-    // ✅ VALIDACIÓN MEJORADA
-    if (!data.documento || !data.nombre || !data.apellido || !data.correo) {
-        Swal.fire("Error", "Completa los campos obligatorios", "error");
-        return;
-    }
-
-    fetch("{% url 'gimnasio:crear_usuario_ajax' %}", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
+    // Lógica para el Formset Dinámico
+    document.getElementById('add-pregunta').addEventListener('click', function() {
+        let container = document.getElementById('preguntas-container');
+        let totalForms = document.querySelector('input[name="pregunta_set-TOTAL_FORMS"]');
+        let formNum = parseInt(totalForms.value);
         
-            "X-CSRFToken": document.querySelector('[name=csrfmiddlewaretoken]').value
-        },
-        body: JSON.stringify(data)
-    })
-    .then(response => response.json())
-    .then(data => {
+        let template = container.querySelector('.pregunta-item');
+        if (!template) return;
+        
+        let newForm = template.cloneNode(true);
+        
+        // Reemplazar índices de 0 a N (ej: pregunta_set-0- a pregunta_set-1-)
+        let regex = new RegExp(`pregunta_set-0-`, 'g');
+        newForm.innerHTML = newForm.innerHTML.replace(regex, `pregunta_set-${formNum}-`);
+        
+        // Limpiar inputs
+        newForm.querySelectorAll('input, select, textarea').forEach(input => {
+            input.value = '';
+            if(input.type === 'checkbox') input.checked = false;
+        });
+        
+        container.appendChild(newForm);
+        totalForms.value = formNum + 1;
+    });
 
-        if (data.error) {
-            Swal.fire("Error", data.error, "error");
+    // Lógica AJAX para Crear Usuario
+    function crearUsuario() {
+        let data = {
+            documento: document.getElementById("documento").value,
+            nombre: document.getElementById("nombre").value,
+            apellido: document.getElementById("apellido").value,
+            correo: document.getElementById("correo").value,
+            telefono: document.getElementById("telefono").value,
+            fecha_nacimiento: document.getElementById("fecha_nacimiento").value,
+            peso: document.getElementById("peso").value,
+            altura: document.getElementById("altura").value,
+            genero: document.getElementById("genero").value
+        };
+
+        if (!data.documento || !data.nombre || !data.correo) {
+            Swal.fire("Atención", "Los campos con * son obligatorios", "warning");
             return;
         }
 
-        let select = document.getElementById("id_fk_usuario");
-
-        let option = new Option(data.nombre, data.id, true, true);
-        select.add(option);
-
-        let modal = bootstrap.Modal.getInstance(document.getElementById('modalUsuario'));
-        modal.hide();
-
-        Swal.fire("Correcto", "Usuario creado correctamente", "success");
-    })
-    .catch(error => {
-        Swal.fire("Error", "Ocurrió un error en la petición", "error");
-    });
-}
-
-// JavaScript para manejar el formset de preguntas
-document.getElementById('add-pregunta').addEventListener('click', function() {
-    let container = document.getElementById('preguntas-container');
-    let totalForms = document.querySelector('input[name="pregunta_set-TOTAL_FORMS"]');
-    let formNum = parseInt(totalForms.value);
-    
-    // Clonar la primera pregunta como template
-    let template = container.querySelector('.pregunta-item');
-    if (!template) return;
-    
-    let newForm = template.cloneNode(true);
-    
-    // Actualizar índices
-    newForm.innerHTML = newForm.innerHTML.replace(/pregunta_set-0-/g, `pregunta_set-${formNum}-`);
-    newForm.innerHTML = newForm.innerHTML.replace(/id_pregunta_set-0-/g, `id_pregunta_set-${formNum}-`);
-    
-    // Limpiar valores
-    let inputs = newForm.querySelectorAll('input, select, textarea');
-    inputs.forEach(input => {
-        if (input.type !== 'checkbox') {
-            input.value = '';
-        } else {
-            input.checked = false;
-        }
-    });
-    
-    container.appendChild(newForm);
-    totalForms.value = formNum + 1;
-});
-
+        fetch("{% url 'gimnasio:crear_usuario_ajax' %}", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": "{{ csrf_token }}"
+            },
+            body: JSON.stringify(data)
+        })
+        .then(response => response.json())
+        .then(res => {
+            if (res.error) {
+                Swal.fire("Error", res.error, "error");
+            } else {
+                let select = document.getElementById("id_fk_usuario");
+                let option = new Option(res.nombre, res.id, true, true);
+                select.add(option);
+                
+                bootstrap.Modal.getInstance(document.getElementById('modalUsuario')).hide();
+                Swal.fire("Éxito", "Usuario registrado y seleccionado", "success");
+            }
+        })
+        .catch(err => Swal.fire("Error", "Error de conexión con el servidor", "error"));
+    }
 </script>
-
 {% endblock %}
