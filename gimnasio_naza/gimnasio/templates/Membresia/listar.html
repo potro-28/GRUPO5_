@@ -68,12 +68,13 @@
                             <td>{{ membresia.fecha_inicio|date:"d M Y" }}</td>
                             <td>{{ membresia.fecha_fin|date:"d M Y" }}</td>
                             <td>{{ membresia.fk_usuario.nombre_usuario }} {{ membresia.fk_usuario.apellido_usuario }}</td>
+                            
                             {% if membresia.estado == 'activo' %}
                                 <td> <span class="badge bg-success ">{{ membresia.estado}}</span></td>
                             {% else %}
                                 <td> <span class="badge bg-danger">{{ membresia.estado}}</span></td>
                             {% endif %}
-                            <td>{{ membresia.codigo_qr}}</td>
+                            <td>{{ membresia.qr_code}}</td>
                             <td>{{ membresia.fk_usuario.documento }}</td>
                             <td class="text-nowrap">
                                  

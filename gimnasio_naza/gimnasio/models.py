@@ -2,6 +2,9 @@ from django.db import models
 from datetime import *
 from decimal import Decimal  
 from django.contrib.auth.models import User
+import qrcode
+from io import BytesIO
+from django.core.files import File
 # Create your models here.
 #---------------------------------MODELO USUARIO-----------------------------------------       
 
@@ -52,9 +55,27 @@ class Membresia(models.Model):
         ('inactivo', 'Inactivo'),
     ]
     estado = models.CharField(max_length=30, choices=ESTADO_CHOICES)
-    codigo_qr = models.TextField(max_length=30,null=False)
+    qr_code = models.ImageField(upload_to='qrs_membresias/', blank=True, null=True)
     fk_usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
 
+
+    def save(self, *args, **kwargs):
+        datos_qr = self.fk_usuario.documento 
+        qr = qrcode.QRCode(version=1, box_size=10, border=5)
+        qr.add_data(datos_qr)
+        qr.make(fit=True)
+        img = qr.make_image(fill_color="black", back_color="white")
+        buffer = BytesIO()
+        img.save(buffer, format='PNG')
+        
+        nombre_archivo = f'qr_{datos_qr}.png'
+        self.qr_code.save(f'qr_{nombre_archivo}.png', File(buffer), save=False)
+        super().save(*args, **kwargs)
+    
+    @property
+    def es_valida(self):
+        return self.esta_activa and self.fecha_vencimiento >= timezone.now().date()
+    
     def __str__(self):
         return str(self.fk_usuario.documento)+ ("/")+(self.fk_usuario.nombre_usuario)
 

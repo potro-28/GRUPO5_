@@ -10,7 +10,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 from gimnasio.models import *
 from gimnasio.forms import AsistenciaForm
-
+from django.utils import timezone
 # Listar asistencia ##
 def crear_membresia_ajax(request):
     if request.method != "POST":
@@ -107,8 +107,6 @@ class AsistenciaDeleteView(DeleteView):
 
 def Qr(request):
     return render(request, 'Asistencia/listar.html')
-
-
 class QR_register(View):
     def get(self, request):
         return render(request, 'Asistencia/listar.html')
@@ -116,31 +114,29 @@ class QR_register(View):
     def post(self, request):
         try:
             data = json.loads(request.body)
-            codigo_qr = data.get('codigo')
+            qr_code = data.get('codigo') 
 
-            if not codigo_qr:
-                return JsonResponse({
-                    'status': 400,
-                    'mensaje': 'Código no enviado'
-                }, status=400)
-                
+            if not qr_code:
+                return JsonResponse({'status': 400, 'mensaje': 'Código no enviado'}, status=400)
             try:
-                fk_membresia = Membresia.objects.get(codigo_qr = codigo_qr).filter()
-                asistencia = Asistencia.objects.create(fk_membresia= fk_membresia,fecha_asistencia = timezone.now() , hora_ingreso = timezone.now())
-                return JsonResponse({
-                    'status':200,
-                    'mensaje' :"Exitoso"
-                })
-            except Membresia.DoesNotExist:
-                return JsonResponse({
-                    'status':404,
-                    'mensaje':'No se encuentra el codigo'
-                }, status=400)
-                
+                membresia = Membresia.objects.filter(fk_usuario__documento=qr_code,estado='activo').first()
+                if not membresia:
+                    return JsonResponse({
+                        'status': 404,
+                        'mensaje': 'No se encontrp membresia activa para este usuario'
+                    }, status=404)
+                    
+                hoy = date.today()
+                if Asistencia.objects.filter(fk_membresia=membresia, fecha_asistencia=hoy).exists():
+                    return JsonResponse({
+                        'status': 409,
+                        'mensaje': f'{membresia.fk_usuario.nombre_usuario} ya registro asistencia hoy'
+                    })
+                asistencia = Asistencia.objects.create(fk_membresia=membresia,fecha_asistencia=hoy,hora_ingreso=timezone.now().time())
+                return JsonResponse({'status': 200,'mensaje': f'Asistencia registrada para {membresia.fk_usuario.nombre_usuario}'})
+            
+            except Exception as e:
+                return JsonResponse({'status': 500, 'mensaje': f'Error: {str(e)}'}, status=500)
+            
         except json.JSONDecodeError:
-            return JsonResponse({
-                'status': 400,
-                'mensaje': 'JSON inválido'
-            }, status=400)
-
-    
+            return JsonResponse({'status': 400, 'mensaje': 'JSON inválido'}, status=400)
