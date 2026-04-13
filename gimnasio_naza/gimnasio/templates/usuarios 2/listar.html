@@ -1,0 +1,100 @@
+{% extends 'body.html' %}
+{% load static %}
+
+{% block contenido %}
+<div class="card mb-3 shadow-sm">
+    <div class="card-header bg-primary text-white">
+        <h5 style="margin: 0;"><i class="fas fa-users"></i> Dashboard de Roles y Permisos</h5>
+    </div>
+    <div class="card-body">
+        <table class="table table-bordered table-hover" id="tabla_usuarios">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Usuario</th>
+                    <th scope="col">Nombre Completo</th>
+                    <th scope="col">Rol</th>
+                    <th scope="col">Cedula</th>
+                    <th scope="col">Estado</th>
+                    <th scope="col">Opciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for u in usuarios %}
+                <tr>
+                    <td>{{ u.id }}</td>
+                    <td>{{ u.username }}</td>
+                    <td>{{ u.first_name }} {{ u.last_name }}</td>
+                    <td>
+                        {% if u.perfil %}
+                            {{ u.perfil.get_rol_display }}
+                        {% else %}
+                            <span class="text-muted">Sin perfil</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ u.perfil.cedula|default:"N/A" }}</td>
+                    <td>
+                        {% if u.is_active %}
+                            <span class="badge bg-success">Activo</span>
+                        {% else %}
+                            <span class="badge bg-danger">Inactivo</span>
+                        {% endif %}
+                    </td>
+<td>
+    {% if can_manage_users %}
+        <a href="{% url 'usuarios:editar' u.id %}" class="btn btn-warning btn-sm" title="Editar">
+            <i class="fas fa-edit"></i>
+        </a>
+        
+        <form method="post" action="{% url 'usuarios:cambiar_estado' u.id %}" style="display:inline;">
+            {% csrf_token %}
+            {% if u.is_active %}
+                <button type="submit" class="btn btn-danger btn-sm" title="Desactivar Usuario">
+                    <i class="fas fa-user-slash"></i>
+                </button>
+            {% else %}
+                <button type="submit" class="btn btn-success btn-sm" title="Activar Usuario">
+                    <i class="fas fa-user-check"></i>
+                </button>
+            {% endif %}
+        </form>
+    {% else %}
+        <span class="text-muted">Sin acceso</span>
+    {% endif %}
+</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div class="card-footer">
+        {% if can_manage_users %}
+            <a href="{% url 'usuarios:crear' %}" class="btn btn-primary">
+                <i class="fas fa-user-plus"></i> Crear nuevo usuario
+            </a>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block js %}
+<script src="{% static 'lib/jquery/jquery-3.6.0.min.js' %}"></script>
+<script src="{% static 'lib/datatables-1.10.20/js/jquery.dataTables.js' %}"></script>
+<script src="{% static 'lib/datatables-1.10.20/js/dataTables.bootstrap4.min.js' %}"></script>
+<script src="{% static 'lib/datatables-1.10.20/plugins/responsive-2.2.3/js/dataTables.responsive.min.js' %}"></script>
+<script src="{% static 'lib/datatables-1.10.20/plugins/responsive-2.2.3/js/responsive.bootstrap4.min.js' %}"></script>
+
+<script>
+    // DATATABLE 
+    $(document).ready(function () {
+        $("#tabla_usuarios").DataTable({
+            responsive: true,
+            autoWidth: false,
+            language: {
+                // Opcional: Para poner DataTables en español
+                url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json'
+            }
+        });
+    });
+</script>
+{% endblock %}

@@ -42,6 +42,16 @@ urlpatterns = [
     path('asignar_rol/<int:pk>/', UsuarioRolUpdateView.as_view(), name='asignar_rol_usuario'),
     path('exportar_usuarios_pdf/', ExportarUsuariosPDF.as_view(), name='exportar_usuarios_pdf'),
     path('exportar_usuarios_excel/', ExportarUsuariosExcel.as_view(), name='exportar_usuarios_excel'),
+    path('listar/', ListarUsuariosView.as_view(), name='listar'),
+    path('crear/', CrearUsuarioView.as_view(), name='crear'),
+    path('editar/<int:pk>/', EditarUsuarioView.as_view(), name='editar'),
+    path('eliminar/<int:pk>/', EliminarUsuarioView.as_view(), name='eliminar'),
+    path('estado/<int:pk>/', CambiarEstadoUsuarioView.as_view(), name='cambiar_estado'),
+    
+    # Panel de Permisos
+    path('permisos/', ListarPermisosView.as_view(), name='listar_permisos'),
+    path('permisos/editar/<int:pk>/', EditarPermisosGrupoView.as_view(), name='editar_permisos'),
+    
 #==============================mantenimiento==============================#
     path('crear_mantenimiento/', MantenimientoCreateView.as_view(), name='crear_mantenimiento'),
     path('listar_mantenimiento/', MantenimientoListView.as_view(), name='listar_mantenimiento'),
