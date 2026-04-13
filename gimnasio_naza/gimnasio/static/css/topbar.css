@@ -1,0 +1,117 @@
+/* ================= TOPBAR ================= */
+
+.topbar {
+    position: fixed; /* 🔥 clave */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 70px;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    padding: 0 20px;
+    background: #267ca7;
+    color: white;
+
+    z-index: 1000;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+/* 🔥 ELIMINADO width que causaba el espacio */
+.topbar-left {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+/* ICONO MENU */
+.menu-toggle {
+    font-size: 20px;
+    cursor: pointer;
+}
+
+/* LOGO */
+.logo-link {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+}
+
+.logo-img {
+    width: 90px;
+}
+
+.logo-text {
+    color: white;
+    font-weight: bold;
+    line-height: 1.1;
+}
+
+/* DERECHA */
+.topbar-right {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+/* ICONOS */
+.top-icons {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.icon-btn {
+    font-size: 18px;
+    cursor: pointer;
+}
+
+/* AVATAR */
+.avatar-img {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+}
+
+/* BUSCADOR */
+.search-container {
+    display: flex;
+    align-items: center;
+    background: rgba(255,255,255,0.2);
+    border-radius: 20px;
+    padding: 5px 12px;
+}
+
+.search-container input {
+    background: transparent;
+    border: none;
+    outline: none;
+    color: white;
+}
+
+/* DROPDOWN */
+.user-trigger {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: white;
+    text-decoration: none;
+}
+
+.user-trigger::after {
+    display: none;
+}
+
+/* ================= FIX GLOBAL ================= */
+
+/* 🔥 evita que el contenido quede debajo del topbar */
+body {
+    margin: 0;
+}
+
+.content-area {
+    margin-top: 70px;
+}

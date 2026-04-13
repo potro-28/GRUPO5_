@@ -83,40 +83,37 @@ class UsuarioForm(forms.ModelForm):
                 }
             ),
             'peso_usuario': forms.NumberInput(
-                attrs={'placeholder':'kg'}
+                attrs={'placeholder': 'kg'}
             ),
             'altura_usuario': forms.NumberInput(
-                attrs={'placeholder':'M'}
+                attrs={'placeholder': 'cm'}
             ),
         }
         exclude = ['user', 'estado', 'fecha_registro']
+
     def clean(self):
         cleaned_data = super().clean()
-        documento = cleaned_data.get('documento')
-        nombre = cleaned_data.get('nombre')
-        apellido = cleaned_data.get('apellido')
+        documento        = cleaned_data.get('documento')
+        nombre_usuario   = cleaned_data.get('nombre_usuario')
+        apellido_usuario = cleaned_data.get('apellido_usuario')
         fecha_nacimiento = cleaned_data.get('fecha_nacimiento')
-        telefono = cleaned_data.get('telefono')
-        correo = cleaned_data.get('correo')
-        peso_usuario = cleaned_data.get('peso_usuario')
-        altura_usuario = cleaned_data.get('altura_usuario')
-        fecha_inicio = cleaned_data.get('fecha_inicio')
-        fecha_registro = cleaned_data.get('fecha_registro')
-
-        if fecha_inicio and fecha_registro:
-            if fecha_registro == fecha_inicio:
-                raise forms.ValidationError('La fecha de registro no puede ser igual a la fecha de inicio.')
-            if fecha_registro < fecha_inicio:
-                raise forms.ValidationError('La fecha de registro no puede ser anterior a la fecha de inicio.')
+        telefono_usuario = cleaned_data.get('telefono_usuario')
+        correo_usuario   = cleaned_data.get('correo_usuario')
 
         qs = Usuario.objects.all()
         if self.instance and self.instance.pk:
             qs = qs.exclude(pk=self.instance.pk)
 
-        if documento and nombre and apellido and correo and telefono and fecha_nacimiento and qs.filter(
-            documento=documento, nombre=nombre, apellido=apellido,
-            correo=correo, telefono=telefono, fecha_nacimiento=fecha_nacimiento
-        ).exists():
+        if (documento and nombre_usuario and apellido_usuario and
+                correo_usuario and telefono_usuario and fecha_nacimiento and
+                qs.filter(
+                    documento=documento,
+                    nombre_usuario=nombre_usuario,
+                    apellido_usuario=apellido_usuario,
+                    correo_usuario=correo_usuario,
+                    telefono_usuario=telefono_usuario,
+                    fecha_nacimiento=fecha_nacimiento
+                ).exists()):
             raise forms.ValidationError('Los datos de este usuario ya están registrados.')
 
         return cleaned_data
@@ -133,22 +130,24 @@ class UsuarioForm(forms.ModelForm):
                     )
         return documento
 
-    def clean_nombre(self):
-        nombre = self.cleaned_data.get('nombre')
-        if nombre:
-            if nombre != nombre.strip():
-                raise forms.ValidationError('El nombre no puede contener espacios al inicio ni al final.')
+    def clean_nombre_usuario(self):
+        nombre = self.cleaned_data.get('nombre_usuario')
+        if not nombre:
+            return nombre
+        if nombre != nombre.strip():
+            raise forms.ValidationError('El nombre no puede contener espacios al inicio ni al final.')
         if not re.match(r'^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$', nombre):
             raise forms.ValidationError('El nombre solo puede contener letras y espacios.')
         if '  ' in nombre:
             raise forms.ValidationError('El nombre no puede contener espacios consecutivos.')
         return nombre
 
-    def clean_apellido(self):
-        apellido = self.cleaned_data.get('apellido')
-        if apellido:
-           if apellido != apellido.strip():
-              raise forms.ValidationError('El apellido no puede contener espacios al inicio ni al final.')
+    def clean_apellido_usuario(self):
+        apellido = self.cleaned_data.get('apellido_usuario')
+        if not apellido:
+            return apellido
+        if apellido != apellido.strip():
+            raise forms.ValidationError('El apellido no puede contener espacios al inicio ni al final.')
         if not re.match(r'^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$', apellido):
             raise forms.ValidationError('El apellido solo puede contener letras y espacios.')
         if '  ' in apellido:
@@ -168,39 +167,42 @@ class UsuarioForm(forms.ModelForm):
         if fecha_nacimiento > edad_minima:
             raise forms.ValidationError("La fecha de nacimiento no es válida, verifica el año ingresado.")
         return fecha_nacimiento
-    def clean_telefono(self):
-        telefono = self.cleaned_data.get('telefono')
+
+    def clean_telefono_usuario(self):
+        telefono = self.cleaned_data.get('telefono_usuario')
         if telefono:
             if not re.match(r'^3\d{9}$', telefono):
                 raise forms.ValidationError('El teléfono debe contener exactamente 10 dígitos y comenzar con 3.')
         return telefono
-    def clean_correo(self):
-        correo = self.cleaned_data.get('correo')
-        if correo:
-            if not re.match(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$', correo):
-                raise forms.ValidationError('Ingrese un correo electrónico válido.')
+
+    def clean_correo_usuario(self):
+        correo = self.cleaned_data.get('correo_usuario')
+        if not correo:
+            return correo
+        if not re.match(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$', correo):
+            raise forms.ValidationError('Ingrese un correo electrónico válido.')
         if re.search(r'[^a-zA-Z0-9._%+\-@]', correo):
             raise forms.ValidationError('El correo solo puede contener letras, números y los caracteres especiales permitidos (. _ % + -).')
         return correo
-    def peso_usuario(self):
-        peso_usuario = self.cleaned_data.get('peso_usuario')
-        if peso_usuario is not None:
-            if peso_usuario <= 0:
+
+    def clean_peso_usuario(self):
+        peso = self.cleaned_data.get('peso_usuario')
+        if peso is not None:
+            if peso <= 0:
                 raise forms.ValidationError('El peso debe ser un número positivo.')
-            if peso_usuario < 30 or peso_usuario > 150:
+            if peso < 30 or peso > 150:
                 raise forms.ValidationError('El peso debe estar entre 30kg y 150kg.')
-        return peso_usuario
-    
-    def altura_usuario(self):
-        altura_usuario = self.cleaned_data.get('altura_usuario')
-        if altura_usuario is not None:
-            if altura_usuario <= 0:
+        return peso
+
+    def clean_altura_usuario(self):
+        altura = self.cleaned_data.get('altura_usuario')
+        if altura is not None:
+            if altura <= 0:
                 raise forms.ValidationError('La altura debe ser un número positivo.')
-            if altura_usuario < 100 or altura_usuario > 230:
-                raise forms.ValidationError('La altura debe estar entre 100m y 230m.')
-        return altura_usuario
-
-
+            if altura < 100 or altura > 230:
+                raise forms.ValidationError('La altura debe estar entre 100cm y 230cm.')
+        return altura  
+    
 class MantenimientoForm(forms.ModelForm):
     class Meta:
         model = Mantenimiento
