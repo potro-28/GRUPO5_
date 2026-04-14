@@ -7,6 +7,7 @@ from django.urls import reverse_lazy
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 from django.contrib import messages
+from django.contrib.auth.mixins import PermissionRequiredMixin
 
 
 from gimnasio.models import *
@@ -22,9 +23,11 @@ def listar_nutriciones(request):
     }
     return render(request,'Nutricion/listar.html', nombre)
 
-class nutricionListView(ListView):
+class nutricionListView(PermissionRequiredMixin,ListView):
     model = Nutricion
     template_name = 'Nutricion/listar.html'
+    permission_required = 'gimnasio.view_nutricion'
+    raise_exception = True
     
     #METODO DISPATCH
     #@method_decorator(login_required)
@@ -46,13 +49,14 @@ class nutricionListView(ListView):
         return context
     
 #Crear categoria    
-class NutricionCreateView(CreateView):
+class NutricionCreateView(PermissionRequiredMixin,CreateView):
     model = Nutricion
     template_name = 'nutricion/crear.html'
     form_class = NutricionForm
     success_url = reverse_lazy('gimnasio:listar_nutriciones')
-    
-    
+    permission_required = 'gimnasio.add_nutricion'
+    raise_exception = True
+
     #@method_decorator(csrf_exempt)
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

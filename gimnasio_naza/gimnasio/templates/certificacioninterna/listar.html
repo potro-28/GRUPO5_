@@ -41,7 +41,7 @@
                             <th>ID</th>
                             <th>Descripción_certificacion</th>
                             <th>Fecha_certificacion</th>
-                            <th>fk_Asistencia</th>
+                            <th>fk_Membresia</th>
                             <th>ACCIONES</th>
                         </tr>
                     </thead>
@@ -51,7 +51,8 @@
                             <td>{{ certificacion.id }}</td>
                             <td>{{ certificacion.descripcion_certificacion }}</td>
                             <td>{{ certificacion.fecha_certificacion }}</td>
-                            <td>{{ certificacion.fk_Asistencia.fk_membresia.fk_usuario.nombre_usuario }} </td>
+                            
+                            <td>{{ certificacion.fk_membresia.fk_usuario.nombre_usuario }} </td>
                             <td class="text-nowrap">
                                             <a href="{% url 'gimnasio:editar_certificacioninterna' certificacion.id %}"
                                                 class="btn btn-sm btn-text-secondary rounded-pill btn-icon item-edit">
