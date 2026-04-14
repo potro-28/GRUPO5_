@@ -60,11 +60,11 @@
 
 <!-- MODAL -->
 <div class="modal fade" id="modalUsuario" tabindex="-1">
-  <div class="modal-dialog modal-lg"> <!-- 🔥 más ancho -->
+  <div class="modal-dialog modal-lg"> 
     <div class="modal-content">
 
       <!-- HEADER -->
-      <div class="modal-header bg-primary text-white">
+        <div class="modal-header text-white" style="background-color: #267ca7;">
         <h5 class="modal-title">
           <i class="ri-user-add-line me-2"></i>Crear Usuario
         </h5>
@@ -75,7 +75,7 @@
       <div class="modal-body">
         {% csrf_token %}
 
-        <!-- 🔐 DATOS DE ACCESO -->
+        <!--DATOS DE ACCESO -->
         <h6 class="text-primary fw-bold mb-2">Datos de acceso</h6>
         <hr>
 
@@ -89,7 +89,7 @@
           </div>
         </div>
 
-        <!-- 👤 DATOS PERSONALES -->
+        <!--DATOS PERSONALES -->
         <h6 class="text-success fw-bold mt-3 mb-2">Datos personales</h6>
         <hr>
 
@@ -126,7 +126,7 @@
           </div>
         </div>
 
-        <!-- 🏋️ DATOS FÍSICOS -->
+        <!--DATOS FÍSICOS -->
         <h6 class="text-warning fw-bold mt-3 mb-2">Datos físicos</h6>
         <hr>
 
@@ -159,8 +159,26 @@
 {% endblock %}
 
 {% block js %}
-
 <script>
+function getCookie(name) {
+    let cookieValue = null;
+
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+
+        for (let cookie of cookies) {
+            cookie = cookie.trim();
+
+            if (cookie.startsWith(name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+
+    return cookieValue;
+}
+
 function crearUsuario() {
 
     let data = {
@@ -177,22 +195,27 @@ function crearUsuario() {
         genero: document.getElementById("genero").value
     };
 
-    // ✅ VALIDACIÓN MEJORADA
     if (!data.documento || !data.nombre || !data.apellido || !data.correo) {
         Swal.fire("Error", "Completa los campos obligatorios", "error");
         return;
     }
 
+    const csrfToken = getCookie('csrftoken');
+
     fetch("{% url 'gimnasio:crear_usuario_ajax' %}", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
-        
-            "X-CSRFToken": document.querySelector('[name=csrfmiddlewaretoken]').value
+            "X-CSRFToken": csrfToken
         },
         body: JSON.stringify(data)
     })
-    .then(response => response.json())
+    .then(response => {
+        if (!response.ok) {
+            throw new Error("Error en la respuesta del servidor");
+        }
+        return response.json();
+    })
     .then(data => {
 
         if (data.error) {
@@ -200,21 +223,38 @@ function crearUsuario() {
             return;
         }
 
-        let select = document.getElementById("id_fk_usuario");
+        let select = document.querySelector('[name="fk_Usuario"]');
 
-        let option = new Option(data.nombre, data.id, true, true);
-        select.add(option);
+        if (!select) {
+            console.error("No se encontró el select fk_Usuario");
+            Swal.fire("Error", "No se encontró el campo de usuario", "error");
+            return;
+        }
 
+        // evitar duplicados
+        if (!select.querySelector(`option[value="${data.id}"]`)) {
+            let option = new Option(data.nombre, data.id, true, true);
+            select.add(option);
+        }
+
+        // cerrar modal
         let modal = bootstrap.Modal.getInstance(document.getElementById('modalUsuario'));
         modal.hide();
 
+        //limpiar formulario del modal
+        document.querySelectorAll('#modalUsuario input').forEach(input => input.value = '');
+        document.getElementById("genero").value = "M";
+
         Swal.fire("Correcto", "Usuario creado correctamente", "success");
+
     })
     .catch(error => {
+        console.error(error);
         Swal.fire("Error", "Ocurrió un error en la petición", "error");
     });
 }
 </script>
+
 
 {% endblock %}
 

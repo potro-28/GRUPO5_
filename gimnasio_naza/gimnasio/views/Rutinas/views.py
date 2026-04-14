@@ -14,68 +14,60 @@ from datetime import datetime,date
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 import json
+from django.db import transaction
 
 @csrf_exempt
 def wizard_crear_todo(request):
     if request.method == "POST":
-        data = json.loads(request.body)
-
         try:
-            # ======================
-            # USER DJANGO
-            # ======================
-            user = User.objects.create_user(
-                username=data['username'],
-                password=data['password']
-            )
+            data = json.loads(request.body)
+            for key,value in data.items():
+                print(f"{key}: {value}")
 
-            # ======================
-            # USUARIO
-            # ======================
-            usuario = Usuario.objects.create(
-                user=user,
-                documento=data['documento'],
-                nombre_usuario=data['nombre'],
-                apellido_usuario=data['apellido'],
-                correo_usuario=data['correo'],
-                telefono_usuario=data['telefono'],
-                fecha_nacimiento=data['fecha_nacimiento'],
-                peso_usuario=data['peso'],
-                altura_usuario=data['altura'],
-                genero_usuario=data['genero'],
-                estado='activo'
-            )
+            with transaction.atomic():
 
-            # ======================
-            # NUTRICION
-            # ======================
-            nutricion = Nutricion.objects.create(
-                nivel_actividad=data['nivel_actividad'],
-                tipo_objetivo=data['tipo_objetivo'],
-                tipo_dieta=data['tipo_dieta'],
-                fk_Usuario=usuario
-            )
+                user = User.objects.create_user(
+                    username=data['username'],
+                    password=data['password']
+                )
+                print("Usuario creado con ID:", user.id)
+                usuario = Usuario.objects.create(
+                    user=user,
+                    documento=data['documento'],
+                    nombre_usuario=data['nombre'],
+                    apellido_usuario=data['apellido'],
+                    correo_usuario=data['correo'],
+                    telefono_usuario=data['telefono'],
+                    fecha_nacimiento=data['fecha_nacimiento'],
+                    peso_usuario=data['peso_usuario'],
+                    altura_usuario=data['altura_usuario'],
+                    genero_usuario=data['genero'],
+                    estado='activo'
+                )
+                print("Usuario",usuario.nombre_usuario)
+                nutricion = Nutricion.objects.create(
+                    nivel_actividad=data['nivel_actividad'],
+                    tipo_objetivo=data['tipo_objetivo'],
+                    tipo_dieta=data['tipo_dieta'],
+                    fk_Usuario=usuario
+                )
+                print("nutricion", nutricion.id)
 
-            # ======================
-            # MASA CORPORAL
-            # ======================
-            masa = Masa_corporal.objects.create(
-                peso_cliente=data['peso_cliente'],
-                altura_cliente=data['altura_cliente'],
-                fecha_control=data['fecha_control'],
-                fk_Nutricion=nutricion
-            )
-
+                masa = Masa_corporal.objects.create(
+                    peso_cliente=data['peso_cliente'],
+                    altura_cliente=data['altura_cliente'],
+                    fecha_control=data['fecha_control'],
+                    fk_Nutricion=nutricion
+                )
+                print("masa corporal", masa.id)
             return JsonResponse({
                 "id": masa.id,
-                "nombre": f"IMC {masa.id}"
+                "nombre": f"IMC {masa.id}-{usuario.nombre_usuario}"
             })
 
         except Exception as e:
-            return JsonResponse({
-                "error": str(e)
-            }, status=400)
-
+            print("error por ", e)
+            return JsonResponse({"error": str(e)}, status=400)
 #Listar rutinas
 def listar_rutinas(request):
     nombre ={
@@ -86,7 +78,7 @@ def listar_rutinas(request):
 
 class rutinaListView(ListView):
     model = Rutina
-    template_name = 'rutina/listar.html'
+    template_name = 'Rutina/listar.html'
     
     #METODO DISPATCH
     #@method_decorator(login_required)
@@ -111,7 +103,7 @@ class rutinaListView(ListView):
 #Crear rutina   
 class RutinaCreateView(CreateView):
     model = Rutina
-    template_name = 'rutina/crear.html'
+    template_name = 'Rutina/crear.html'
     form_class = RutinaForm
     success_url = reverse_lazy('gimnasio:listar_rutinas')
 
@@ -129,7 +121,7 @@ class RutinaCreateView(CreateView):
 class RutinaUpdateView(UpdateView):
     model = Rutina
     form_class = RutinaForm
-    template_name = 'rutina/crear.html'
+    template_name = 'Rutina/crear.html'
     success_url = reverse_lazy('gimnasio:listar_rutinas')
     
     def get_context_data(self, **kwargs):
@@ -145,7 +137,7 @@ class RutinaUpdateView(UpdateView):
     
 class RutinaDeleteView(DeleteView):
     model = Rutina
-    template_name = 'rutina/eliminar.html'
+    template_name = 'Rutina/eliminar.html'
     success_url = reverse_lazy('gimnasio:listar_rutinas')
     
     def get_context_data(self, **kwargs):

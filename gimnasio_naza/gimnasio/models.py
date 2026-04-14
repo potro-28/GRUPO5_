@@ -389,7 +389,7 @@ class Rutina(models.Model):
 class Certificacion_interna(models.Model):
     descripcion_certificacion=models.CharField(max_length=500)
     fecha_certificacion=models.DateField(auto_now=False, auto_now_add=False)
-    fk_Asistencia=models.ForeignKey(Asistencia, on_delete=models.CASCADE, verbose_name='Asistencia')
+    fk_membresia=models.ForeignKey(Membresia, on_delete=models.CASCADE)
     descargado = models.BooleanField(default=False)
     def __str__(self):
         return str(self.id) 

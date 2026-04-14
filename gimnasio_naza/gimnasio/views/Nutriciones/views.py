@@ -106,7 +106,7 @@ class nutricionListView(ListView):
 #Crear categoria    
 class NutricionCreateView(CreateView):
     model = Nutricion
-    template_name = 'nutricion/crear.html'
+    template_name = 'Nutricion/crear.html'
     form_class = NutricionForm
     success_url = reverse_lazy('gimnasio:listar_nutriciones')
     
@@ -125,7 +125,7 @@ class NutricionCreateView(CreateView):
 class NutricionUpdateView(UpdateView):
     model = Nutricion
     form_class = NutricionForm
-    template_name = 'nutricion/crear.html'
+    template_name = 'Nutricion/crear.html'
     success_url = reverse_lazy('gimnasio:listar_nutriciones')
     
     def get_context_data(self, **kwargs):
@@ -141,7 +141,7 @@ class NutricionUpdateView(UpdateView):
     
 class NutricionDeleteView(DeleteView):
     model = Nutricion
-    template_name = 'nutricion/eliminar.html'
+    template_name = 'Nutricion/eliminar.html'
     success_url = reverse_lazy('gimnasio:listar_nutriciones')
     
     def get_context_data(self, **kwargs):
