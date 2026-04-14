@@ -54,6 +54,11 @@ class MantenimientoCreateView(CreateView):
     form_class = MantenimientoForm
     template_name = 'mantenimiento/crear.html'
     success_url = reverse_lazy('gimnasio:listar_mantenimiento')
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['titulo'] = 'Crear Mantenimiento'
+        return context 
 
 
 # EDITAR
@@ -63,7 +68,7 @@ class MantenimientoUpdateView(UpdateView):
     template_name = 'mantenimiento/crear.html'
     success_url = reverse_lazy('gimnasio:listar_mantenimiento')
 
-
+  
 
 # ELIMINAR
 class MantenimientoDeleteView(DeleteView):

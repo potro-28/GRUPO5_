@@ -114,7 +114,7 @@ class NutricionCreateView(CreateView):
     #@method_decorator(csrf_exempt)
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['titulo'] = 'Crear Nutricion'
+        context['titulo'] = 'Crear Nutrición'
         return context
     
     def form_valid(self, form):

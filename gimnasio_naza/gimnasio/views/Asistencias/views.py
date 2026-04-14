@@ -51,9 +51,8 @@ class AsistenciaCreateView(CreateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['titulo'] = 'Crear asistencia'
-        return super().get_context_data(**kwargs)
-
-
+        return context
+    
 class AsistenciaUpdateView(UpdateView):
     model = Asistencia
     template_name = 'Asistencia/crear.html'

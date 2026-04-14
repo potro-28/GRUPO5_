@@ -103,7 +103,7 @@ class NotificacionCreateView(CreateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['titulo'] = 'Crear notificacion'
-        return super().get_context_data(**kwargs)
+        return context
     
 class NotificacionUpdateView(UpdateView):
     model = Notificacion
