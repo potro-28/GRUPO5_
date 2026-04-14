@@ -12,7 +12,7 @@ from gimnasio.forms import SancionesForm
 from django.contrib import messages
 import json
 from datetime import date, datetime
-
+@csrf_exempt
 def crear_usuario_ajax(request):
 
     if request.method != "POST":

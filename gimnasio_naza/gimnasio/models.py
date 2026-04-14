@@ -337,7 +337,7 @@ class Nutricion(models.Model):
     fk_Usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
 
     def __str__(self):
-        return str(self.id) 
+        return str(self.fk_Usuario.nombre_usuario)
     
     class Meta:
         db_table = "Nutricion"
