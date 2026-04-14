@@ -111,6 +111,7 @@ urlpatterns = [
     path('crear_masa_corporal/', Masa_corporalCreateView.as_view(), name='crear_masa_corporal'),
     path('eliminar_masa_corporal/<int:pk>/', Masa_corporalDeleteView.as_view(), name='eliminar_masa_corporal'),
     path('editar_masa_corporal/<int:pk>/', Masa_corporalUpdateView.as_view(), name='editar_masa_corporal'),
+    path('crear-nutricion-ajax/', crear_nutricion_ajax, name='crear_nutricion_ajax'),
     
     
     path('listar_sanciones_clas/', SacionesListView.as_view(), name='listar_sanciones_clas'),
