@@ -45,6 +45,7 @@ class Usuario(models.Model):
         db_table = 'usuario'
     def __str__(self):
         return self.user.username
+    
 #-----------------------------MODELO MEMBRESIA---------------------------------------------------
 class Membresia(models.Model):
     
@@ -124,13 +125,12 @@ class Categoria(models.Model):
         verbose_name_plural = "Categorias"
 
         
-#------ELEMENTO------------------------
 
 class Elemento(models.Model):
     serial = models.CharField(max_length=45, unique=True)
     marca = models.CharField(max_length=45)
     nombre_elemento = models.CharField(max_length=45)
-    
+
     TIPO_CHOICES = [
         ('maquina', 'Máquina'),
         ('disco', 'Disco'),
@@ -138,48 +138,46 @@ class Elemento(models.Model):
         ('barra', 'Barras'),
         ('otro', 'Otro'),
     ]
+
     peso_elemento = models.DecimalField(max_digits=10, decimal_places=2)
+
     ESTADO_CHOICES = [
         ('activo', 'Activo'),
         ('inactivo', 'Inactivo'),
     ]
+
     estado = models.CharField(max_length=20, choices=ESTADO_CHOICES)
     fecha_ingreso = models.DateField()
-    categoria = models.ForeignKey(Categoria, on_delete=models.CASCADE)
-    imagen = models.ImageField(upload_to='elementos', null=True, blank=True)
+    categoria = models.ForeignKey('Categoria', on_delete=models.CASCADE)
+
+    cantidad = models.IntegerField(default=1)  # ✅ agregado
+    imagen = models.ImageField(upload_to='elementos/', null=True, blank=True)
 
     def __str__(self):
         return self.nombre_elemento
-    
-    class Meta:
-        verbose_name = 'Elemento'
-        verbose_name_plural = 'Elementos'
-        db_table = 'elementos'
-#---------------------------------------MANTENIMIENTO------------------------
+
+
 class Mantenimiento(models.Model):
     fecha_programada = models.DateField()
+
     TIPO_CHOICES = [
         ('preventivo', 'Preventivo'),
         ('correctivo', 'Correctivo'),
     ]
     tipo_mantenimiento = models.CharField(max_length=20, choices=TIPO_CHOICES)
+
     ESTADO_CHOICES = [
         ('pendiente', 'Pendiente'),
         ('en_proceso', 'En proceso'),
         ('completado', 'Completado'),
     ]
-    
     estado = models.CharField(max_length=20, choices=ESTADO_CHOICES)
-    elemento = models.ForeignKey(Elemento, on_delete=models.CASCADE)
+
+    nombre_elemento = models.ForeignKey(Elemento, on_delete=models.CASCADE)
     descripcion = models.TextField()
+
     def __str__(self):
-        return str(self.id)
-    
-    class Meta:
-        verbose_name = 'Mantenimiento'
-        verbose_name_plural = 'Mantenimientos'
-        db_table = 'mantenimiento'
-        
+        return str(self.id) 
 #---------------------------------MODELO NOTIFCACIONES-----------------------------------------
 TIPO_NOTIFICACION = [
     ('MEMBRESIA', 'Membresía'),
