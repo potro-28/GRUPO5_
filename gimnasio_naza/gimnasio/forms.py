@@ -5,7 +5,9 @@ from gimnasio.models import *
 from django import forms
 from datetime import date
 from django.utils import timezone
-
+from django.contrib.auth.models import User
+from django.shortcuts import render
+from django.db.models import Count
 class ElementoForm(forms.ModelForm):
     class Meta:
         model = Elemento
@@ -803,10 +805,19 @@ class CertificacioninternaForm(ModelForm):
                 'class': 'form-control',
                 'placeholder': 'Ingrese la descripcion de la certificacion interna'
             }),
-            'fk_Asistencia': forms.Select(attrs={
+            'fk_membresia': forms.Select(attrs={
                 'class': 'form-control',
             }),
         }
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        # Filtrar membresías con mínimo 10 asistencias
+        membresias_validas = Membresia.objects.annotate(
+            total_asistencias=Count('asistencia')
+        ).filter(total_asistencias__gte=1)
+
+        self.fields['fk_membresia'].queryset = membresias_validas
     def clean_descripcion_certificacion(self):
         descripcion_certificacion = self.cleaned_data['descripcion_certificacion']
         if len(descripcion_certificacion) < 10:

@@ -43,6 +43,7 @@ urlpatterns = [
     path('asignar_rol/<int:pk>/', UsuarioRolUpdateView.as_view(), name='asignar_rol_usuario'),
     path('exportar_usuarios_pdf/', ExportarUsuariosPDF.as_view(), name='exportar_usuarios_pdf'),
     path('exportar_usuarios_excel/', ExportarUsuariosExcel.as_view(), name='exportar_usuarios_excel'),
+    path('perfil_usuario/', PerfilView.as_view(), name='perfil_usuario'),
 #==============================mantenimiento==============================#
     path('crear_mantenimiento/', MantenimientoCreateView.as_view(), name='crear_mantenimiento'),
     path('listar_mantenimiento/', MantenimientoListView.as_view(), name='listar_mantenimiento'),

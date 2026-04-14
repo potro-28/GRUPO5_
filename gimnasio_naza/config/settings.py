@@ -30,6 +30,7 @@ INSTALLED_APPS = [
     'login',
     'gimnasio',
     'qr_code',
+    'usuarios',
 ]
 
 
