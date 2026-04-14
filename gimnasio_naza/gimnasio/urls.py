@@ -118,12 +118,13 @@ urlpatterns = [
     path('crear-usuario-ajax/', crear_usuario_ajax, name='crear_usuario_ajax'),
     
     
+    
     #Rutina
     path('listar_rutinas/', rutinaListView.as_view(), name='listar_rutinas'),
     path('crear_rutinas/', RutinaCreateView.as_view(), name='crear_rutina'),
     path('editar_rutinas/<int:pk>/', RutinaUpdateView.as_view(), name='editar_rutina'),
     path('eliminar_rutinas/<int:pk>/', RutinaDeleteView.as_view(), name='eliminar_rutina'),
-    path('crear_masa_corporal_ajax/', crear_masa_corporal_ajax, name='crear_masa_corporal_ajax'),
+    path('wizard/crear-todo/', wizard_crear_todo, name='wizard_crear_todo'),
     
     path('listar_masa_corporal_clas/', Masa_corporalListView.as_view(), name='listar_masa_corporal_clas'),
     path('crear_masa_corporal/', Masa_corporalCreateView.as_view(), name='crear_masa_corporal'),
