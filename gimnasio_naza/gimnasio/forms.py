@@ -255,7 +255,6 @@ class MembresiaForm(ModelForm):
             raise forms.ValidationError('El usuario ya tuvo una membresia este mismo mes')
         return cleaned_data
     
-    
 
 class NotificacionForm(forms.ModelForm):
     class Meta:
