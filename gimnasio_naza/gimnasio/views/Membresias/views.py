@@ -131,4 +131,7 @@ class MembresiaDeleteView(DeleteView):
         context['titulo'] = 'Eliminar membresia'
         context['listar_url'] = reverse_lazy('gimnasio:listar_membresia')
         return context
+    
+
+
 
