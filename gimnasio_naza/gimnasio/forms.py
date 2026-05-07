@@ -162,11 +162,6 @@ class UsuarioForm(forms.ModelForm):
         ),
         input_formats=['%Y-%m-%d']
     )
-
-    class Meta:
-        model = Usuario
-        fields = '__all__'
-
     def clean_fecha_nacimiento(self):
         fecha_nacimiento = self.cleaned_data.get('fecha_nacimiento')
 
