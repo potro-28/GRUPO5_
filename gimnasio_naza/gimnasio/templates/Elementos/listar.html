@@ -129,7 +129,15 @@
                             <td>{{ e.marca }}</td>
                             <td>{{ e.nombre_elemento }}</td>
                             <td>{{ e.peso_elemento }}</td>
-                            <td>{{ e.estado }}</td>
+                            <td>
+                                {% if e.estado == 'activo' %}
+                                    <span class="badge bg-success">{{ e.estado }}</span>
+                                {% elif e.estado == 'inactivo' %}
+                                    <span class="badge bg-danger">{{ e.estado }}</span>
+                                {% else %}
+                                    <span class="badge bg-secondary">{{ e.estado }}</span>
+                                {% endif %}
+                            </td>
                             <td>{{ e.fecha_ingreso }}</td>
                             <td>{{ e.categoria_id }}</td>
                             <td class="text-nowrap">
