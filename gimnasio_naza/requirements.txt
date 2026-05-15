@@ -48,3 +48,5 @@ urllib3==2.6.3
 weasyprint==68.1
 webencodings==0.5.1
 zopfli==0.4.1
+mysqlclient==2.2.8
+qrcode==7.3.1
