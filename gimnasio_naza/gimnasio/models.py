@@ -32,6 +32,18 @@ class Usuario(models.Model):
         ('inactivo', 'Inactivo'),
         ('visitante', 'Visitante'),
     ]
+    TIPOS_DOCUMENTO = [
+    ('CC', 'Cédula de Ciudadanía'),
+    ('TI', 'Tarjeta de Identidad'),
+    ('CE', 'Cédula de Extranjería'),
+    ('PP', 'Pasaporte'),
+]
+
+    tipo_documento = models.CharField(
+    max_length=2,
+    choices=TIPOS_DOCUMENTO,
+    default='CC'
+)
     estado = models.CharField(max_length=30, choices=ESTADO_CHOICES)
     fecha_registro = models.DateField()
 

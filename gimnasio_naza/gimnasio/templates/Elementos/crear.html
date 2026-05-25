@@ -3,8 +3,83 @@
 
 {% block contenido %}
 
-<div class="container-xxl flex-grow-1 container-p-y">
-    <div class="card">
+<style>
+    .card-body form {
+        width: 100%;
+        overflow-x: hidden;
+    }
+
+    .form-control,
+    .form-select {
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
+    }
+
+    .row {
+        --bs-gutter-x: 1rem;
+    }
+
+    .categoria-wrapper {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        width: 100%;
+    }
+
+    .categoria-wrapper select {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .categoria-wrapper button {
+        flex-shrink: 0;
+        width: 45px;
+        height: 45px;
+    }
+
+    /* Preview imagen */
+    #preview-container {
+        width: 120px;
+        height: 120px;
+        border: 2px dashed #ccc;
+        border-radius: 10px;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #f8f9fa;
+    }
+
+    #preview-img {
+        display: none;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    #preview-placeholder {
+        font-size: 12px;
+        text-align: center;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .col-md-6 {
+            width: 100%;
+        }
+
+        .d-flex.align-items-center.gap-3 {
+            flex-direction: column;
+            align-items: flex-start !important;
+        }
+    }
+</style>
+
+<div class="container-lg flex-grow-1 container-p-y">
+
+    <div class="card shadow-sm">
+        
         <div class="card-header">
             <h5 class="card-title mb-0">
                 <i class="fas fa-plus"></i>
@@ -13,14 +88,18 @@
         </div>
 
         <div class="card-body">
+
             <form method="POST" action="." enctype="multipart/form-data">
+
                 {% csrf_token %}
 
                 {% if form.errors %}
                     <div class="alert alert-danger alert-dismissible fade show" role="alert">
                         <h5 class="alert-heading">
-                            <i class="ri-error-warning-line me-2"></i>¡Atención!
+                            <i class="ri-error-warning-line me-2"></i>
+                            ¡Atención!
                         </h5>
+
                         <ul class="mb-0">
                             {% for field in form %}
                                 {% for error in field.errors %}
@@ -28,194 +107,360 @@
                                 {% endfor %}
                             {% endfor %}
                         </ul>
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+
+                        <button type="button"
+                                class="btn-close"
+                                data-bs-dismiss="alert"
+                                aria-label="Close">
+                        </button>
                     </div>
                 {% endif %}
 
                 <div class="row">
+
                     {% for field in form.visible_fields %}
+
                         {% if field.name == 'imagen' %}
+
                             <div class="col-md-12 mb-3">
-                                <label class="form-label">{{ field.label }}:</label>
+
+                                <label class="form-label">
+                                    {{ field.label }}:
+                                </label>
+
                                 <div class="d-flex align-items-center gap-3">
-                                    <div id="preview-container" style="width:120px; height:120px; border:2px dashed #ccc; border-radius:10px; overflow:hidden; display:flex; align-items:center; justify-content:center; background:#f8f9fa;">
-                                        <img id="preview-img" src="#" alt="Preview" style="display:none; width:100%; height:100%; object-fit:cover;">
-                                        <span id="preview-placeholder" class="text-muted" style="font-size:12px; text-align:center;">
-                                            <i class="ri-image-line" style="font-size:30px;"></i><br>Sin imagen
+
+                                    <div id="preview-container">
+
+                                        <img id="preview-img" src="#" alt="Preview">
+
+                                        <span id="preview-placeholder" class="text-muted">
+                                            <i class="ri-image-line" style="font-size:30px;"></i>
+                                            <br>
+                                            Sin imagen
                                         </span>
+
                                     </div>
-                                    <div>
-                                        {% render_field field class="form-control" id="id_imagen" %}
-                                        <small class="text-muted">Formatos: JPG, PNG, WEBP</small>
+
+                                    <div class="w-100">
+
+                                        {% render_field field class="form-control w-100" id="id_imagen" %}
+
+                                        <small class="text-muted">
+                                            Formatos: JPG, PNG, WEBP
+                                        </small>
+
                                     </div>
+
                                 </div>
+
                                 {% for error in field.errors %}
-                                    <div class="text-danger">{{ error }}</div>
+                                    <div class="text-danger">
+                                        {{ error }}
+                                    </div>
                                 {% endfor %}
+
                             </div>
 
                         {% elif field.name == 'categoria' %}
+
                             <div class="col-md-6 mb-3">
-                                <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}:</label>
-                                <div class="d-flex">
-                                    {% render_field field class="form-control" %}
-                                    <button type="button" class="btn btn-success ms-2" data-bs-toggle="modal" data-bs-target="#modalCategoria">
-                                         +
+
+                                <label for="{{ field.id_for_label }}"
+                                       class="form-label">
+                                    {{ field.label }}:
+                                </label>
+
+                                <div class="categoria-wrapper">
+
+                                    {% render_field field class="form-select" %}
+
+                                    <button type="button"
+                                            class="btn btn-success"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#modalCategoria">
+                                        +
                                     </button>
+
                                 </div>
+
                                 {% for error in field.errors %}
-                                    <div class="text-danger">{{ error }}</div>
+                                    <div class="text-danger">
+                                        {{ error }}
+                                    </div>
                                 {% endfor %}
+
                             </div>
 
                         {% else %}
+
                             <div class="col-md-6 mb-3">
-                                <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}:</label>
-                                {% render_field field class="form-control" %}
+
+                                <label for="{{ field.id_for_label }}"
+                                       class="form-label">
+                                    {{ field.label }}:
+                                </label>
+
+                                {% render_field field class="form-control w-100" %}
+
                                 {% if field.help_text %}
-                                    <small class="form-text text-muted">{{ field.help_text }}</small>
+                                    <small class="form-text text-muted">
+                                        {{ field.help_text }}
+                                    </small>
                                 {% endif %}
+
                                 {% for error in field.errors %}
-                                    <div class="text-danger">{{ error }}</div>
+                                    <div class="text-danger">
+                                        {{ error }}
+                                    </div>
                                 {% endfor %}
+
                             </div>
+
                         {% endif %}
+
                     {% endfor %}
+
                 </div>
 
                 <div class="mt-4">
+
                     <button type="submit" class="btn btn-primary me-2">
                         <i class="ri-save-line me-1"></i>
                         Guardar Registro
                     </button>
-                    <a href="{% url 'gimnasio:listar_elementos' %}" class="btn btn-danger">
+
+                    <a href="{% url 'gimnasio:listar_elementos' %}"
+                       class="btn btn-danger">
                         <i class="ri-close-line me-1"></i>
                         Cancelar
                     </a>
+
                 </div>
+
             </form>
+
         </div>
+
     </div>
+
 </div>
 
+<!-- MODAL CATEGORÍA -->
 
-<!-- Modal Crear Categoría -->
 <div class="modal fade" id="modalCategoria" tabindex="-1">
+
     <div class="modal-dialog">
+
         <div class="modal-content">
 
             <div class="modal-header">
+
                 <h5 class="modal-title">
-                    <i class="ri-price-tag-3-line me-2"></i>Crear Categoría
+                    <i class="ri-price-tag-3-line me-2"></i>
+                    Crear Categoría
                 </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal">
+                </button>
+
             </div>
 
             <div class="modal-body">
+
                 <div class="mb-3">
-                    <label class="form-label">Nombre Categoría:</label>
+
+                    <label class="form-label">
+                        Nombre Categoría:
+                    </label>
+
                     <select id="nombre_categoria" class="form-control">
-                        <option value="" disabled selected>-- Selecciona --</option>
+
+                        <option value="" disabled selected>
+                            -- Selecciona --
+                        </option>
+
                         <option value="maquinas">Máquinas</option>
                         <option value="mancuernas">Mancuernas</option>
                         <option value="discos">Discos</option>
                         <option value="accesorios">Accesorios</option>
                         <option value="barras">Barras</option>
+
                     </select>
+
                 </div>
+
                 <div class="mb-3">
-                    <label class="form-label">Descripción:</label>
-                    <textarea id="descripcion" class="form-control" rows="3" maxlength="250" placeholder="Descripción de la categoría..."></textarea>
+
+                    <label class="form-label">
+                        Descripción:
+                    </label>
+
+                    <textarea id="descripcion"
+                              class="form-control"
+                              rows="3"
+                              maxlength="250"
+                              placeholder="Descripción de la categoría..."></textarea>
+
                 </div>
+
             </div>
 
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                <button class="btn btn-primary" onclick="crearCategoria()">
-                    <i class="ri-save-line me-1"></i>Guardar
+
+                <button type="button"
+                        class="btn btn-secondary"
+                        data-bs-dismiss="modal">
+                    Cancelar
                 </button>
+
+                <button class="btn btn-primary"
+                        onclick="crearCategoria()">
+
+                    <i class="ri-save-line me-1"></i>
+                    Guardar
+
+                </button>
+
             </div>
 
         </div>
+
     </div>
+
 </div>
 
 {% endblock %}
 
-
 {% block js %}
+
 <script>
 
-    // Preview de imagen al seleccionar
+    // Preview imagen
     document.getElementById("id_imagen").addEventListener("change", function(e) {
+
         const file = e.target.files[0];
+
         if (file) {
+
             const reader = new FileReader();
+
             reader.onload = function(ev) {
+
                 document.getElementById("preview-img").src = ev.target.result;
+
                 document.getElementById("preview-img").style.display = "block";
+
                 document.getElementById("preview-placeholder").style.display = "none";
             };
+
             reader.readAsDataURL(file);
         }
     });
 
-    // Crear categoría via AJAX
+    // Crear categoría AJAX
     function crearCategoria() {
+
         let data = {
             nombre_categoria: document.getElementById("nombre_categoria").value,
             descripcion: document.getElementById("descripcion").value,
         };
 
         if (!data.nombre_categoria || !data.descripcion) {
-            Swal.fire("Error", "Todos los campos son obligatorios", "error");
+
+            Swal.fire(
+                "Error",
+                "Todos los campos son obligatorios",
+                "error"
+            );
+
             return;
         }
 
         fetch("{% url 'gimnasio:crear_categoria_ajax' %}", {
+
             method: "POST",
+
             headers: {
                 "Content-Type": "application/json",
                 "X-CSRFToken": "{{ csrf_token }}"
             },
+
             body: JSON.stringify(data)
+
         })
+
         .then(response => response.json())
+
         .then(data => {
+
             if (data.error) {
+
                 Swal.fire("Error", data.error, "error");
+
                 return;
             }
 
-            // Agregar nueva categoría al select del formulario
+            // Agregar categoría al select
             let select = document.getElementById("id_categoria");
-            let option = new Option(data.nombre, data.id, true, true); // ← CORRECCIÓN
+
+            let option = new Option(
+                data.nombre,
+                data.id,
+                true,
+                true
+            );
+
             select.add(option);
 
             // Cerrar modal
-            let modal = bootstrap.Modal.getInstance(document.getElementById('modalCategoria'));
+            let modal = bootstrap.Modal.getInstance(
+                document.getElementById('modalCategoria')
+            );
+
             modal.hide();
 
-            Swal.fire("Correcto", "Categoría creada exitosamente", "success");
+            Swal.fire(
+                "Correcto",
+                "Categoría creada exitosamente",
+                "success"
+            );
+
         })
+
         .catch(() => {
-            Swal.fire("Error", "Ocurrió un problema al crear la categoría", "error");
+
+            Swal.fire(
+                "Error",
+                "Ocurrió un problema al crear la categoría",
+                "error"
+            );
+
         });
     }
+
 </script>
 
 {% if form.errors %}
+
 <script>
+
     {% for field, errors in form.errors.items %}
         {% for error in errors %}
+
             Swal.fire({
                 title: "Error",
                 text: "{{ error }}",
                 icon: "error",
             });
+
         {% endfor %}
     {% endfor %}
+
 </script>
+
 {% endif %}
 
 {% endblock %}
