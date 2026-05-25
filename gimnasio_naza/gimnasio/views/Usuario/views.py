@@ -12,7 +12,7 @@ from gimnasio.forms import UsuarioForm, UserForm
 # =============================
 class UsuarioListView(ListView):
     model = Usuario
-    template_name = 'usuarios/listar.html'
+    template_name = 'Usuarios/listar.html'
     # Cambiado de 'usuarios' para que coincida con el template
     context_object_name = 'object_list'
     ordering = ['-id']
@@ -34,7 +34,7 @@ class UsuarioListView(ListView):
 class UsuarioCreateView(CreateView):
     model = Usuario
     form_class = UsuarioForm
-    template_name = 'usuarios/crear.html'
+    template_name = 'Usuarios/crear.html'
     success_url = reverse_lazy('gimnasio:listar_usuario')
 
     def get_context_data(self, **kwargs):
@@ -76,7 +76,7 @@ class UsuarioCreateView(CreateView):
 class UsuarioUpdateView(UpdateView):
     model = Usuario
     form_class = UsuarioForm
-    template_name = 'usuarios/crear.html'  # Usa el mismo template que crear
+    template_name = 'Usuarios/crear.html'  # Usa el mismo template que crear
     success_url = reverse_lazy('gimnasio:listar_usuario')
 
     def get_context_data(self, **kwargs):
@@ -139,7 +139,7 @@ class UsuarioDeleteView(View):
 class UsuarioRolUpdateView(UpdateView):
     model = Usuario
     form_class = UsuarioForm
-    template_name = 'usuarios/asignar_rol.html'
+    template_name = 'Usuarios/asignar_rol.html'
     success_url = reverse_lazy('gimnasio:listar_usuario')
 
     def get_context_data(self, **kwargs):

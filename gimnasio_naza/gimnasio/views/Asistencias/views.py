@@ -134,7 +134,7 @@ class AsistenciaUpdateView(UpdateView):
         context = super().get_context_data(**kwargs)
         context['titulo'] = 'Editar Asistencia'
         context['listar_url'] = reverse_lazy('gimnasio:listar_asistencia')
-        return super().get_context_data(**kwargs)
+        return context
 
 class AsistenciaDeleteView(DeleteView):
     model = Asistencia

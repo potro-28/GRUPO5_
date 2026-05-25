@@ -3,34 +3,47 @@
 
 {% block contenido %}
 <style>
-  .swal2-container { z-index: 20000 !important; }
+  .swal2-container {
+    z-index: 20000 !important;
+  }
 </style>
 
 <form method="post">
-    <div class="card">
-        <div class="card-header">
-            <h3><i class="fas fa-plus"></i> {{ titulo }}</h3>
-        </div>
-        <div class="card-body">
-            {% csrf_token %}
-            {% for field in form.visible_fields %}
-            <div class="mb-3">
-                <label>{{ field.label }}</label>
-                {% if field.name == 'fk_membresia' %}
-                <div class="d-flex">
-                    {{ field|add_class:'form-control' }}
-                    <button type="button" class="btn btn-success ms-2" onclick="abrirWizard()">+</button>
-                </div>
-                {% else %}
-                    {{ field|add_class:'form-control' }}
-                {% endif %}
-            </div>
-            {% endfor %}
-        </div>
-        <div class="card-footer">
-            <button class="btn btn-primary">Guardar Asistencia</button>
-        </div>
+  <div class="card">
+    <div class="card-header">
+      <h3>
+        <i class="fas fa-edit"></i>
+        {{ titulo }}
+      </h3>
     </div>
+    <div class="card-body">
+      {% csrf_token %}
+      {% for field in form.visible_fields %}
+      <div class="mb-3">
+        <label>{{ field.label }}</label>
+
+        {% if field.name == 'fk_membresia' %}
+        <div class="d-flex">
+          {{ field|add_class:'form-control' }}
+          <button type="button" class="btn btn-success ms-2" onclick="abrirWizard()">+</button>
+        </div>
+        {% else %}
+        {{ field|add_class:'form-control' }}
+        {% endif %}
+
+        {{ field.errors }}
+    </div>
+    {% endfor %}
+  </div>
+  <div class="card-footer">
+
+    <button class="btn btn-primary">Guardar Asistencia</button>
+    <a href="{% url 'gimnasio:listar_asistencia' %}" class="btn btn-danger">
+      <i class="ri-close-line me-1"></i>
+      Cancelar
+    </a>
+  </div>
+  </div>
 </form>
 
 <!-- ================= WIZARD ================= -->
@@ -137,11 +150,11 @@
 
 {% block js %}
 <script>
-const btnSiguiente = document.getElementById("btnSiguiente");
-let paso = 1;
+  const btnSiguiente = document.getElementById("btnSiguiente");
+  let paso = 1;
 
-// Fechas por defecto al abrir
-function setFechasDefault() {
+  // Fechas por defecto al abrir
+  function setFechasDefault() {
     const hoy = new Date();
     const fmt = d => d.toISOString().split('T')[0];
     const en30 = new Date(hoy); en30.setDate(hoy.getDate() + 30);
@@ -149,65 +162,65 @@ function setFechasDefault() {
     document.getElementById('fecha_inicio').value = fmt(hoy);
     document.getElementById('fecha_fin').value = fmt(en30);
 
-}
+  }
 
-function mostrarPaso() {
+  function mostrarPaso() {
     for (let i = 1; i <= 2; i++) {
-        document.getElementById('paso' + i).style.display = (i === paso) ? 'block' : 'none';
-        const badge = document.getElementById('badge' + i);
-        badge.style.backgroundColor = i === paso ? '#267ca7' : '#6c757d';
+      document.getElementById('paso' + i).style.display = (i === paso) ? 'block' : 'none';
+      const badge = document.getElementById('badge' + i);
+      badge.style.backgroundColor = i === paso ? '#267ca7' : '#6c757d';
     }
     btnSiguiente.textContent = paso === 2 ? "Guardar" : "Siguiente";
     document.querySelector('[onclick="prevPaso()"]').style.display = paso === 1 ? 'none' : 'inline-block';
-}
+  }
 
-function abrirWizard() {
+  function abrirWizard() {
     paso = 1;
     setFechasDefault();
     mostrarPaso();
     new bootstrap.Modal(document.getElementById('modalWizard')).show();
-}
+  }
 
-function nextPaso() {
+  function nextPaso() {
     if (paso === 2) { guardarTodo(); return; }
     paso++;
     mostrarPaso();
-}
+  }
 
-function prevPaso() {
+  function prevPaso() {
     if (paso > 1) { paso--; mostrarPaso(); }
-}
+  }
 
-function guardarTodo() {
+  function guardarTodo() {
     const data = {
-        // Usuario
-        username:         document.getElementById('username').value,
-        password:         document.getElementById('password').value,
-        documento:        document.getElementById('documento').value,
-        nombre_usuario:   document.getElementById('nombre_usuario').value,
-        apellido_usuario: document.getElementById('apellido_usuario').value,
-        correo_usuario:   document.getElementById('correo_usuario').value,
-        telefono_usuario: document.getElementById('telefono_usuario').value,
-        fecha_nacimiento: document.getElementById('fecha_nacimiento').value,
-        peso_usuario:     parseFloat(document.getElementById('peso_usuario').value),
-        altura_usuario:   parseFloat(document.getElementById('altura_usuario').value),
-        genero_usuario:   document.getElementById('genero_usuario').value,
-        // Membresía
-        fecha_inicio:       document.getElementById('fecha_inicio').value,
-        fecha_fin:          document.getElementById('fecha_fin').value,
-        estado_membresia:   document.getElementById('estado_membresia').value,
+      // Usuario
+      username: document.getElementById('username').value,
+      password: document.getElementById('password').value,
+      documento: document.getElementById('documento').value,
+      nombre_usuario: document.getElementById('nombre_usuario').value,
+      apellido_usuario: document.getElementById('apellido_usuario').value,
+      correo_usuario: document.getElementById('correo_usuario').value,
+      telefono_usuario: document.getElementById('telefono_usuario').value,
+      fecha_nacimiento: document.getElementById('fecha_nacimiento').value,
+      peso_usuario: parseFloat(document.getElementById('peso_usuario').value),
+      altura_usuario: parseFloat(document.getElementById('altura_usuario').value),
+      genero_usuario: document.getElementById('genero_usuario').value,
+      // Membresía
+      fecha_inicio: document.getElementById('fecha_inicio').value,
+      fecha_fin: document.getElementById('fecha_fin').value,
+      estado_membresia: document.getElementById('estado_membresia').value,
     };
 
     fetch("{% url 'gimnasio:wizard_asistencia' %}", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            "X-CSRFToken": "{{ csrf_token }}"
-        },
-        body: JSON.stringify(data)
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRFToken": "{{ csrf_token }}"
+      },
+      body: JSON.stringify(data)
     })
-    .then(res => res.json())
-    .then(res => {
+      .then(res => res.json())
+      .then(res => {
         if (res.error) { Swal.fire("Error", res.error, "error"); return; }
 
         // Agregar la membresía creada al select del formulario principal
@@ -217,8 +230,8 @@ function guardarTodo() {
 
         bootstrap.Modal.getInstance(document.getElementById('modalWizard')).hide();
         Swal.fire("Correcto", "Registro creado correctamente", "success");
-    })
-    .catch(() => Swal.fire("Error", "Error en la petición", "error"));
-}
+      })
+      .catch(() => Swal.fire("Error", "Error en la petición", "error"));
+  }
 </script>
 {% endblock %}
