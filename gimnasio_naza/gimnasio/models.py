@@ -211,7 +211,7 @@ class Notificacion(models.Model):
     estado_notificacion = models.CharField(max_length=120, choices=ESTADO_NOTFIFICACION, verbose_name='Estado de Notificacion')
     fk_usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
     fecha_creacion = models.DateTimeField(auto_now_add=True, verbose_name='Fecha de Creación')
-    fecha_envio = models.DateTimeField(null=True, blank=True, verbose_name='Fecha de Envío')
+    fecha_envio = models.DateField(null=True, blank=True, verbose_name='Fecha de Envío')
     descripcion = models.TextField(null=True, blank=True, verbose_name='Descripción')
     
     def __str__(self):

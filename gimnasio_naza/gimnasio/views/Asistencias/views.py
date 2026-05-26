@@ -12,6 +12,7 @@ from gimnasio.models import *
 from gimnasio.forms import AsistenciaForm
 from django.utils import timezone
 from django.db import transaction
+from django.contrib import messages
 
 @csrf_exempt
 def wizard_asistencia(request):
@@ -76,11 +77,13 @@ def crear_membresia_ajax(request):
             estado=data['estado'],
             codigo_qr=data['codigo_qr']
         )
+                                                                           
 
         return JsonResponse({
             'id': membresia.id,               
             'nombre': f"{membresia.nombre_usuario} {membresia.apellido_usuario}"
         })
+  
 
     except Exception as e:
         return JsonResponse({'error': str(e)}, status=400)
@@ -102,7 +105,14 @@ class AsistenciaListView(ListView):
             # return redirect('app:listar_categorias')
         return super().dispatch(request, *args, **kwargs)
 
-    # metodo post
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['titulo'] = 'Crear Nutrición'
+        return context
+    
+    def form_valid(self, form):
+        messages.success(self.request, "Nutricion guardada correctamente")
+        return super().form_valid(form)
 
     # metodo context data
     def get_context_data(self, **kwargs):

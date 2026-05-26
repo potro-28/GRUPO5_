@@ -280,37 +280,22 @@ class AsistenciaForm(forms.ModelForm):
 
         hoy = date.today()
 
-# Solo al crear
-        if not self.instance.pk and fecha_asistencia != hoy:
-            self.add_error(
-                'fecha_asistencia',
-                'Al crear una asistencia, la fecha debe ser la actual'
-            )
 
-        asistencia_existente = Asistencia.objects.filter(
-            fk_membresia__fk_usuario=fk_membresia.fk_usuario,
-            fecha_asistencia=fecha_asistencia
-        ).exclude(pk=self.instance.pk)
+        if not self.instance.pk and fecha_asistencia != hoy:
+            self.add_error('fecha_asistencia','Al crear una asistencia, la fecha debe ser la actual')
+
+        asistencia_existente = Asistencia.objects.filter(fk_membresia__fk_usuario=fk_membresia.fk_usuario,fecha_asistencia=fecha_asistencia).exclude(pk=self.instance.pk)
 
         if asistencia_existente.exists():
-            self.add_error(
-                'fk_membresia',
-                'Ya existe una asistencia registrada para este usuario en esa fecha'
-            )
+            self.add_error('fk_membresia','Ya existe una asistencia registrada para este usuario en esa fecha')
 
         if hora_ingreso:
 
             if time(12, 0) <= hora_ingreso <= time(17, 0):
-                self.add_error(
-                    'hora_ingreso',
-                    'No se permiten registros entre las 12:00 PM y las 5:00 PM'
-                )
+                self.add_error('hora_ingreso','No se permiten registros entre las 12:00 PM y las 5:00 PM')
 
             elif hora_ingreso >= time(21, 0) or hora_ingreso < time(5, 0):
-                self.add_error(
-                    'hora_ingreso',
-                    'No se permiten registros entre las 9:00 PM y las 5:00 AM'
-                )
+                self.add_error('hora_ingreso','No se permiten registros entre las 9:00 PM y las 5:00 AM' )
 
         return cleaned_data
 
@@ -342,6 +327,7 @@ class MembresiaForm(ModelForm):
     def clean(self):
         cleaned_data = super().clean()
         fecha_inicio = cleaned_data.get('fecha_inicio')
+        fecha_fin = cleaned_data.get('fecha_fin')
         fk_usuario = cleaned_data.get('fk_usuario')
         
         if not fecha_inicio or not fk_usuario:
@@ -353,17 +339,27 @@ class MembresiaForm(ModelForm):
             if fecha_inicio != hoy:
                 self.add_error('fecha_inicio','La fecha de inicio debe ser la actual')
         
+        if fecha_fin > forms.fields.datetime.date.today() + forms.fields.datetime.timedelta(days=30):
+            self.add_error('fecha_fin','La fecha de finalización no puede ser mayor a un mes')
+
+        if fecha_fin < forms.fields.datetime.date.today() + forms.fields.datetime.timedelta(days=30):
+            self.add_error('fecha_fin','La fecha de finalización no puede ser menor a un mes')
+        
+        if fecha_fin < forms.fields.datetime.date.today():
+            self.add_error('fecha_fin','La fecha de finalización no puede ser anterior al día de hoy')
+
+        if fecha_fin == fecha_inicio:
+            self.add_error('fecha_fin','La fecha de finalización no puede ser igual a la fecha de inicio')
+
+        if fecha_fin < fecha_inicio:
+            self.add_error('fecha_fin','La fecha de finalización no puede ser anterior a la fecha de inicio')
         cleaned_data['fecha_fin'] = fecha_inicio + timedelta(days=30)
         
-        membresia_existente = Membresia.objects.filter(
-            fk_usuario=fk_usuario,
-            fecha_inicio__month=fecha_inicio.month,
-            fecha_inicio__year=fecha_inicio.year
-        ).exclude(pk=self.instance.pk)
+        membresia_existente = Membresia.objects.filter(fk_usuario=fk_usuario,fecha_inicio__month=fecha_inicio.month,fecha_inicio__year=fecha_inicio.year).exclude(pk=self.instance.pk)
         
         if membresia_existente.exists():
             self.add_error('fk_usuario','El usuario ya tiene una membresia registrada en este mes')
-        
+          
         return cleaned_data
     
 
@@ -389,6 +385,11 @@ class NotificacionForm(forms.ModelForm):
             'fk_mantenimiento': forms.Select(attrs={
                 'class': 'form-control',
             }),
+            'fecha_envio': forms.Select(attrs={
+                'class': 'form-control',
+                'type': 'date',
+            }),
+
         }
     
     def clean(self):
@@ -397,6 +398,7 @@ class NotificacionForm(forms.ModelForm):
         canal_notificacion = cleaned_data.get('canal_notificacion')
         exist_notificacion = Notificacion.objects.filter(tipo_notificacion=tipo_notificacion).exclude(pk=self.instance.pk).exists()
         exit_canal = Notificacion.objects.filter(canal_notificacion=canal_notificacion).exclude(pk=self.instance.pk).exists()
+        
         if exist_notificacion and exit_canal:
             self.add_error('tipo_notificacion', 'Ya existe una notificación con este tipo y canal')
         return cleaned_data
