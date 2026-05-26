@@ -113,7 +113,7 @@ urlpatterns = [
     path('eliminar_categoria/<int:pk>/', CategoriaDeleteView.as_view(), name='eliminar_categoria'),
 
     # ── Nutrición ───────────────────────────────────────────────────────────────
-    path('listar_nutriciones/', listar_nutriciones, name='listar_nutriciones'),  # ✅ Función, sin .as_view()
+    path('listar_nutriciones/', nutricionListView.as_view(), name='listar_nutriciones'),  # ✅ Función, sin .as_view()
     path('crear_nutricion/', NutricionCreateView.as_view(), name='crear_nutricion'),
     path('editar_nutricion/<int:pk>/', NutricionUpdateView.as_view(), name='editar_nutricion'),
     path('eliminar_nutricion/<int:pk>/', NutricionDeleteView.as_view(), name='eliminar_nutricion'),

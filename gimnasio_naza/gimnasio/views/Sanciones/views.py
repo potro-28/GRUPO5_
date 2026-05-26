@@ -73,7 +73,7 @@ def Listar_sanciones(request):
 
 class SacionesListView(ListView):
     model = Sancion
-    template_name = 'Sanciones/listar.html'
+    template_name = 'sanciones/listar.html'
     # metodo dispatch   
     #@method_decorator(login_required)
     def dispatch(self, request, *args, **kwargs):
@@ -96,7 +96,7 @@ class SacionesListView(ListView):
 
 class SancionesCreateView(CreateView):
     model = Sancion
-    template_name = 'Sanciones/crear.html'
+    template_name = 'sanciones/crear.html'
     form_class = SancionesForm
     success_url = reverse_lazy('gimnasio:listar_sanciones_clas')
 
@@ -123,7 +123,7 @@ class SancionesUpdateView(UpdateView):
         return context
 class SancionesDeleteView(DeleteView):
     model = Sancion
-    template_name = 'Sanciones/eliminar.html'
+    template_name = 'sanciones/eliminar.html'
     success_url = reverse_lazy('gimnasio:listar_sanciones_clas')
     #@method_decorator(csrf_exempt)
     
@@ -131,4 +131,4 @@ class SancionesDeleteView(DeleteView):
         context = super().get_context_data(**kwargs)
         context['titulo'] = 'Eliminar sancion'
         context['listar_url'] = reverse_lazy('gimnasio:listar_sanciones_clas')
-        return context 
+        return context

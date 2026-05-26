@@ -73,6 +73,9 @@
       </a>
     </li>
 
+      {% if user.usuario.rol == 'Administrador' or user.is_superuser %}
+
+
     <li class="{% if request.resolver_match.url_name == 'listar_masa_corporal_clas' %}active{% endif %}">
       <a href="{% url 'gimnasio:listar_masa_corporal_clas' %}">
         <div class="icon-circle"><i class="fas fa-weight"></i></div>
@@ -80,6 +83,9 @@
       </a>
     </li>
 
+    {% endif %}
+
+    
     <li class="{% if request.resolver_match.url_name == 'listar_certificacioninterna' %}active{% endif %}">
       <a href="{% url 'gimnasio:listar_certificacioninterna' %}">
         <div class="icon-circle"><i class="fas fa-medal"></i></div>
@@ -87,7 +93,7 @@
       </a>
     </li>
 
-    {% if user.usuario.rol == 'Administrador' %}
+    {% if user.usuario.rol == 'Administrador' or user.is_superuser %}
 
     <li class="{% if request.resolver_match.url_name == 'listar_elementos' %}active{% endif %}">
       <a href="{% url 'gimnasio:listar_elementos' %}">
@@ -95,6 +101,8 @@
         <span>Elementos</span>
       </a>
     </li>
+    {% endif %}
+{% if user.usuario.rol == 'Administrador' or user.is_superuser %}
 
     <li class="{% if request.resolver_match.url_name == 'listar_mantenimiento' %}active{% endif %}">
       <a href="{% url 'gimnasio:listar_mantenimiento' %}">
