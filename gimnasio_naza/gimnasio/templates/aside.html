@@ -12,13 +12,12 @@
       </a>
     </div>
     <h3>{{ user.get_full_name|default:user.username }}</h3>
-    <h3>{{ request.user.username }}</h3>
     <div class="badge-plan">Gym Nazareth</div>
   </div>
 
   <ul class="nav-menu">
 
-    {% if user.usuario.rol == 'Administrador' %}
+    {% if user.usuario.rol == 'Administrador' or user.is_superuser %}
 
     <li class="{% if request.resolver_match.url_name == 'listar_asistencia' %}active{% endif %}">
       <a href="{% url 'gimnasio:listar_asistencia' %}">
@@ -87,7 +86,7 @@
       </a>
     </li>
 
-    {% if user.usuario.rol == 'Administrador' %}
+    {% if user.usuario.rol == 'Administrador' or user.is_superuser %}
 
     <li class="{% if request.resolver_match.url_name == 'listar_elementos' %}active{% endif %}">
       <a href="{% url 'gimnasio:listar_elementos' %}">
@@ -112,7 +111,7 @@
       </a>
     </li>
 
-    {% if user.usuario.rol == 'Administrador' %}
+    {% if user.usuario.rol == 'Administrador' or user.is_superuser %}
 
     <li class="{% if request.resolver_match.url_name == 'listar_categorias' %}active{% endif %}">
       <a href="{% url 'gimnasio:listar_categorias' %}">
@@ -137,7 +136,7 @@
       </a>
     </li>
 
-    {% if user.usuario.rol == 'Administrador' %}
+    {% if user.usuario.rol == 'Administrador' or user.is_superuser %}
 
     <li class="{% if request.resolver_match.url_name == 'listar_Soporte_PQRS' %}active{% endif %}">
       <a href="{% url 'gimnasio:listar_Soporte_PQRS' %}">
