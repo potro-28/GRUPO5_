@@ -2,166 +2,345 @@
 {% load static %}
 
 {% block contenido %}
+
 <link rel="stylesheet" href="{% static 'lib/datatables-1.10.20/css/dataTables.bootstrap4.min.css' %}">
 <link rel="stylesheet"
-    href="{% static 'lib/datatables-1.10.20/plugins/responsive-2.2.3/css/responsive.bootstrap4.min.css' %}">
+      href="{% static 'lib/datatables-1.10.20/plugins/responsive-2.2.3/css/responsive.bootstrap4.min.css' %}">
 
 <div class="container-xxl flex-grow-1 container-p-y">
+
     <div class="card">
+
         <div class="card-header d-flex justify-content-between align-items-center flex-wrap gap-2">
-            <h5 class="mb-0"> <i class="fa-solid fa-list"></i>  Listado de Asistencias</h5>
+
+            <h5 class="mb-0">
+                <i class="fa-solid fa-list"></i>
+                Listado de Asistencias
+            </h5>
+
             <div class="d-flex gap-2 flex-wrap">
+
+                <!-- BOTON QR -->
                 <div>
-                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalqr">
+
+                    <button type="button"
+                            class="btn btn-primary"
+                            data-bs-toggle="modal"
+                            data-bs-target="#modalqr">
+
                         Registrar asistencia QR
+
                     </button>
+
+                    <!-- MODAL -->
                     <div class="modal fade" id="modalqr" tabindex="-1">
+
                         <div class="modal-dialog">
+
                             <div class="modal-content">
-                            <div class="modal-header">
-                                <h5>Registrar asistencia con QR</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+
+                                <div class="modal-header">
+
+                                    <h5 class="modal-title">
+                                        Registrar asistencia con QR
+                                    </h5>
+
+                                    <button type="button"
+                                            class="btn-close"
+                                            data-bs-dismiss="modal">
+                                    </button>
+
+                                </div>
+
+                                <div class="modal-body">
+
+                                    <div id="qr-reader" style="width:100%"></div>
+
+                                    <div id="resultado" class="mt-3 text-center"></div>
+
+                                </div>
+
                             </div>
 
-                            <div class="modal-body">
-
-                            <div id="qr-reader" style="width: 100%"></div>
-                            <div id="resultado" style="color: red;"></div>
-
-                            </div>
-
-                            </div>
                         </div>
-                        </div>
+
+                    </div>
 
                 </div>
+
+                <!-- EXPORTAR -->
                 <div class="dropdown">
-                    <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownExportar" data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="icon-base ri ri-file-chart-line icon-18px me-1"></i>Exportar
+
+                    <button class="btn btn-primary dropdown-toggle"
+                            type="button"
+                            id="dropdownExportar"
+                            data-bs-toggle="dropdown">
+
+                        <i class="icon-base ri ri-file-chart-line icon-18px me-1"></i>
+                        Exportar
+
                     </button>
-                    <ul class="dropdown-menu" aria-labelledby="dropdownExportar">
+
+                    <ul class="dropdown-menu">
+
                         <li>
-                            <a class="dropdown-item" href="{% url 'gimnasio:exportar_asistencia_excel' %}">
-                                <i class="ri ri-file-excel-2-line me-2 text-success"></i>Exportar a Excel
+                            <a class="dropdown-item"
+                               href="{% url 'gimnasio:exportar_asistencia_excel' %}">
+
+                                <i class="ri ri-file-excel-2-line me-2 text-success"></i>
+                                Exportar a Excel
+
                             </a>
                         </li>
+
                         <li>
-                            <a class="dropdown-item" href="{% url 'gimnasio:exportar_asistencia_pdf' %}">
-                                <i class="ri ri-file-pdf-line me-2 text-danger"></i>Exportar a PDF
+                            <a class="dropdown-item"
+                               href="{% url 'gimnasio:exportar_asistencia_pdf' %}">
+
+                                <i class="ri ri-file-pdf-line me-2 text-danger"></i>
+                                Exportar a PDF
+
                             </a>
                         </li>
+
                     </ul>
+
                 </div>
+
+                <!-- AGREGAR -->
                 <a href="{{ crear_url }}" class="btn btn-primary">
-                    <i class="icon-base ri ri-add-line icon-18px me-1"></i>Agregar asistencia
+
+                    <i class="icon-base ri ri-add-line icon-18px me-1"></i>
+                    Agregar asistencia
+
                 </a>
+
             </div>
+
         </div>
 
+        <!-- TABLA -->
         <div class="card-body">
+
             <div class="table-responsive">
-                <table id="tabla-asistencia" class="table table-bordered table-striped w-100">
+
+                <table id="tabla-asistencia"
+                       class="table table-bordered table-striped w-100">
+
                     <thead>
+
                         <tr>
-                            <th>id</th>
-                            <th>fecha de asistencia</th>
-                            <th>hora de ingreso</th>
-                            <th>Membresia</th>
-                            <th>Documento de usuario</th>
+                            <th>ID</th>
+                            <th>Fecha asistencia</th>
+                            <th>Hora ingreso</th>
+                            <th>Membresía</th>
+                            <th>Documento</th>
                             <th>Acciones</th>
                         </tr>
+
                     </thead>
+
                     <tbody>
+
                         {% for a in object_list %}
+
                         <tr>
+
                             <td>{{ a.id }}</td>
+
                             <td>{{ a.fecha_asistencia }}</td>
+
                             <td>{{ a.hora_ingreso }}</td>
-                            <td>{{ a.fk_membresia.fk_usuario.nombre_usuario }} {{ a.fk_membresia.fk_usuario.apellido_usuario }}</td>
-                            <td>{{ a.fk_membresia.fk_usuario.documento }}</td>
+
+                            <td>
+                                {{ a.fk_membresia.fk_usuario.nombre_usuario }}
+                                {{ a.fk_membresia.fk_usuario.apellido_usuario }}
+                            </td>
+
+                            <td>
+                                {{ a.fk_membresia.fk_usuario.documento }}
+                            </td>
+
                             <td class="text-nowrap">
+
                                 <a href="{% url 'gimnasio:editar_asistencia' a.id %}"
-                                   class="btn btn-sm btn-text-secondary rounded-pill btn-icon item-edit">
-                                   <i class="icon-base ri ri-edit-box-line icon-22px"></i>
+                                   class="btn btn-sm btn-text-secondary rounded-pill btn-icon">
+
+                                    <i class="icon-base ri ri-edit-box-line icon-22px"></i>
+
                                 </a>
+
                                 <a href="{% url 'gimnasio:eliminar_asistencia' a.id %}"
-                                   class="btn btn-sm btn-text-secondary rounded-pill btn-icon item-trash">
-                                   <i class="icon-base ri ri-delete-bin-line icon-22px"></i>
+                                   class="btn btn-sm btn-text-secondary rounded-pill btn-icon">
+
+                                    <i class="icon-base ri ri-delete-bin-line icon-22px"></i>
+
                                 </a>
+
+                            </td>
+
+                        </tr>
+
+                        {% empty %}
+
+                        <tr>
+                            <td colspan="6" class="text-center">
+                                No hay asistencias registradas.
                             </td>
                         </tr>
-                        {% empty %}
-                        <tr>
-                            <td colspan="6" class="text-center">No hay asistencias registradas.</td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-</div>
 
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
 
 {% endblock %}
 
 {% block js %}
+
 <script src="{% static 'lib/datatables-1.10.20/js/jquery.dataTables.min.js' %}"></script>
+
 <script src="{% static 'lib/datatables-1.10.20/js/dataTables.bootstrap4.min.js' %}"></script>
+
 <script src="{% static 'lib/datatables-1.10.20/plugins/responsive-2.2.3/js/dataTables.responsive.min.js' %}"></script>
+
 <script src="{% static 'lib/datatables-1.10.20/plugins/responsive-2.2.3/js/responsive.bootstrap4.min.js' %}"></script>
+
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+<!-- QR -->
+<script src="https://unpkg.com/html5-qrcode"></script>
+
 <script>
+
+    // DATATABLE
     $(function () {
+
         $('#tabla-asistencia').DataTable({
+
             responsive: true,
             autoWidth: false,
+
             language: {
                 url: "{% static 'lib/datatables-1.10.20/spanish.txt' %}"
             },
+
             columnDefs: [
-                { orderable: false, targets: 4 }
+                {
+                    orderable: false,
+                    targets: 5
+                }
             ]
+
         });
+
     });
 
-    {% if messages %}
-        {% for message in messages %}
-            Swal.fire({
-                title: "Correcto",
-                text: "{{ message }}",
-                icon: "success",
-                confirmButtonText: "OK"
-            });
-        {% endfor %}
-    {% endif %}
+</script>
 
-        
-</script>
 <script>
-    let lista = []
-        function onScanSuccess(decodedText, decodedResult) {
-          if (lista.includes(decodedText)) {
-            console.log('El codigo ya fue escaneado')
-          } else {
-            lista.push(decodedText)
-            fetch('/gimnasio/registrar_asistencia_qr/',{
-                'method': 'POST',
-                'headers': {
-                    'Content-Type' : 'application/json',
-                    'X-CSRFToken':'{{csrf_token}}',
-                },
-                'body': JSON.stringify({'codigo':decodedText})
-            })
-              .then((res) => res.json())
-              .then((data) => {
-                document.getElementById('resultado').innerText = data.mensaje
-              })
-          }
+
+    let lista = [];
+
+    function onScanSuccess(decodedText, decodedResult) {
+
+        // EVITAR DUPLICADOS
+        if (lista.includes(decodedText)) {
+            return;
         }
-        var html5QrcodeScanner = new Html5QrcodeScanner('qr-reader', { fps: 3, qrbox: 260 })
-        html5QrcodeScanner.render(onScanSuccess)
-      
+
+        lista.push(decodedText);
+
+        fetch('/gimnasio/registrar_asistencia_qr/', {
+
+            method: 'POST',
+
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': '{{ csrf_token }}'
+            },
+
+            body: JSON.stringify({
+                codigo: decodedText
+            })
+
+        })
+
+        .then(response => response.json())
+
+        .then(data => {
+
+            // MENSAJE EN PANTALLA
+            document.getElementById('resultado').innerHTML = data.mensaje;
+
+            // ALERTA
+            Swal.fire({
+
+                icon: data.estado === 'ok' ? 'success' : 'error',
+
+                title: data.estado === 'ok'
+                    ? 'Asistencia registrada'
+                    : 'Error',
+
+                text: data.mensaje,
+
+                timer: 2500,
+                showConfirmButton: false
+
+            });
+
+            // RECARGAR TABLA
+            if (data.estado === 'ok') {
+
+                setTimeout(() => {
+                    location.reload();
+                }, 1500);
+
+            }
+
+        })
+
+        .catch(error => {
+
+            console.error(error);
+
+            Swal.fire({
+
+                icon: 'error',
+
+                title: 'Error del servidor',
+
+                text: 'Ocurrió un problema al registrar la asistencia'
+
+            });
+
+        });
+
+    }
+
+    // INICIAR LECTOR QR
+    const html5QrcodeScanner = new Html5QrcodeScanner(
+
+        "qr-reader",
+
+        {
+            fps: 5,
+            qrbox: 250
+        }
+
+    );
+
+    html5QrcodeScanner.render(onScanSuccess);
+
 </script>
+
 {% endblock %}

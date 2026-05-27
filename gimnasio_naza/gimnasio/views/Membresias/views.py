@@ -103,11 +103,11 @@ class MembresiaListView(ListView):
             total=Count('id')
         ).order_by('mes')
 
-        # ✅ MESES EN ORDEN CRONOLÓGICO (reciente primero)
+
         meses_grafica = []
         totales_grafica = []
 
-        # Crear 12 meses desde HOY hacia atrás
+
         fecha_actual = hoy.replace(day=1)
         for i in range(12):
             mes_actual = fecha_actual - timedelta(days=30 * i)
@@ -122,7 +122,7 @@ class MembresiaListView(ListView):
                     item['mes'].year == mes_actual.year):
                     total_mes = item['total']
                     break
-            totales_grafica.append(int(total_mes))  # ✅ NÚMEROS ENTEROS
+            totales_grafica.append(int(total_mes))  
 
         context['chart_labels_mensual'] = json.dumps(meses_grafica)
         context['chart_data_mensual'] = json.dumps(totales_grafica)
@@ -175,7 +175,6 @@ def send_email(request):
             return HttpResponse("Invalid header found.")
         return HttpResponseRedirect("/contact/thanks/")
     else:
-        # In reality we'd use a form class
-        # to get proper validation errors.
+
         return HttpResponse("Make sure all fields are entered and valid.")
 

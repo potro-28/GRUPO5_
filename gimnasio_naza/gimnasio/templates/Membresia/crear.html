@@ -221,6 +221,79 @@ function crearUsuario() {
         Swal.fire("Error", "Ocurrió un error en la petición", "error");
     });
 }
+
+document.addEventListener('DOMContentLoaded', function () {
+
+  function setFieldState(inputEl, msgEl, type, text) {
+    inputEl.classList.remove('is-valid', 'is-invalid');
+    msgEl.classList.remove('valid-feedback', 'invalid-feedback');
+    msgEl.textContent = '';
+
+    if (!text) return;
+
+    if (type === 'error') {
+      inputEl.classList.add('is-invalid');
+      msgEl.classList.add('invalid-feedback');
+    } else {
+      inputEl.classList.add('is-valid');
+      msgEl.classList.add('valid-feedback');
+    }
+    msgEl.style.display = 'block';
+    msgEl.textContent = text;
+  }
+
+  function today() {
+    return new Date().toISOString().split('T')[0];
+  }
+
+  const inicioInput = document.getElementById('id_fecha_inicio');
+  const inicioMsg   = document.createElement('div');
+  inicioInput.insertAdjacentElement('afterend', inicioMsg);
+
+  const finInput = document.getElementById('id_fecha_fin');
+  const finMsg   = document.createElement('div');
+  finInput.insertAdjacentElement('afterend', finMsg);
+
+  // --- Validación: fecha_inicio ---
+  inicioInput.addEventListener('input', function () {
+    const val = this.value;
+    if (!val) { setFieldState(this, inicioMsg, null, ''); return; }
+
+    if (val !== today()) {
+      setFieldState(this, inicioMsg, 'error', 'La fecha de inicio debe ser la actual');
+    } else {
+      setFieldState(this, inicioMsg, 'success', 'Fecha de inicio válida ✓');
+    }
+
+    // revalida fecha_fin cuando cambia inicio
+    if (finInput.value) finInput.dispatchEvent(new Event('input'));
+  });
+
+  // --- Validación: fecha_fin ---
+  finInput.addEventListener('input', function () {
+    const val = this.value;
+    const inicio = inicioInput.value || today();
+    if (!val) { setFieldState(this, finMsg, null, ''); return; }
+
+    const finDate    = new Date(val    + 'T00:00:00');
+    const inicioDate = new Date(inicio + 'T00:00:00');
+    const diffDays   = Math.round((finDate - inicioDate) / 86400000);
+
+    if (val === inicio) {
+      setFieldState(this, finMsg, 'error', 'La fecha de fin no puede ser igual a la de inicio');
+    } else if (finDate < inicioDate) {
+      setFieldState(this, finMsg, 'error', 'La fecha de fin no puede ser anterior a la de inicio');
+    } else if (diffDays < 30) {
+      setFieldState(this, finMsg, 'error', 'La fecha de fin no puede ser menor a un mes (30 días)');
+    } else if (diffDays > 30) {
+      setFieldState(this, finMsg, 'error', 'La fecha de fin no puede ser mayor a un mes (30 días)');
+    } else {
+      setFieldState(this, finMsg, 'success', 'Fecha de fin válida — exactamente 30 días ✓');
+    }
+  });
+
+});
 </script>
+
 
 {% endblock %}

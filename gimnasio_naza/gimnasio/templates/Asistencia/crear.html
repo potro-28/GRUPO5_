@@ -233,5 +233,69 @@
       })
       .catch(() => Swal.fire("Error", "Error en la petición", "error"));
   }
+  document.addEventListener('DOMContentLoaded', function () {
+
+  function setFieldState(inputEl, msgEl, type, text) {
+    inputEl.classList.remove('is-valid', 'is-invalid');
+    msgEl.classList.remove('valid-feedback', 'invalid-feedback');
+    msgEl.textContent = '';
+
+    if (!text) return;
+
+    if (type === 'error') {
+      inputEl.classList.add('is-invalid');
+      msgEl.classList.add('invalid-feedback');
+    } else {
+      inputEl.classList.add('is-valid');
+      msgEl.classList.add('valid-feedback');
+    }
+    msgEl.style.display = 'block';
+    msgEl.textContent = text;
+  }
+
+  function today() {
+    return new Date().toISOString().split('T')[0];
+  }
+
+  // --- Validación: fecha_asistencia ---
+  const fechaInput = document.getElementById('id_fecha_asistencia');
+  const fechaMsg = document.createElement('div');
+  fechaInput.insertAdjacentElement('afterend', fechaMsg);
+
+  fechaInput.addEventListener('input', function () {
+    const val = this.value;
+    if (!val) { setFieldState(this, fechaMsg, null, ''); return; }
+
+    const isNew = !document.querySelector('[name="_pk"]')?.value; // ajusta según tu contexto
+    if (val !== today()) {
+      setFieldState(this, fechaMsg, 'error', 'Al crear una asistencia, la fecha debe ser la actual');
+    } else {
+      setFieldState(this, fechaMsg, 'success', 'Fecha válida ✓');
+    }
+  });
+
+  // --- Validación: hora_ingreso ---
+  const horaInput = document.getElementById('id_hora_ingreso');
+  const horaMsg = document.createElement('div');
+  horaInput.insertAdjacentElement('afterend', horaMsg);
+
+  horaInput.addEventListener('input', function () {
+    const val = this.value;
+    if (!val) { setFieldState(this, horaMsg, null, ''); return; }
+
+    const [h, m] = val.split(':').map(Number);
+    const mins = h * 60 + m;
+
+    if (mins >= 12 * 60 && mins <= 17 * 60) {
+      setFieldState(this, horaMsg, 'error', 'No se permiten registros entre las 12:00 PM y las 5:00 PM');
+    } else if (mins >= 21 * 60 || mins < 5 * 60) {
+      setFieldState(this, horaMsg, 'error', 'No se permiten registros entre las 9:00 PM y las 5:00 AM');
+    } else {
+      setFieldState(this, horaMsg, 'success', 'Hora válida ✓');
+    }
+  });
+
+});
 </script>
+
 {% endblock %}
