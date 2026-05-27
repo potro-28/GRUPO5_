@@ -93,13 +93,24 @@ class MantenimientoCreateView(CreateView):
     form_class = MantenimientoForm
     template_name = 'mantenimiento/crear.html'
     success_url = reverse_lazy('gimnasio:listar_mantenimiento')
-    
+
+    def get_initial(self):
+        initial = super().get_initial()
+        elemento_id = self.request.GET.get('elemento')
+        if elemento_id:
+            try:
+                initial['elemento'] = Elemento.objects.get(pk=elemento_id)
+            except Elemento.DoesNotExist:
+                pass
+        return initial
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['titulo'] = 'Crear Mantenimiento'
-        return context 
-
-
+        elemento_id = self.request.GET.get('elemento')
+        if elemento_id:
+            context['elemento_pre'] = Elemento.objects.filter(pk=elemento_id).first()
+        return context
 # EDITAR
 class MantenimientoUpdateView(UpdateView):
     model = Mantenimiento

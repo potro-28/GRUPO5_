@@ -33,8 +33,7 @@ urlpatterns = [
     path('eliminar_elemento/<int:pk>/', ElementoDeleteView.as_view(), name='eliminar_elemento'),
     path('exportar_elementos_pdf/', ExportarElementosPDF.as_view(), name='exportar_elementos_pdf'),
     path('exportar_elementos_excel/', ExportarElementosExcel.as_view(), name='exportar_elementos_excel'),
-    path('crear-categoria-ajax/', crear_categoria_ajax, name='crear_categoria_ajax'),
-
+    path('crear_nombre_categoria_ajax/', crear_nombre_categoria_ajax, name='crear_nombre_categoria_ajax'),
     # ── Usuarios ────────────────────────────────────────────────────────────────
     path('crear_usuario/', UsuarioCreateView.as_view(), name='crear_usuario'),
     path('listar_usuario/', UsuarioListView.as_view(), name='listar_usuario'),

@@ -106,10 +106,19 @@ class UserForm(forms.ModelForm):
 # ==========================================
 
 
+# forms.py
+
+import re
+from datetime import date
+from django import forms
+from .models import Usuario
+
+
 class UsuarioForm(forms.ModelForm):
 
     class Meta:
         model = Usuario
+
         fields = [
             'documento',
             'tipo_documento',
@@ -120,13 +129,18 @@ class UsuarioForm(forms.ModelForm):
             'correo_usuario',
             'peso_usuario',
             'altura_usuario',
-            'rol',  # <-- Añadimos el campo rol aquí
+            'rol',
             'foto',
         ]
-        # Eliminamos 'rol' de la lista de exclusión (si es que estaba antes)
+
         exclude = ['user', 'estado', 'fecha_registro']
 
         widgets = {
+
+            # ==========================================
+            # DOCUMENTO
+            # ==========================================
+
             'documento': forms.TextInput(attrs={
                 'class': 'form-control',
                 'placeholder': 'Ingrese documento',
@@ -135,25 +149,52 @@ class UsuarioForm(forms.ModelForm):
                 'title': 'Solo números entre 7 y 10 dígitos',
                 'oninput': 'this.value=this.value.replace(/[^0-9]/g,"")'
             }),
+
+            # ==========================================
+            # TIPO DOCUMENTO
+            # ==========================================
+
             'tipo_documento': forms.Select(attrs={
                 'class': 'form-select'
             }),
+
+            # ==========================================
+            # NOMBRE
+            # ==========================================
+
             'nombre_usuario': forms.TextInput(attrs={
                 'class': 'form-control',
                 'placeholder': 'Ingrese nombres',
                 'pattern': '[A-Za-záéíóúÁÉÍÓÚñÑ ]+',
-                'title': 'Solo letras y espacios'
+                'title': 'Solo letras y espacios',
+                'autocomplete': 'off'
             }),
+
+            # ==========================================
+            # APELLIDO
+            # ==========================================
+
             'apellido_usuario': forms.TextInput(attrs={
                 'class': 'form-control',
                 'placeholder': 'Ingrese apellidos',
                 'pattern': '[A-Za-záéíóúÁÉÍÓÚñÑ ]+',
-                'title': 'Solo letras y espacios'
+                'title': 'Solo letras y espacios',
+                'autocomplete': 'off'
             }),
+
+            # ==========================================
+            # FECHA NACIMIENTO
+            # ==========================================
+
             'fecha_nacimiento': forms.DateInput(attrs={
                 'type': 'date',
                 'class': 'form-control'
             }),
+
+            # ==========================================
+            # TELEFONO
+            # ==========================================
+
             'telefono_usuario': forms.TextInput(attrs={
                 'class': 'form-control',
                 'placeholder': 'Ingrese teléfono',
@@ -162,43 +203,170 @@ class UsuarioForm(forms.ModelForm):
                 'title': 'Debe iniciar en 3 y tener 10 dígitos',
                 'oninput': 'this.value=this.value.replace(/[^0-9]/g,"")'
             }),
+
+            # ==========================================
+            # CORREO
+            # ==========================================
+
             'correo_usuario': forms.EmailInput(attrs={
                 'class': 'form-control',
                 'placeholder': 'Ingrese correo',
                 'autocomplete': 'off'
             }),
+
+            # ==========================================
+            # PESO
+            # ==========================================
+
             'peso_usuario': forms.NumberInput(attrs={
                 'class': 'form-control',
                 'placeholder': 'Peso en kg',
                 'min': '30',
                 'max': '150'
             }),
+
+            # ==========================================
+            # ALTURA
+            # ==========================================
+
             'altura_usuario': forms.NumberInput(attrs={
                 'class': 'form-control',
                 'placeholder': 'Altura en cm',
                 'min': '100',
                 'max': '230'
             }),
-            'rol': forms.Select(attrs={  # <-- Añadimos el widget estilizado para el Rol
+
+            # ==========================================
+            # ROL
+            # ==========================================
+
+            'rol': forms.Select(attrs={
                 'class': 'form-select',
                 'required': 'required'
             }),
-            'foto_usuario': forms.ClearableFileInput(attrs={
+
+            # ==========================================
+            # FOTO
+            # ==========================================
+
+            'foto': forms.ClearableFileInput(attrs={
                 'class': 'form-control',
                 'accept': '.jpg,.jpeg,.png,.webp'
             }),
         }
 
-    # ==========================================
-    # VALIDACIÓN PARA EL ROL
-    # ==========================================
+    # =====================================================
+    # VALIDAR ROL
+    # =====================================================
+
     def clean_rol(self):
+
         rol = self.cleaned_data.get('rol')
+
         if not rol:
-            raise forms.ValidationError('Debe seleccionar un rol válido para el usuario.')
+            raise forms.ValidationError(
+                'Debe seleccionar un rol válido.'
+            )
+
         return rol
 
-    # Mantén tus demás métodos clean_... intactos debajo
+    # =====================================================
+    # VALIDAR NOMBRE
+    # =====================================================
+
+    def clean_nombre_usuario(self):
+
+        nombre = self.cleaned_data.get(
+            'nombre_usuario',
+            ''
+        ).strip()
+
+        if not re.match(
+            r'^[A-Za-záéíóúÁÉÍÓÚñÑ ]+$',
+            nombre
+        ):
+            raise forms.ValidationError(
+                'El nombre solo puede contener letras.'
+            )
+
+        if len(nombre) < 2:
+            raise forms.ValidationError(
+                'El nombre es demasiado corto.'
+            )
+
+        limpio = nombre.lower().replace(' ', '')
+
+        if len(set(limpio)) == 1:
+            raise forms.ValidationError(
+                'Ingrese un nombre válido.'
+            )
+
+        return nombre.title()
+
+    # =====================================================
+    # VALIDAR APELLIDO
+    # =====================================================
+
+    def clean_apellido_usuario(self):
+
+        apellido = self.cleaned_data.get(
+            'apellido_usuario',
+            ''
+        ).strip()
+
+        if not re.match(
+            r'^[A-Za-záéíóúÁÉÍÓÚñÑ ]+$',
+            apellido
+        ):
+            raise forms.ValidationError(
+                'El apellido solo puede contener letras.'
+            )
+
+        if len(apellido) < 2:
+            raise forms.ValidationError(
+                'El apellido es demasiado corto.'
+            )
+
+        limpio = apellido.lower().replace(' ', '')
+
+        if len(set(limpio)) == 1:
+            raise forms.ValidationError(
+                'Ingrese un apellido válido.'
+            )
+
+        return apellido.title()
+
+    # =====================================================
+    # VALIDAR FECHA NACIMIENTO
+    # =====================================================
+
+    def clean_fecha_nacimiento(self):
+
+        fecha = self.cleaned_data.get('fecha_nacimiento')
+
+        if fecha >= date.today():
+
+            raise forms.ValidationError(
+                'La fecha debe ser anterior al día actual.'
+            )
+
+        edad = (
+            date.today().year - fecha.year
+            -
+            (
+                (date.today().month, date.today().day)
+                <
+                (fecha.month, fecha.day)
+            )
+        )
+
+        if edad < 16:
+
+            raise forms.ValidationError(
+                'El usuario debe tener mínimo 16 años.'
+            )
+
+        return fecha
 class MantenimientoForm(forms.ModelForm):
     class Meta:
         model = Mantenimiento

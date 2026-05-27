@@ -12,42 +12,47 @@ from gimnasio.models import *
 from gimnasio.forms import ElementoForm
 
 
-# ==============================
-# CREAR CATEGORÍA AJAX
-# ==============================
-
 @require_POST
 @csrf_exempt
-def crear_categoria_ajax(request):
-    data = json.loads(request.body)
+def crear_nombre_categoria_ajax(request):
+    try:
+        data = json.loads(request.body)
+        categoria = Categoria.objects.create(
+            nombre_categoria=data['nombre_nombre_categoria'],
+            descripcion=data['descripcion']
+        )
+        return JsonResponse({
+            'id': categoria.pk,
+            'nombre': categoria.get_nombre_categoria_display()
+        })
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
 
-    categoria = Categoria.objects.create(
-        nombre_categoria=data['nombre_categoria'],
-        descripcion=data['descripcion']
-    )
-
-    return JsonResponse({
-        'id': categoria.id,
-        'nombre': categoria.nombre_categoria
-    })
-
-
-# ==============================
-# LISTAR ELEMENTOS
-# ==============================
 
 class ElementoListView(ListView):
     model = Elemento
     template_name = 'elementos/listar.html'
     context_object_name = 'elementos'
 
+    def get_queryset(self):
+        qs = super().get_queryset()
+        cat_id = self.request.GET.get('categoria')
+        if cat_id:
+            qs = qs.filter(nombre_categoria__id=cat_id)
+        return qs
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['titulo'] = 'Listado de Elementos'
         context['crear_url'] = reverse_lazy('gimnasio:crear_elemento')
+        context['categorias'] = Categoria.objects.all()
+        cat_id = self.request.GET.get('categoria')
+        if cat_id:
+            context['categoria_activa'] = Categoria.objects.filter(id=cat_id).first()
+        else:
+            context['categoria_activa'] = None
         return context
-
-
+    
 # ==============================
 # LISTAR IMÁGENES DE ELEMENTOS
 # ==============================
