@@ -162,7 +162,7 @@ class Elemento(models.Model):
     fecha_ingreso = models.DateField()
     categoria = models.ForeignKey('Categoria', on_delete=models.CASCADE)
 
-    cantidad = models.IntegerField(default=1)  # ✅ agregado
+    cantidad = models.IntegerField(default=1)  # agregado
     imagen = models.ImageField(upload_to='elementos/', null=True, blank=True)
 
     def __str__(self):

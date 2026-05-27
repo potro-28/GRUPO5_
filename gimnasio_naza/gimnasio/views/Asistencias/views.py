@@ -12,6 +12,7 @@ from gimnasio.models import *
 from gimnasio.forms import AsistenciaForm
 from django.utils import timezone
 from django.db import transaction
+from django.contrib import messages
 
 @csrf_exempt
 def wizard_asistencia(request):
@@ -124,6 +125,7 @@ class AsistenciaCreateView(CreateView):
         context['titulo'] = 'Crear asistencia'
         return context
     
+    
 class AsistenciaUpdateView(UpdateView):
     model = Asistencia
     template_name = 'Asistencia/crear.html'
@@ -134,7 +136,11 @@ class AsistenciaUpdateView(UpdateView):
         context = super().get_context_data(**kwargs)
         context['titulo'] = 'Editar Asistencia'
         context['listar_url'] = reverse_lazy('gimnasio:listar_asistencia')
-        return super().get_context_data(**kwargs)
+        return context
+    
+    def form_valid(self, form):
+        messages.success(self.request, "Asistencia editada correctamente")
+        return super().form_valid(form)
 
 class AsistenciaDeleteView(DeleteView):
     model = Asistencia

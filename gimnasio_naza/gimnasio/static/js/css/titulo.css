@@ -1,0 +1,28 @@
+.header-encuesta{
+    background:linear-gradient(135deg,#267ca7,#1f5f80);
+    padding:18px 25px;
+    margin-bottom:20px;
+    box-shadow:0 8px 20px rgba(0,0,0,0.08);
+}
+
+.header-encuesta h3{
+    color:white;
+    margin:0;
+    font-size:20px;
+    font-weight:600;
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+
+.header-encuesta i{
+    font-size:18px;
+}
+
+/* ===== CARD GENERAL ===== */
+.card{
+    border-radius:14px;
+    overflow:hidden;
+    box-shadow:0 10px 25px rgba(0,0,0,0.08);
+    border:none;
+}

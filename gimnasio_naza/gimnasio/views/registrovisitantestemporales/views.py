@@ -121,3 +121,7 @@ class RegistrovisitantetemporalDeleteView(DeleteView):
         context['titulo'] = 'Eliminar registro visitante'
         context['listar_url'] = reverse_lazy('gimnasio:listar_registrovisitante')
         return context
+    
+    def form_valid(self, form):
+        messages.success(self.request, "Registro de visitante eliminado correctamente")
+        return super().form_valid(form)

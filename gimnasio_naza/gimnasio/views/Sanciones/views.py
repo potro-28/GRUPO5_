@@ -109,6 +109,10 @@ class SancionesCreateView(CreateView):
         context['titulo'] = 'Crear sanción'
         context['listar_url'] = reverse_lazy('gimnasio:listar_sanciones_clas')
         return context
+    
+    def form_valid(self, form):
+        messages.success(self.request, "Sanción guardada correctamente")
+        return super().form_valid(form)
 class SancionesUpdateView(UpdateView):
     model = Sancion
     template_name = 'Sanciones/crear.html'
@@ -121,6 +125,10 @@ class SancionesUpdateView(UpdateView):
         context['titulo'] = 'Actualizar sancion'
         context['listar_url'] = reverse_lazy('gimnasio:listar_sanciones_clas')
         return context
+    
+    def form_valid(self, form):
+        messages.success(self.request, "Sanción editada correctamente")
+        return super().form_valid(form)
 class SancionesDeleteView(DeleteView):
     model = Sancion
     template_name = 'Sanciones/eliminar.html'
@@ -132,3 +140,7 @@ class SancionesDeleteView(DeleteView):
         context['titulo'] = 'Eliminar sancion'
         context['listar_url'] = reverse_lazy('gimnasio:listar_sanciones_clas')
         return context 
+    
+    def form_valid(self, form):
+        messages.success(self.request, "Sanción eliminada correctamente")
+        return super().form_valid(form)
