@@ -98,3 +98,7 @@ class Masa_corporalDeleteView(DeleteView):
         context['titulo'] = 'Eliminar masa corporal'
         context['listar_url'] = reverse_lazy('gimnasio:listar_masa_corporal_clas')
         return context
+    
+    def form_valid(self, form):
+        messages.success(self.request, "Masa corporal eliminada correctamente")
+        return super().form_valid(form)

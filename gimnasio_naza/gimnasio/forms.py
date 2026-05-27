@@ -419,6 +419,7 @@ class EncuestaForm(forms.ModelForm):
             raise forms.ValidationError("El nombre no puede contener solo letras repetidas")
 
         return nombre
+
 class PreguntaForm(forms.ModelForm):
     opciones = forms.CharField(
         required=False,
@@ -428,6 +429,18 @@ class PreguntaForm(forms.ModelForm):
             'rows': 3
         })
     )
+
+    requerida = forms.BooleanField(
+        required=False,
+        initial=True,
+        widget=forms.CheckboxInput(attrs={
+            'class': 'form-check-input'
+        })
+    )
+
+    class Meta:
+        model = Pregunta
+        fields = '__all__'
 
     class Meta:
         model = Pregunta
@@ -497,47 +510,166 @@ PreguntaFormSet = inlineformset_factory(
     validate_max=False
 )
 class Soporte_PQRSForm(ModelForm):
+
     class Meta:
         model = Soporte_PQRS
         fields = '__all__'
-        widgets = {
-            'tipo' : forms.Select(attrs={ 
-            'class':'form-control',
-            'placeholder': 'Ingrese el tipo de soporte pqr'}),
-            'descripcion' : forms.TextInput(attrs={ 
-            'class':'form-control',
-                
-                'placeholder': 'Ingrese la descripcion del soporte pqr'}),
-            'fecha_ingreso': forms.DateInput(attrs={ 
-                'class': 'form-control',
-                'type': 'date'
-            }),
-            'estado':
-                forms.Select(attrs={
-                'class':'form-control',  
-                'placeholder': 'Ingrese el estado del soporte pqr',
-                'rows':3,
-                'cols':3}),
-            'fk_usuario':
-                forms.Select(attrs={
-                    'class':'form-control',
-                })      
-        }
-    
-    def clean_descripcion(self):
-        descripcion = self.cleaned_data['descripcion']
 
-        if len(descripcion) < 10:
-            raise forms.ValidationError("La descripción debe tener mínimo 10 caracteres")
+        widgets = {
+            'tipo': forms.Select(attrs={
+                'class': 'form-control',
+                'placeholder': 'Ingrese el tipo de soporte pqr'
+            }),
+
+            'descripcion': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Ingrese la descripcion del soporte pqr'
+            }),
+
+            'fecha_ingreso': forms.DateInput(
+                format='%Y-%m-%d',
+                attrs={
+                    'class': 'form-control',
+                    'type': 'date'
+                }
+            ),
+
+            'estado': forms.Select(attrs={
+                'class': 'form-control',
+                'placeholder': 'Ingrese el estado del soporte pqr',
+                'rows': 3,
+                'cols': 3
+            }),
+
+            'fk_usuario': forms.Select(attrs={
+                'class': 'form-control',
+            })
+        }
+
+    def clean_descripcion(self):
+
+        descripcion = self.cleaned_data['descripcion'].strip()
+
+        # VALIDAR MAXIMO
         if len(descripcion) > 200:
-            raise forms.ValidationError("La descripcion  no debe tener mas de 200 caracteres")
+            raise forms.ValidationError(
+                "La descripción no debe tener más de 200 caracteres"
+            )
+
+        # VALIDAR MINIMO
+        if len(descripcion) < 10:
+            raise forms.ValidationError(
+                "La descripción debe tener mínimo 10 caracteres"
+            )
+
+        # NO PERMITIR CARACTERES ESPECIALES
+        if re.search(r'[{}[\]<>*/\\|°¬¨+=~`%^]', descripcion):
+            raise forms.ValidationError(
+                "No se permiten caracteres especiales"
+            )
+
+        # NO PERMITIR NUMEROS REPETIDOS
+        # ejemplo: 111111111
+        if re.search(r'(\d)\1{3,}', descripcion):
+            raise forms.ValidationError(
+                "No se permiten números repetidos excesivamente"
+            )
+
+        # NO PERMITIR LETRAS REPETIDAS
+        # ejemplo: aaaaaaaa
+        if re.search(r'([a-zA-Z])\1{3,}', descripcion.lower()):
+            raise forms.ValidationError(
+                "No se permiten letras repetidas excesivamente"
+            )
+
+        palabras = descripcion.split()
+
+        for palabra in palabras:
+
+            palabra_lower = palabra.lower()
+
+            # NO PERMITIR jajajajaja
+            if re.fullmatch(r'(ha|ja|je|ji|jo|ju)+', palabra_lower):
+                raise forms.ValidationError(
+                    "Ingrese una descripción coherente"
+                )
+
+            # NO PERMITIR palabras iguales
+            # ejemplo: aaaaaaaa
+            if len(set(palabra_lower)) == 1:
+                raise forms.ValidationError(
+                    "La descripción contiene palabras inválidas"
+                )
+
+            # NO PERMITIR TEXTO RANDOM
+            # ejemplo: asdfghjkl, qwertyui
+            if re.fullmatch(r'[a-zA-Z0-9]{8,}', palabra):
+
+                vocales = sum(
+                    1 for letra in palabra_lower
+                    if letra in "aeiou"
+                )
+
+                consonantes = sum(
+                    1 for letra in palabra_lower
+                    if letra.isalpha() and letra not in "aeiou"
+                )
+
+                if consonantes > vocales * 3:
+                    raise forms.ValidationError(
+                        "Ingrese una descripción válida y coherente"
+                    )
+
+                if vocales > consonantes * 2:
+                    raise forms.ValidationError(
+                        "Ingrese una descripción válida y coherente"
+                    )
+
+            # NO PERMITIR MEZCLAS RANDOM DE LETRAS Y NUMEROS
+            # ejemplo: 765gtrhyte3wsdfghj
+            if re.fullmatch(r'[a-zA-Z0-9]{10,}', palabra):
+
+                letras = sum(c.isalpha() for c in palabra)
+                numeros = sum(c.isdigit() for c in palabra)
+
+                # MUCHAS letras y números juntos
+                if letras >= 5 and numeros >= 2:
+                    raise forms.ValidationError(
+                        "Ingrese una descripción coherente y válida"
+                    )
+
+                # PATRONES TIPO TECLADO
+                patrones_invalidos = [
+                    'asdf', 'qwerty', 'zxcv',
+                    'hjkl', 'poiuy', 'lkjh'
+                ]
+
+                for patron in patrones_invalidos:
+
+                    if patron in palabra_lower:
+                        raise forms.ValidationError(
+                            "La descripción contiene texto inválido"
+                        )
 
         return descripcion
-    
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        hoy = timezone.localdate()
+
+        self.fields['fecha_ingreso'].initial = hoy.strftime('%Y-%m-%d')
+
+        self.fields['fecha_ingreso'].widget.attrs['min'] = hoy.strftime('%Y-%m-%d')
+        
     def clean_fecha_ingreso(self):
-        fecha_ingreso = self.cleaned_data['fecha_ingreso']
-        if fecha_ingreso < date.today():
-            raise forms.ValidationError('La fecha de ingreso no puede ser anterior a la de hoy')
+        fecha_ingreso = self.cleaned_data.get('fecha_ingreso')
+
+        if fecha_ingreso and fecha_ingreso < timezone.localdate():
+            raise forms.ValidationError(
+                'La fecha de ingreso no puede ser anterior a la de hoy'
+            )
+
         return fecha_ingreso
         
 class Reportes_estadisticasForm(forms.ModelForm):

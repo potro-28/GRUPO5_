@@ -103,7 +103,7 @@ class MembresiaListView(ListView):
             total=Count('id')
         ).order_by('mes')
 
-        # ✅ MESES EN ORDEN CRONOLÓGICO (reciente primero)
+        # MESES EN ORDEN CRONOLÓGICO (reciente primero)
         meses_grafica = []
         totales_grafica = []
 

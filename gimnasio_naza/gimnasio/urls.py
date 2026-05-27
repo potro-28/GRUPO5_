@@ -98,7 +98,7 @@ urlpatterns = [
     path('ExportarSoporte_PQRSEXCEL/', ExportarSoporte_PQRSEXCEL.as_view(), name='ExportarSoporte_PQRSEXCEL'),
 
     # ── Reportes / Estadísticas ─────────────────────────────────────────────────
-    path('listar_Reportes_estadisticas/', Reportes_estadisticasListView.as_view(), name='listar_Reportes_estadisticas'),
+    path('listar_Reportes_estadisticas/', DashboardView1.as_view(), name='listar_Reportes_estadisticas'),
     path('crear_Reportes_estadisticas/', Reportes_estadisticasCreateView.as_view(), name='crear_Reportes_estadisticas'),
     path('editar_Reportes_estadisticas/<int:pk>/', Reportes_estadisticasUpdateView.as_view(), name='editar_Reportes_estadisticas'),
     path('eliminar_Reportes_estadisticas/<int:pk>/', Reportes_estadisticasDeleteView.as_view(), name='eliminar_Reportes_estadisticas'),

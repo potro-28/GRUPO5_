@@ -8,8 +8,8 @@ from googleapiclient.errors import HttpError
 
 # Scopes necesarios
 SCOPES = [
-    "https://www.googleapis.com/auth/calendar.readonly",
-    "https://www.googleapis.com/auth/forms.body"
+    "https://www.googleapis.com/auth/forms.body",
+    "https://www.googleapis.com/auth/forms.responses.readonly"
 ]
 
 def main():
