@@ -799,14 +799,47 @@ class RutinaForm(ModelForm):
             raise forms.ValidationError("Los días disponibles deben estar entre 1 y 7.")
         return dias_disponibles
 
-class Masa_muscularForm(ModelForm):
+class Masa_muscularForm(forms.ModelForm):
+
     class Meta:
+
         model = Masa_corporal
-        fields = '__all__'
+
+        fields = [
+            'peso_cliente',
+            'fecha_control',
+            'altura_cliente',
+            'fk_Nutricion'
+        ]
+
         widgets = {
-            'fecha_control': forms.DateInput(attrs={
-                'type': 'date'
-            }),
+
+            'peso_cliente': forms.NumberInput(
+                attrs={
+                    'placeholder': 'Ejemplo: 80 kg',
+                    'step': '0.01'
+                }
+            ),
+
+            'altura_cliente': forms.NumberInput(
+                attrs={
+                    'placeholder': 'Ejemplo: 1.75 m',
+                    'step': '0.01'
+                }
+            ),
+
+            'fecha_control': forms.DateInput(
+                attrs={
+
+                    'type': 'date',
+
+                    # SOLO HOY
+                    'min': date.today().strftime('%Y-%m-%d'),
+
+                    'max': date.today().strftime('%Y-%m-%d'),
+
+                }
+            )
         }
 
     def clean_peso_cliente(self):

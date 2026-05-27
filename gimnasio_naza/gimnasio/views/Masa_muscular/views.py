@@ -61,24 +61,45 @@ class Masa_corporalListView(ListView):
 
 
 class Masa_corporalCreateView(CreateView):
+
     model = Masa_corporal
     template_name = 'masa_muscular/crear.html'
     form_class = Masa_muscularForm
     success_url = reverse_lazy('gimnasio:listar_masa_corporal_clas')
 
     def form_valid(self, form):
-        messages.success(self.request, "El registro de masa corporal se guardó correctamente.")
-        return super().form_valid(form)
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['titulo'] = 'Crear masa corporal'
-        context['listar_url'] = reverse_lazy('gimnasio:listar_masa_corporal_clas')
-        context['usuarios'] = Usuario.objects.all()
-        return context
+        peso = float(form.instance.peso_cliente)
+        altura = float(form.instance.altura_cliente)
+
+        imc = peso / (altura * altura)
+
+        # Clasificación IMC
+        if imc < 18.5:
+            estado = "Bajo peso"
+
+        elif imc < 25:
+            estado = "Normal"
+
+        elif imc < 30:
+            estado = "Sobrepeso"
+
+        else:
+            estado = "Obesidad"
+
+        # Guardar
+        form.instance.imc = round(imc, 2)
+        form.instance.estado_imc = estado
+
+        messages.success(
+            self.request,
+            "Registro corporal guardado correctamente"
+        )
+
+        return super().form_valid(form)
 class Masa_corporalUpdateView(UpdateView):
     model = Masa_corporal
-    template_name = 'Masa_muscular/crear.html'
+    template_name = 'masa_muscular/crear.html'
     form_class = Masa_muscularForm
     success_url = reverse_lazy('gimnasio:listar_masa_corporal_clas')
 
@@ -87,6 +108,36 @@ class Masa_corporalUpdateView(UpdateView):
         context['titulo'] = 'Actualizar masa corporal'
         context['listar_url'] = reverse_lazy('gimnasio:listar_masa_corporal_clas')
         return context
+    def form_valid(self, form):
+
+        peso = float(form.instance.peso_cliente)
+        altura = float(form.instance.altura_cliente)
+
+        imc = peso / (altura * altura)
+
+        # Clasificación IMC
+        if imc < 18.5:
+            estado = "Bajo peso"
+
+        elif imc < 25:
+            estado = "Normal"
+
+        elif imc < 30:
+            estado = "Sobrepeso"
+
+        else:
+            estado = "Obesidad"
+
+        # Guardar
+        form.instance.imc = round(imc, 2)
+        form.instance.estado_imc = estado
+
+        messages.success(
+            self.request,
+            "Registro corporal guardado correctamente"
+        )
+
+        return super().form_valid(form)
 class Masa_corporalDeleteView(DeleteView):
     model = Masa_corporal
     template_name = 'masa_muscular/eliminar.html'
