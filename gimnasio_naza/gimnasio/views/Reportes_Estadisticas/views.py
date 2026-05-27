@@ -29,7 +29,7 @@ from gimnasio.forms import Reportes_estadisticasForm
 # DASHBOARD / REPORTES Y ESTADISTICAS
 # =========================================================
 
-class DashboardView1(TemplateView):
+class Reportes_estadisticasListView(TemplateView):
 
     template_name = 'Reporte_Estadistica/listar.html'
 

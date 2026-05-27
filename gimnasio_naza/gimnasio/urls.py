@@ -139,7 +139,7 @@ urlpatterns = [
          name='ExportarSoporte_PQRSEXCEL'),
 
     # ── Reportes / Estadísticas ─────────────────────────────────────────────────
-    path('listar_Reportes_estadisticas/', DashboardView1.as_view(), name='listar_Reportes_estadisticas'),
+
     path('crear_Reportes_estadisticas/', Reportes_estadisticasCreateView.as_view(), name='crear_Reportes_estadisticas'),
     path('editar_Reportes_estadisticas/<int:pk>/', Reportes_estadisticasUpdateView.as_view(), name='editar_Reportes_estadisticas'),
     path('eliminar_Reportes_estadisticas/<int:pk>/', Reportes_estadisticasDeleteView.as_view(), name='eliminar_Reportes_estadisticas'),
@@ -157,7 +157,6 @@ urlpatterns = [
          name='ExportarReportes_estadisticasPDF'),
     path('ExportarReportes_estadisticasEXCEL/', ExportarReportes_estadisticasEXCEL.as_view(),
          name='ExportarReportes_estadisticasEXCEL'),
-    path('reportes/', DashboardView1.as_view(), name='reportes'),
 
     # ── Categorías ──────────────────────────────────────────────────────────────
     path('listar_categorias/', categoriaListView.as_view(),

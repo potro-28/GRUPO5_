@@ -22,7 +22,7 @@ def listar_categorias(request):
 
 class categoriaListView(ListView):
     model = Categoria
-    template_name = 'categoria/listar.html'
+    template_name = 'Categoria/listar.html'
     
     #METODO DISPATCH
     #@method_decorator(login_required)
@@ -79,7 +79,7 @@ class CategoriaUpdateView(UpdateView):
     
 class CategoriaDeleteView(DeleteView):
     model = Categoria
-    template_name = 'categoria/eliminar.html'
+    template_name = 'Categoria/eliminar.html'
     success_url = reverse_lazy('gimnasio:listar_categorias')
     
     def get_context_data(self, **kwargs):

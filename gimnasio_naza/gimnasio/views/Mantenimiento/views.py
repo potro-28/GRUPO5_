@@ -78,7 +78,7 @@ def crear_elemento_ajax(request):
 # HISTORIAL DE MANTENIMIENTO
 class MantenimientoListView(ListView):
     model = Mantenimiento
-    template_name = 'mantenimiento/listar.html'
+    template_name = 'Mantenimiento/listar.html'
     context_object_name = 'mantenimientos'
 
     def get_context_data(self, **kwargs):
@@ -91,7 +91,7 @@ class MantenimientoListView(ListView):
 class MantenimientoCreateView(CreateView):
     model = Mantenimiento
     form_class = MantenimientoForm
-    template_name = 'mantenimiento/crear.html'
+    template_name = 'Mantenimiento/crear.html'
     success_url = reverse_lazy('gimnasio:listar_mantenimiento')
     
     def get_context_data(self, **kwargs):
@@ -104,14 +104,14 @@ class MantenimientoCreateView(CreateView):
 class MantenimientoUpdateView(UpdateView):
     model = Mantenimiento
     form_class = MantenimientoForm
-    template_name = 'mantenimiento/crear.html'
+    template_name = 'Mantenimiento/crear.html'
     success_url = reverse_lazy('gimnasio:listar_mantenimiento')
 
 
 # ELIMINAR
 class MantenimientoDeleteView(DeleteView):
     model = Mantenimiento
-    template_name = 'mantenimiento/eliminar.html'
+    template_name = 'Mantenimiento/eliminar.html'
     success_url = reverse_lazy('gimnasio:listar_mantenimiento')
     
     def get_context_data(self, **kwargs):

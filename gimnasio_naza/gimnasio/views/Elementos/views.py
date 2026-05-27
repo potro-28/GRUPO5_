@@ -38,7 +38,7 @@ def crear_categoria_ajax(request):
 
 class ElementoListView(ListView):
     model = Elemento
-    template_name = 'elementos/listar.html'
+    template_name = 'Elementos/listar.html'
     context_object_name = 'elementos'
 
     def get_context_data(self, **kwargs):
@@ -64,7 +64,7 @@ def listar_imagenes_elementos(request):
 class ElementoCreateView(CreateView):
     model = Elemento
     form_class = ElementoForm
-    template_name = 'elementos/crear.html'
+    template_name = 'Elementos/crear.html'
     success_url = reverse_lazy('gimnasio:listar_elementos')
 
     def get_context_data(self, **kwargs):
@@ -81,7 +81,7 @@ class ElementoCreateView(CreateView):
 class ElementoUpdateView(UpdateView):
     model = Elemento
     form_class = ElementoForm
-    template_name = 'elementos/crear.html'
+    template_name = 'Elementos/crear.html'
     success_url = reverse_lazy('gimnasio:listar_elementos')
 
     def get_context_data(self, **kwargs):
@@ -97,7 +97,7 @@ class ElementoUpdateView(UpdateView):
 
 class ElementoDeleteView(DeleteView):
     model = Elemento
-    template_name = 'elementos/eliminar.html'
+    template_name = 'Elementos/eliminar.html'
     success_url = reverse_lazy('gimnasio:listar_elementos')
 
     def get_context_data(self, **kwargs):
