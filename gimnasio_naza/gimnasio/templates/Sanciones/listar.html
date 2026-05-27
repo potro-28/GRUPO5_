@@ -58,7 +58,17 @@
                             <td>{{ s.fecha_inicio }}</td>
                             <td>{{ s.duracion_sancion }}</td>
                             <td>{{ s.fecha_fin }}</td>
-                            <td>{{ s.estado }}</td>
+                            <td>
+                                {% if s.estado == 'activa' %}
+                                    <span class="badge bg-success">{{ s.estado }}</span>
+                                {% elif s.estado == 'inactiva' %}
+                                    <span class="badge bg-danger">{{ s.estado }}</span>
+                                {% elif s.estado == 'pendiente' %}
+                                    <span class="badge bg-warning text-dark">{{ s.estado }}</span>
+                                {% else %}
+                                    <span class="badge bg-secondary">{{ s.estado }}</span>
+                                {% endif %}
+                            </td>
                             <td>{{ s.fk_usuario.nombre_usuario }}</td>
                             <td class="text-nowrap">
                                 <a href="{% url 'gimnasio:editar_sancion' s.id %}"

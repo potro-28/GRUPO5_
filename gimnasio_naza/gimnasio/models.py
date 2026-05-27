@@ -32,6 +32,18 @@ class Usuario(models.Model):
         ('inactivo', 'Inactivo'),
         ('visitante', 'Visitante'),
     ]
+    TIPOS_DOCUMENTO = [
+    ('CC', 'Cédula de Ciudadanía'),
+    ('TI', 'Tarjeta de Identidad'),
+    ('CE', 'Cédula de Extranjería'),
+    ('PP', 'Pasaporte'),
+]
+
+    tipo_documento = models.CharField(
+    max_length=2,
+    choices=TIPOS_DOCUMENTO,
+    default='CC'
+)
     estado = models.CharField(max_length=30, choices=ESTADO_CHOICES)
 
     def __str__(self):
@@ -142,6 +154,14 @@ class Elemento(models.Model):
     serial = models.CharField(max_length=45, unique=True)
     marca = models.CharField(max_length=45)
     nombre_elemento = models.CharField(max_length=45)
+    
+    UNIDAD_CHOICES = [('kg', 'kg'), ('lb', 'lb')]
+
+    unidad_peso = models.CharField(
+    max_length=2,
+    choices=UNIDAD_CHOICES,
+    default='kg'
+)
 
     TIPO_CHOICES = [
         ('maquina', 'Máquina'),
@@ -160,7 +180,7 @@ class Elemento(models.Model):
 
     estado = models.CharField(max_length=20, choices=ESTADO_CHOICES)
     fecha_ingreso = models.DateField()
-    categoria = models.ForeignKey('Categoria', on_delete=models.CASCADE)
+    nombre_categoria = models.ForeignKey('Categoria', on_delete=models.CASCADE)
 
     cantidad = models.IntegerField(default=1)  # agregado
     imagen = models.ImageField(upload_to='elementos/', null=True, blank=True)

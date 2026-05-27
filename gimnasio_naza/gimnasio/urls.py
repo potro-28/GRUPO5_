@@ -56,7 +56,7 @@ urlpatterns = [
     path('perfil_usuario/', PerfilView.as_view(), name='perfil_usuario'),
     path('crear-usuario-ajax/', crear_usuario_ajax,
          name='crear_usuario_ajax'),  # ✅ Solo una vez
-
+    path('crear_nombre_categoria_ajax/', crear_nombre_categoria_ajax, name='crear_nombre_categoria_ajax'),
     # ── Mantenimiento ───────────────────────────────────────────────────────────
     path('crear_mantenimiento/', MantenimientoCreateView.as_view(),
          name='crear_mantenimiento'),

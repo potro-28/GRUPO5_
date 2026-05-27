@@ -128,7 +128,17 @@
                             <td>{{ m.nombre_elemento }}</td>
                             <td>{{ m.tipo_mantenimiento }}</td>
                             <td>{{ m.fecha_programada }}</td>
-                            <td>{{ m.estado }}</td>
+                            <td>
+                                {% if m.estado == 'completado' %}
+                                    <span class="badge bg-success">{{ m.estado }}</span>
+                                {% elif m.estado == 'en_proceso' %}
+                                    <span class="badge bg-warning text-dark">{{ m.estado }}</span>
+                                {% elif m.estado == 'pendiente' %}
+                                    <span class="badge bg-danger">{{ m.estado }}</span>
+                                {% else %}
+                                    <span class="badge bg-secondary">{{ m.estado }}</span>
+                                {% endif %}
+                            </td>
                             <td>{{ m.descripcion }}</td>
                             <td class="text-nowrap">
                                 <a href="{% url 'gimnasio:editar_mantenimiento' m.id %}"

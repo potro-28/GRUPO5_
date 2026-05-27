@@ -13,6 +13,12 @@
         object-fit: cover;
         border: 2px solid #e0e0e0;
     }
+    .user-avatar.activo {
+        border: 3px solid #22c55e;
+    }
+    .user-avatar.inactivo {
+        border: 3px solid #ef4444;
+    }
     .avatar-placeholder {
         width: 45px;
         height: 45px;
@@ -23,6 +29,14 @@
         justify-content: center;
         color: #6c757d;
         font-size: 18px;
+    }
+    .avatar-placeholder.activo {
+        border: 3px solid #22c55e;
+        background-color: #f0fdf4;
+    }
+    .avatar-placeholder.inactivo {
+        border: 3px solid #ef4444;
+        background-color: #fef2f2;
     }
     #tabla-usuarios td {
         vertical-align: middle;
@@ -66,6 +80,7 @@
                             <th>Foto</th>
                             <th>ID</th>
                             <th>Documento</th>
+                            <th>Tipo Documento</th>
                             <th>Nombre</th>
                             <th>Apellido</th>
                             <th>Fecha Nacimiento</th>
@@ -85,15 +100,16 @@
                         <tr>
                             <td class="text-center">
                                 {% if u.foto %}
-                                    <img src="{{ u.foto.url }}" alt="{{ u.nombre_usuario }}" class="user-avatar">
+                                    <img src="{{ u.foto.url }}" alt="{{ u.nombre_usuario }}" class="user-avatar {% if u.estado == 'activo' %}activo{% else %}inactivo{% endif %}">
                                 {% else %}
-                                    <div class="avatar-placeholder mx-auto">
+                                    <div class="avatar-placeholder mx-auto {% if u.estado == 'activo' %}activo{% else %}inactivo{% endif %}">
                                         <i class="ri ri-user-line"></i>
                                     </div>
                                 {% endif %}
                             </td>
                             <td>{{ u.id }}</td>
                             <td>{{ u.documento }}</td>
+                            <td>{{ u.tipo_documento }}</td>
                             <td>{{ u.nombre_usuario }}</td>
                             <td>{{ u.apellido_usuario }}</td>
                             <td>{{ u.fecha_nacimiento }}</td>
@@ -102,7 +118,15 @@
                             <td>{{ u.peso_usuario }}</td>
                             <td>{{ u.altura_usuario }}</td>
                             <td>{{ u.rol }}</td>
-                            <td>{{ u.estado }}</td>
+                            <td>
+                                {% if u.estado == 'activo' %}
+                                    <span class="badge bg-success">{{ u.estado }}</span>
+                                {% elif u.estado == 'inactivo' %}
+                                    <span class="badge bg-danger">{{ u.estado }}</span>
+                                {% else %}
+                                    <span class="badge bg-secondary">{{ u.estado }}</span>
+                                {% endif %}
+                            </td>
                             <td>{{ u.fecha_registro }}</td>
                             <td>{{ u.genero_usuario }}</td>
                             <td class="text-nowrap">

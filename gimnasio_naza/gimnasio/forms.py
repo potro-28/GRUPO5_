@@ -70,88 +70,278 @@ class ElementoForm(forms.ModelForm):
                 raise forms.ValidationError('Solo se permiten imágenes en formato PNG, JPG o JPEG.')
         return imagen
 
+
+# ==========================================
+# FORMULARIO DE ACCESO
+# ==========================================
+
+class UserForm(forms.ModelForm):
+
+    password = forms.CharField(
+        widget=forms.PasswordInput(
+            attrs={
+                'class': 'form-control',
+                'placeholder': 'Ingrese contraseña',
+                'autocomplete': 'off'
+            }
+        ),
+        required=False
+    )
+
+    class Meta:
+        model = User
+        fields = ['username', 'password']
+
+        widgets = {
+            'username': forms.TextInput(
+                attrs={
+                    'class': 'form-control',
+                    'placeholder': 'Ingrese usuario',
+                    'autocomplete': 'off',
+                    'maxlength': '30'
+                }
+            )
+        }
+
+
+# ==========================================
+# FORMULARIO DE USUARIO
+# ==========================================
+
+
+# forms.py
+
+import re
+from datetime import date
+from django import forms
+from .models import Usuario
+
+
 class UsuarioForm(forms.ModelForm):
+
     class Meta:
         model = Usuario
-        fields = '__all__'
-        widgets = {
-            'fecha_nacimiento': forms.DateInput(
-                attrs={
-                    'type': 'date',
-                    'class': 'form-control'
-                }
-            ),
-            'peso_usuario': forms.NumberInput(
-                attrs={'placeholder': 'kg'}
-            ),
-            'altura_usuario': forms.NumberInput(
-                attrs={'placeholder': 'cm'}
-            ),
-        }
+
+        fields = [
+            'documento',
+            'tipo_documento',
+            'nombre_usuario',
+            'apellido_usuario',
+            'fecha_nacimiento',
+            'telefono_usuario',
+            'correo_usuario',
+            'peso_usuario',
+            'altura_usuario',
+            'rol',
+            'foto',
+        ]
+
         exclude = ['user', 'estado', 'fecha_registro']
 
-    def clean(self):
-        cleaned_data = super().clean()
-        documento        = cleaned_data.get('documento')
-        nombre_usuario   = cleaned_data.get('nombre_usuario')
-        apellido_usuario = cleaned_data.get('apellido_usuario')
-        fecha_nacimiento = cleaned_data.get('fecha_nacimiento')
-        telefono_usuario = cleaned_data.get('telefono_usuario')
-        correo_usuario   = cleaned_data.get('correo_usuario')
+        widgets = {
 
-        qs = Usuario.objects.all()
-        if self.instance and self.instance.pk:
-            qs = qs.exclude(pk=self.instance.pk)
+            # ==========================================
+            # DOCUMENTO
+            # ==========================================
 
-        if (documento and nombre_usuario and apellido_usuario and
-                correo_usuario and telefono_usuario and fecha_nacimiento and
-                qs.filter(
-                    documento=documento,
-                    nombre_usuario=nombre_usuario,
-                    apellido_usuario=apellido_usuario,
-                    correo_usuario=correo_usuario,
-                    telefono_usuario=telefono_usuario,
-                    fecha_nacimiento=fecha_nacimiento
-                ).exists()):
-            raise forms.ValidationError('Los datos de este usuario ya están registrados.')
+            'documento': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Ingrese documento',
+                'maxlength': '10',
+                'pattern': '[0-9]{7,10}',
+                'title': 'Solo números entre 7 y 10 dígitos',
+                'oninput': 'this.value=this.value.replace(/[^0-9]/g,"")'
+            }),
 
-        return cleaned_data
+            # ==========================================
+            # TIPO DOCUMENTO
+            # ==========================================
 
-    def clean_documento(self):
-        documento = self.cleaned_data.get('documento')
-        if documento:
-            if not re.match(r'^\d{7,10}$', documento):
-                raise forms.ValidationError('El documento debe contener exactamente 7 a 10 dígitos numéricos.')
-            for digito in set(documento):
-                if documento.count(digito) > 5:
-                    raise forms.ValidationError(
-                        f'El documento no es válido: el dígito "{digito}" aparece más de 5 veces.'
-                    )
-        return documento
+            'tipo_documento': forms.Select(attrs={
+                'class': 'form-select'
+            }),
+
+            # ==========================================
+            # NOMBRE
+            # ==========================================
+
+            'nombre_usuario': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Ingrese nombres',
+                'pattern': '[A-Za-záéíóúÁÉÍÓÚñÑ ]+',
+                'title': 'Solo letras y espacios',
+                'autocomplete': 'off'
+            }),
+
+            # ==========================================
+            # APELLIDO
+            # ==========================================
+
+            'apellido_usuario': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Ingrese apellidos',
+                'pattern': '[A-Za-záéíóúÁÉÍÓÚñÑ ]+',
+                'title': 'Solo letras y espacios',
+                'autocomplete': 'off'
+            }),
+
+            # ==========================================
+            # FECHA NACIMIENTO
+            # ==========================================
+
+            'fecha_nacimiento': forms.DateInput(attrs={
+                'type': 'date',
+                'class': 'form-control'
+            }),
+
+            # ==========================================
+            # TELEFONO
+            # ==========================================
+
+            'telefono_usuario': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Ingrese teléfono',
+                'maxlength': '10',
+                'pattern': '3[0-9]{9}',
+                'title': 'Debe iniciar en 3 y tener 10 dígitos',
+                'oninput': 'this.value=this.value.replace(/[^0-9]/g,"")'
+            }),
+
+            # ==========================================
+            # CORREO
+            # ==========================================
+
+            'correo_usuario': forms.EmailInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Ingrese correo',
+                'autocomplete': 'off'
+            }),
+
+            # ==========================================
+            # PESO
+            # ==========================================
+
+            'peso_usuario': forms.NumberInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Peso en kg',
+                'min': '30',
+                'max': '150'
+            }),
+
+            # ==========================================
+            # ALTURA
+            # ==========================================
+
+            'altura_usuario': forms.NumberInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Altura en cm',
+                'min': '100',
+                'max': '230'
+            }),
+
+            # ==========================================
+            # ROL
+            # ==========================================
+
+            'rol': forms.Select(attrs={
+                'class': 'form-select',
+                'required': 'required'
+            }),
+
+            # ==========================================
+            # FOTO
+            # ==========================================
+
+            'foto': forms.ClearableFileInput(attrs={
+                'class': 'form-control',
+                'accept': '.jpg,.jpeg,.png,.webp'
+            }),
+        }
+
+    # =====================================================
+    # VALIDAR ROL
+    # =====================================================
+
+    def clean_rol(self):
+
+        rol = self.cleaned_data.get('rol')
+
+        if not rol:
+            raise forms.ValidationError(
+                'Debe seleccionar un rol válido.'
+            )
+
+        return rol
+
+    # =====================================================
+    # VALIDAR NOMBRE
+    # =====================================================
 
     def clean_nombre_usuario(self):
-        nombre = self.cleaned_data.get('nombre_usuario')
-        if not nombre:
-            return nombre
-        if nombre != nombre.strip():
-            raise forms.ValidationError('El nombre no puede contener espacios al inicio ni al final.')
-        if not re.match(r'^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$', nombre):
-            raise forms.ValidationError('El nombre solo puede contener letras y espacios.')
-        if '  ' in nombre:
-            raise forms.ValidationError('El nombre no puede contener espacios consecutivos.')
-        return nombre
+
+        nombre = self.cleaned_data.get(
+            'nombre_usuario',
+            ''
+        ).strip()
+
+        if not re.match(
+            r'^[A-Za-záéíóúÁÉÍÓÚñÑ ]+$',
+            nombre
+        ):
+            raise forms.ValidationError(
+                'El nombre solo puede contener letras.'
+            )
+
+        if len(nombre) < 2:
+            raise forms.ValidationError(
+                'El nombre es demasiado corto.'
+            )
+
+        limpio = nombre.lower().replace(' ', '')
+
+        if len(set(limpio)) == 1:
+            raise forms.ValidationError(
+                'Ingrese un nombre válido.'
+            )
+
+        return nombre.title()
+
+    # =====================================================
+    # VALIDAR APELLIDO
+    # =====================================================
 
     def clean_apellido_usuario(self):
-        apellido = self.cleaned_data.get('apellido_usuario')
-        if not apellido:
-            return apellido
-        if apellido != apellido.strip():
-            raise forms.ValidationError('El apellido no puede contener espacios al inicio ni al final.')
-        if not re.match(r'^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$', apellido):
-            raise forms.ValidationError('El apellido solo puede contener letras y espacios.')
-        if '  ' in apellido:
-            raise forms.ValidationError('El apellido no puede contener espacios consecutivos.')
-        return apellido
+
+        apellido = self.cleaned_data.get(
+            'apellido_usuario',
+            ''
+        ).strip()
+
+        if not re.match(
+            r'^[A-Za-záéíóúÁÉÍÓÚñÑ ]+$',
+            apellido
+        ):
+            raise forms.ValidationError(
+                'El apellido solo puede contener letras.'
+            )
+
+        if len(apellido) < 2:
+            raise forms.ValidationError(
+                'El apellido es demasiado corto.'
+            )
+
+        limpio = apellido.lower().replace(' ', '')
+
+        if len(set(limpio)) == 1:
+            raise forms.ValidationError(
+                'Ingrese un apellido válido.'
+            )
+
+        return apellido.title()
+
+    # =====================================================
+    # VALIDAR FECHA NACIMIENTO
+    # =====================================================
 
     def clean_fecha_nacimiento(self):
 
@@ -189,34 +379,29 @@ class UsuarioForm(forms.ModelForm):
                 raise forms.ValidationError('El teléfono debe contener exactamente 10 dígitos y comenzar con 3.')
         return telefono
 
-    def clean_correo_usuario(self):
-        correo = self.cleaned_data.get('correo_usuario')
-        if not correo:
-            return correo
-        if not re.match(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$', correo):
-            raise forms.ValidationError('Ingrese un correo electrónico válido.')
-        if re.search(r'[^a-zA-Z0-9._%+\-@]', correo):
-            raise forms.ValidationError('El correo solo puede contener letras, números y los caracteres especiales permitidos (. _ % + -).')
-        return correo
+        if fecha >= date.today():
 
-    def clean_peso_usuario(self):
-        peso = self.cleaned_data.get('peso_usuario')
-        if peso is not None:
-            if peso <= 0:
-                raise forms.ValidationError('El peso debe ser un número positivo.')
-            if peso < 30 or peso > 150:
-                raise forms.ValidationError('El peso debe estar entre 30kg y 150kg.')
-        return peso
+            raise forms.ValidationError(
+                'La fecha debe ser anterior al día actual.'
+            )
 
-    def clean_altura_usuario(self):
-        altura = self.cleaned_data.get('altura_usuario')
-        if altura is not None:
-            if altura <= 0:
-                raise forms.ValidationError('La altura debe ser un número positivo.')
-            if altura < 100 or altura > 230:
-                raise forms.ValidationError('La altura debe estar entre 100cm y 230cm.')
-        return altura  
-    
+        edad = (
+            date.today().year - fecha.year
+            -
+            (
+                (date.today().month, date.today().day)
+                <
+                (fecha.month, fecha.day)
+            )
+        )
+
+        if edad < 16:
+
+            raise forms.ValidationError(
+                'El usuario debe tener mínimo 16 años.'
+            )
+
+        return fecha
 class MantenimientoForm(forms.ModelForm):
     class Meta:
         model = Mantenimiento
@@ -1131,11 +1316,4 @@ class CertificacioninternaForm(ModelForm):
         )
         return fecha_certificacion    
 
-class UserForm(forms.ModelForm):
-    password = forms.CharField(widget=forms.PasswordInput, required=False)
-    
-    class Meta:
-        model = User
-        fields = ['username','password']
-        
 
