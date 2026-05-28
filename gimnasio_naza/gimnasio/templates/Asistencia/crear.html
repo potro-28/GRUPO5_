@@ -7,32 +7,74 @@
 </style>
 
 <form method="post">
-    <div class="card">
+    {% csrf_token %}
+
+    <div class="card shadow-sm border-0 mb-4">
+
+        <!-- Encabezado -->
         <div class="header-encuesta">
-          <h3>
-              <i class="fas fa-edit"></i>
-              {{ titulo }}
-          </h3>
+            <h3>
+                <i class="fas fa-edit"></i>
+                {{ titulo }}
+            </h3>
         </div>
-        <div class="card-body">
-            {% csrf_token %}
+
+        <!-- Cuerpo -->
+        <div class="card-body p-4">
+
             {% for field in form.visible_fields %}
-            <div class="mb-3">
-                <label>{{ field.label }}</label>
-                {% if field.name == 'fk_membresia' %}
-                <div class="d-flex">
-                    {{ field|add_class:'form-control' }}
-                    <button type="button" class="btn btn-success ms-2" onclick="abrirWizard()">+</button>
+                <div class="mb-3">
+
+                    <label class="form-label fw-semibold">
+                        {{ field.label }}
+                    </label>
+
+                    {% if field.name == 'fk_membresia' %}
+
+                        <div class="d-flex align-items-center gap-2">
+
+                            {{ field|add_class:'form-control' }}
+
+                            <button
+                                type="button"
+                                class="btn btn-success px-3"
+                                onclick="abrirWizard()">
+
+                                <i class="fas fa-plus"></i>
+
+                            </button>
+
+                        </div>
+
+                    {% else %}
+
+                        {{ field|add_class:'form-control' }}
+
+                    {% endif %}
+
+                    {% if field.errors %}
+                        <div class="text-danger small mt-1">
+                            {{ field.errors }}
+                        </div>
+                    {% endif %}
+
                 </div>
-                {% else %}
-                    {{ field|add_class:'form-control' }}
-                {% endif %}
-            </div>
             {% endfor %}
+
         </div>
-        <div class="card-footer">
-            <button class="btn btn-primary">Guardar Asistencia</button>
+
+        <!-- Footer -->
+        <div class="card-footer bg-white border-0 px-4 pb-4">
+
+            <button class="btn btn-primary px-4">
+
+                <i class="fas fa-save me-2"></i>
+                Guardar Asistencia
+
+            </button>
+
         </div>
+
     </div>
 </form>
 

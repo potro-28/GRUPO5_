@@ -108,6 +108,16 @@
       font-size: 1.1rem;
       line-height: 1;
     }
+    /* Rotación del icono cuando el colapso está cerrado */
+[aria-expanded="false"] #toggleIcon {
+    transform: rotate(-90deg);
+    transition: transform 0.3s ease;
+}
+
+[aria-expanded="true"] #toggleIcon {
+    transform: rotate(0deg);
+    transition: transform 0.3s ease;
+}
   </style>
 
   <div class="container-xxl flex-grow-1 container-p-y">
@@ -169,30 +179,35 @@
 
         <!-- CARDS CATEGORÍAS -->
         <div class="card-body border-bottom pb-4">
-          <div class="row g-4 cards-container">
-            {% for cat in categorias %}
-              {% with total=cat.elemento_set.count primer=cat.elemento_set.first %}
-                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 d-flex justify-content-center">
-                  <a href="?categoria={{ cat.id }}" class="equipment-card w-100">
-                    {% if primer and primer.imagen %}
-                      <img src="{{ primer.imagen.url }}" alt="{{ cat.get_nombre_categoria_display }}" />
-                    {% else %}
-                      <div class="sin-imagen">
-                        <i class="ri ri-image-line" style="font-size:2rem;"></i>
-                      </div>
-                    {% endif %}
+          <div class="d-flex align-items-center mb-3">
+            <h5 class="mb-0 me-2">Categorías</h5>
+            <a href="javascript:void(0);" class="text-dark" data-bs-toggle="collapse" data-bs-target="#collapseCards" aria-expanded="true" style="text-decoration: none;"><i class="ri-arrow-down-s-line fs-4" id="toggleIcon"></i></a>
+          </div>
 
-                    <p class="cantidad">{{ total }}</p>
-
-                    <p class="nombre">{{ cat.get_nombre_categoria_display }}</p>
-                  </a>
+          <div class="collapse show" id="collapseCards">
+            <div class="row g-4 cards-container mb-4">
+              {% for cat in categorias %}
+                {% with total=cat.elemento_set.count primer=cat.elemento_set.first %}
+                  <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 d-flex justify-content-center">
+                    <a href="?categoria={{ cat.id }}" class="equipment-card w-100">
+                      {% if primer and primer.imagen %}
+                        <img src="{{ primer.imagen.url }}" alt="{{ cat.get_nombre_categoria_display }}" />
+                      {% else %}
+                        <div class="sin-imagen">
+                          <i class="ri ri-image-line" style="font-size:2rem;"></i>
+                        </div>
+                      {% endif %}
+                      <p class="cantidad">{{ total }}</p>
+                      <p class="nombre">{{ cat.get_nombre_categoria_display }}</p>
+                    </a>
+                  </div>
+                {% endwith %}
+              {% empty %}
+                <div class="col-12 text-center">
+                  <p class="text-muted mb-0">No hay categorías registradas.</p>
                 </div>
-              {% endwith %}
-            {% empty %}
-              <div class="col-12 text-center">
-                <p class="text-muted mb-0">No hay categorías registradas.</p>
-              </div>
-            {% endfor %}
+              {% endfor %}
+            </div>
           </div>
         </div>
 
