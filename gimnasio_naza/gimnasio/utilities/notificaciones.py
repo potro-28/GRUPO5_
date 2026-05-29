@@ -13,24 +13,26 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+
 class NotificacionManager:
     """Gestor centralizado de notificaciones por correo"""
-    
-    EMAIL_FROM = 'gymnazareth@gmail.com'
-    
+
+    EMAIL_FROM = "gymnazareth@gmail.com"
+
     @staticmethod
     def enviar_notificacion(
         usuario,
         tipo_notificacion,
+        detalle_notificacion,
         asunto,
         cuerpo,
         descripcion=None,
         usar_html=False,
-        fail_silently=False
+        fail_silently=False,
     ):
         """
         Envía una notificación por correo al usuario y registra en base de datos.
-        
+
         Args:
             usuario: Objeto Usuario destinatario
             tipo_notificacion: Tipo de notificación (MEMBRESIA, MANTENIMIENTO, ASISTENCIA)
@@ -39,15 +41,15 @@ class NotificacionManager:
             descripcion: Descripción para guardar en BD (opcional)
             usar_html: Si True, trata el cuerpo como HTML; si False, como texto plano
             fail_silently: Si True, no lanza excepciones si falla el envío
-        
+
         Returns:
             Tupla (éxito: bool, notificacion: Notificacion object o None)
         """
-        
+
         if not usuario or not usuario.correo_usuario:
             logger.warning(f"Usuario sin correo: {usuario}")
             return False, None
-        
+
         try:
             # Preparar el mensaje
             if usar_html:
@@ -56,7 +58,7 @@ class NotificacionManager:
             else:
                 message = cuerpo
                 html_message = None
-            
+
             # Enviar correo
             send_mail(
                 subject=asunto,
@@ -66,31 +68,51 @@ class NotificacionManager:
                 fail_silently=fail_silently,
                 html_message=html_message,
             )
-            
-            # Registrar en base de datos
-            notificacion = Notificacion.objects.create(
-                tipo_notificacion=tipo_notificacion,
-                canal_notificacion='CORREO',
-                estado_notificacion='ASIGNADA',
+
+            notificacion = Notificacion.objects.filter(
                 fk_usuario=usuario,
-                descripcion=descripcion or asunto
-            )
-            
-            logger.info(f"✓ Notificación enviada a {usuario.nombre_usuario} - ID: {notificacion.id}")
-            return True, notificacion
-            
+                tipo_notificacion=tipo_notificacion,
+                detalle_notificacion = detalle_notificacion
+            ).first()
+
+            if not notificacion:
+
+                notificacion = Notificacion.objects.create(
+                    tipo_notificacion=tipo_notificacion,
+                    detalle_notificacion = detalle_notificacion,
+                    canal_notificacion="CORREO",
+                    estado_notificacion="ASIGNADA",
+                    fk_usuario=usuario,
+                    descripcion=descripcion or asunto,
+                )
+
+                logger.info(
+                    f"✓ Notificación enviada a {usuario.nombre_usuario} - ID: {notificacion.id}"
+                )
+                return True, notificacion
+
+            else:
+                if descripcion:  
+                    notificacion.descripcion = descripcion
+                notificacion.estado_notificacion = "ASIGNADA"
+                notificacion.save()
+                logger.info(
+                    f"✓ Notificación ya registrada. "
+                    f"Correo enviado a {usuario.nombre_usuario}"
+                )
+                return True,notificacion
         except Exception as e:
             logger.error(f"Error enviando notificación a {usuario.nombre_usuario}: {e}")
             if not fail_silently:
                 raise
             return False, None
-    
+
     @staticmethod
     def enviar_bienvenida(usuario):
         """Envía correo de bienvenida al crear una nueva cuenta"""
-        
-        asunto = '¡Bienvenido a Gimnasio Nazareth!'
-        
+
+        asunto = "¡Bienvenido a Gimnasio Nazareth!"
+
         cuerpo = f"""
         Hola {usuario.nombre_usuario},
         
@@ -111,22 +133,23 @@ class NotificacionManager:
         Saludos cordiales,
         Equipo Gimnasio Nazareth
         """
-        
+
         return NotificacionManager.enviar_notificacion(
             usuario=usuario,
-            tipo_notificacion='MEMBRESIA',
+            tipo_notificacion="MEMBRESIA",
+            detalle_notificacion='Bienvenida',
             asunto=asunto,
             cuerpo=cuerpo,
-            descripcion='Correo de bienvenida'
+            descripcion="Correo de bienvenida",
         )
-    
+
     @staticmethod
     def enviar_confirmacion_membresia(membresia):
         """Envía confirmación cuando se activa una nueva membresía"""
-        
+
         usuario = membresia.fk_usuario
-        asunto = '✅ Tu membresía ha sido activada'
-        
+        asunto = "✅ Tu membresía ha sido activada"
+
         cuerpo = f"""
         Hola {usuario.nombre_usuario},
         
@@ -145,22 +168,23 @@ class NotificacionManager:
         Saludos cordiales,
         Equipo Gimnasio Nazareth
         """
-        
+
         return NotificacionManager.enviar_notificacion(
             usuario=usuario,
-            tipo_notificacion='MEMBRESIA',
+            tipo_notificacion="MEMBRESIA",
+            detalle_notificacion='Membresía activada',
             asunto=asunto,
             cuerpo=cuerpo,
-            descripcion=f'Activación de membresía - {membresia.id}'
+            descripcion=f"Activación de membresía - {membresia.id}",
         )
-    
+
     @staticmethod
     def enviar_alerta_vencimiento(membresia, dias_faltantes):
         """Envía alerta cuando la membresía está próxima a vencer"""
-        
+
         usuario = membresia.fk_usuario
         asunto = f'⏰ Tu membresía vence en {dias_faltantes} día{"s" if dias_faltantes != 1 else ""}'
-        
+
         cuerpo = f"""
         Hola {usuario.nombre_usuario},
         
@@ -180,22 +204,23 @@ class NotificacionManager:
         Saludos cordiales,
         Equipo Gimnasio Nazareth
         """
-        
+
         return NotificacionManager.enviar_notificacion(
             usuario=usuario,
-            tipo_notificacion='MEMBRESIA',
+            tipo_notificacion="MEMBRESIA",
+            detalle_notificacion="Próxima a vencer",
             asunto=asunto,
             cuerpo=cuerpo,
-            descripcion=f'Alerta de vencimiento - Quedan {dias_faltantes} días'
+            descripcion=f"Alerta de vencimiento - Quedan {dias_faltantes} días",
         )
-    
+
     @staticmethod
     def enviar_notificacion_vencida(membresia):
         """Envía notificación cuando la membresía ha vencido"""
-        
+
         usuario = membresia.fk_usuario
-        asunto = '⚠️ Tu membresía ha vencido'
-        
+        asunto = "⚠️ Tu membresía ha vencido"
+
         cuerpo = f"""
         Hola {usuario.nombre_usuario},
         
@@ -215,21 +240,24 @@ class NotificacionManager:
         Esperamos verte pronto,
         Equipo Gimnasio Nazareth
         """
-        
+
         return NotificacionManager.enviar_notificacion(
             usuario=usuario,
-            tipo_notificacion='MEMBRESIA',
+            tipo_notificacion="MEMBRESIA",
+            detalle_notificacion='Membresía vencida',
             asunto=asunto,
             cuerpo=cuerpo,
-            descripcion='Membresía vencida'
+            descripcion="Membresía vencida",
         )
-    
+
     @staticmethod
-    def enviar_alerta_inasistencia(usuario, dias_sin_asistencia, ultima_asistencia=None):
+    def enviar_alerta_inasistencia(
+        usuario, dias_sin_asistencia, ultima_asistencia=None
+    ):
         """Envía alerta de inasistencia después de N días sin asistir"""
-        
-        asunto = '📅 Recordatorio: No hemos visto tu asistencia'
-        
+
+        asunto = "📅 Recordatorio: No hemos visto tu asistencia"
+
         cuerpo = f"""
         Hola {usuario.nombre_usuario},
         
@@ -253,21 +281,22 @@ class NotificacionManager:
         Saludos cordiales,
         Equipo Gimnasio Nazareth
         """
-        
+
         return NotificacionManager.enviar_notificacion(
             usuario=usuario,
-            tipo_notificacion='ASISTENCIA',
+            tipo_notificacion="ASISTENCIA",
+            detalle_notificacion='Inasistencia',
             asunto=asunto,
             cuerpo=cuerpo,
-            descripcion=f'Alerta de inasistencia - {dias_sin_asistencia} días'
+            descripcion=f"Alerta de inasistencia - {dias_sin_asistencia} días",
         )
-    
+
     @staticmethod
     def enviar_notificacion_mantenimiento(usuarios, mantenimiento):
         """Envía notificación a múltiples usuarios sobre un mantenimiento"""
-        
-        asunto = f'⚠️ Notificación de Mantenimiento: {mantenimiento.nombre_elemento.nombre_elemento}'
-        
+
+        asunto = f"⚠️ Notificación de Mantenimiento: {mantenimiento.nombre_elemento.nombre_elemento}"
+
         cuerpo = f"""
         Hola,
         
@@ -285,19 +314,22 @@ class NotificacionManager:
         Gracias por tu comprensión,
         Equipo Gimnasio Nazareth
         """
-        
+
         resultados = []
         for usuario in usuarios:
             resultado = NotificacionManager.enviar_notificacion(
                 usuario=usuario,
-                tipo_notificacion='MANTENIMIENTO',
+                tipo_notificacion="MANTENIMIENTO",
+                detalle_notificacion='Mantenimiento programado',
                 asunto=asunto,
                 cuerpo=cuerpo,
-                descripcion=f'Mantenimiento - {mantenimiento.nombre_elemento.nombre_elemento}'
+                descripcion=f"Mantenimiento - {mantenimiento.nombre_elemento.nombre_elemento}",
             )
             resultados.append(resultado)
-        
+
         exito_count = sum(1 for r in resultados if r[0])
-        logger.info(f"✓ {exito_count}/{len(usuarios)} notificaciones de mantenimiento enviadas")
-        
+        logger.info(
+            f"✓ {exito_count}/{len(usuarios)} notificaciones de mantenimiento enviadas"
+        )
+
         return resultados

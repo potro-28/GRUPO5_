@@ -4,6 +4,8 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from gimnasio.models import Usuario,Membresia,Asistencia
 from datetime import date,timedelta
 import json
+
+from gimnasio.utilities.calcular_dias import calcular_dias
 # Create your views here.
 
 from datetime import date
@@ -24,7 +26,6 @@ class DashboardUsuarioView(LoginRequiredMixin, TemplateView):
         context = super().get_context_data(**kwargs)
 
         usuario = self.request.user
-
         if hasattr(usuario, 'usuario'):
 
             context['nombre_usuario'] = usuario.usuario.nombre_usuario

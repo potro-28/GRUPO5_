@@ -474,25 +474,47 @@ class AsistenciaForm(forms.ModelForm):
 class MembresiaForm(ModelForm):
     
     def __init__(self, *args, **kwargs):
+
         super().__init__(*args, **kwargs)
-        hoy = datetime.now().date()
-        self.fields['fecha_inicio'].initial = hoy.strftime('%Y-%m-%d')
-        self.fields['fecha_fin'].initial = (hoy + timedelta(days=30)).strftime('%Y-%m-%d')
+
+        hoy = date.today()
+
+        if not self.instance.pk:
+
+            self.initial[
+                "fecha_inicio"
+            ] = hoy
+
+            self.initial[
+                "fecha_fin"
+            ] = (
+                hoy + timedelta(days=30)
+            )
+
     class Meta:
+
         model = Membresia
-        fields = '__all__'
+
+        fields = "__all__"
+
         widgets = {
-            
-            'fecha_inicio': forms.DateInput(attrs={
-                'class': 'form-control',
-                'type': 'date',    
-            }),  
-                'fecha_fin': forms.DateInput(attrs={
-                'class': 'form-control',
-                'type': 'date',
-            }),  
+
+            "fecha_inicio": forms.DateInput(
+                format="%Y-%m-%d",
+                attrs={
+                    "class": "form-control",
+                    "type": "date",
+                },
+            ),
+
+            "fecha_fin": forms.DateInput(
+                format="%Y-%m-%d",
+                attrs={
+                    "class": "form-control",
+                    "type": "date",
+                },
+            ),
         }
-        
     def clean(self):
         cleaned_data = super().clean()
         fecha_inicio = cleaned_data.get('fecha_inicio')

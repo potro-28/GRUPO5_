@@ -230,6 +230,62 @@ function crearUsuario() {
         Swal.fire("Error", "Ocurrió un error en la petición", "error");
     });
 }
+const tipo = document.getElementById("id_tipo_notificacion")
+
+const detalle = document.getElementById("id_detalle_notificacion")
+
+const opciones = {
+
+
+    MEMBRESIA: [
+
+        ["BIENVENIDA","Bienvenida"],
+
+        [
+            "MEMBRESIA_ACTIVADA",
+            "Membresía activada"
+        ],
+
+        [
+            "VENCIMIENTO",
+            "Próxima a vencer"
+        ],
+
+        [
+            "VENCIDA",
+            "Membresía vencida"
+        ],
+    ],
+
+    ASISTENCIA: [
+
+        [
+            "INASISTENCIA",
+            "Inasistencia"
+        ],
+    ],
+
+    MANTENIMIENTO: [
+
+        [
+            "MANTENIMIENTO_PROGRAMADO",
+            "Mantenimiento programado"
+        ],
+    ],
+}
+
+tipo.addEventListener("change",function(){
+  detalle.innerHTML = ''
+  opciones[this.value].forEach(function(op){
+    detalle.add(
+      new Option(
+        op[1],
+        op[0]
+      )
+    )
+  })
+})
+
 </script>
 
 {% endblock %}

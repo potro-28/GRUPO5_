@@ -2,8 +2,9 @@ from django.db.models.signals import post_migrate, post_save
 from django.dispatch import receiver
 from django.contrib.auth.models import Group, Permission
 from datetime import datetime, timedelta
-from gimnasio.models import Usuario, Membresia, Notificacion, Mantenimiento
+from gimnasio.models import Usuario, Membresia, Notificacion, Mantenimiento,Notificacion,Asistencia
 from gimnasio.utilities.notificaciones import NotificacionManager
+from gimnasio.utilities.calcular_dias import calcular_dias
 import logging
 
 logger = logging.getLogger(__name__)
@@ -97,3 +98,20 @@ def notificar_mantenimiento(sender, instance, created, **kwargs):
                 logger.info(f"✓ Notificaciones de mantenimiento enviadas a {usuarios.count()} usuarios")
         except Exception as e:
             logger.error(f"Error notificando mantenimiento: {e}")
+            
+            
+@receiver(post_save,sender=Notificacion)
+def notificar(sender,instance,created,**kwargs):
+    if created:
+        try:
+            notificaciones = instance.tipo_notificacion
+            
+            if notificaciones == 'MEMBRESIA':
+                pass
+            elif notificaciones == 'MANTENIMIENTO':
+                NotificacionManager.enviar_notificacion_mantenimiento(instance.fk_usuario,instance)
+            else:
+                usuario = instance.fk_usuario
+                NotificacionManager.enviar_alerta_inasistencia(usuario,calcular_dias(usuario))
+        except Exception as e:
+            logger.error(f"Error notificando ")
