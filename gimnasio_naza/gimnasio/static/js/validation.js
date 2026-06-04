@@ -1,362 +1,247 @@
 document.addEventListener("DOMContentLoaded", () => {
+  document.querySelectorAll(".modal").forEach((modal) => {
+    const inputs = modal.querySelectorAll(".form-control, .form-select");
 
-    const modal =
-    document.getElementById("modalUsuario");
+    inputs.forEach((input) => {
+      input.addEventListener("input", () => validarCampo(input));
 
-    const inputs =
-    modal.querySelectorAll(
-        ".form-control, .form-select"
-    );
-
-    inputs.forEach(input => {
-
-        input.addEventListener(
-            "input",
-            () => validarCampo(input)
-        );
-
-        input.addEventListener(
-            "change",
-            () => validarCampo(input)
-        );
+      input.addEventListener("change", () => validarCampo(input));
     });
 
-    modal.addEventListener(
-        "hidden.bs.modal",
-        () => {
+    modal.addEventListener("hidden.bs.modal", () => {
+      inputs.forEach((input) => {
+        input.classList.remove("is-invalid", "is-valid");
 
-            inputs.forEach(input => {
+        const errorDiv = document.getElementById(`error-${input.id}`);
 
-                input.classList.remove(
-                    "is-invalid",
-                    "is-valid"
-                );
-
-                const errorDiv =
-                document.getElementById(
-                    `error-${input.id}`
-                );
-
-                if(errorDiv){
-                    errorDiv.remove();
-                }
-
-            });
-
+        if (errorDiv) {
+          errorDiv.remove();
         }
-    );
-
+      });
+    });
+  });
 });
 
+function mostrarError(input, mensaje) {
+  input.classList.remove("is-valid");
+  input.classList.add("is-invalid");
 
-function mostrarError(input,mensaje){
+  let errorDiv = document.getElementById(`error-${input.id}`);
 
-    input.classList.remove("is-valid");
-    input.classList.add("is-invalid");
+  if (!errorDiv) {
+    errorDiv = document.createElement("div");
 
-    let errorDiv =
-    document.getElementById(
-        `error-${input.id}`
-    );
+    errorDiv.id = `error-${input.id}`;
 
-    if(!errorDiv){
+    errorDiv.className =
+      "invalid-feedback d-block text-start small fw-bold mt-1";
 
-        errorDiv =
-        document.createElement("div");
+    errorDiv.style.fontSize = "11px";
 
-        errorDiv.id =
-        `error-${input.id}`;
+    input.parentNode.appendChild(errorDiv);
+  }
 
-        errorDiv.className =
-        "invalid-feedback d-block text-start small fw-bold mt-1";
-
-        errorDiv.style.fontSize =
-        "11px";
-
-        input.parentNode.appendChild(
-            errorDiv
-        );
-    }
-
-    errorDiv.textContent =
-    mensaje;
+  errorDiv.textContent = mensaje;
 }
 
+function limpiarError(input) {
+  input.classList.remove("is-invalid");
 
-function limpiarError(input){
+  input.classList.add("is-valid");
 
-    input.classList.remove(
-        "is-invalid"
-    );
+  const errorDiv = document.getElementById(`error-${input.id}`);
 
-    input.classList.add(
-        "is-valid"
-    );
-
-    const errorDiv =
-    document.getElementById(
-        `error-${input.id}`
-    );
-
-    if(errorDiv){
-        errorDiv.remove();
-    }
+  if (errorDiv) {
+    errorDiv.remove();
+  }
 }
 
+function validarCampo(input) {
+  const modal = input.closest(".modal");
 
-function validarCampo(input){
+  const id = input.id;
 
-    const id =
-    input.id;
+  // VALIDACIÓN PARA INPUT FILE
+  if (input.type === "file") {
+    if (modal.id === "modalElemento") {
+      const archivo = input.files[0];
 
-    const valor =
-    input.value.trim();
-
-
-    /* vacío */
-
-    if(valor === ""){
-
-        let nombre =
-        id.replace(/_/g," ");
-
-        mostrarError(
-            input,
-            `El campo "${nombre}" es obligatorio`
-        );
+      if (!archivo) {
+        mostrarError(input, "Debe seleccionar una imagen");
 
         return false;
-    }
+      }
 
+      const tiposPermitidos = [
+        "image/jpeg",
+        "image/jpg",
+        "image/png",
+        "image/webp",
+      ];
 
-    /* documento */
-
-    if(
-        id === "documento" &&
-        !/^\d{7,10}$/.test(valor)
-    ){
-
-        mostrarError(
-            input,
-            "Debe tener entre 7 y 10 dígitos"
-        );
+      if (!tiposPermitidos.includes(archivo.type)) {
+        mostrarError(input, "Solo se permiten imágenes");
 
         return false;
+      }
+
+      limpiarError(input);
+      return true;
+    }
+  }
+
+  const valor = input.value.trim();
+
+  // CAMPOS VACÍOS
+  if (valor === "") {
+    let nombre = id.replace(/_/g, " ");
+
+    mostrarError(input, `El campo "${nombre}" es obligatorio`);
+
+    return false;
+  }
+
+  // =====================
+  // VALIDACIONES USUARIO
+  // =====================
+
+  if (modal.id === "modalUsuario") {
+    if (id === "documento" && !/^\d{7,10}$/.test(valor)) {
+      mostrarError(input, "Debe tener entre 7 y 10 dígitos");
+
+      return false;
     }
 
+    if (
+      (id === "nombre" || id === "apellido") &&
+      !/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/.test(valor)
+    ) {
+      mostrarError(input, "Solo se permiten letras");
 
-    /* nombre */
+      return false;
+    }
 
-    if(
-        (
-            id === "nombre" ||
-            id === "apellido"
-        )
-        &&
-        !/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/.test(valor)
-    ){
+    if (id === "correo" && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(valor)) {
+      mostrarError(input, "Correo electrónico inválido");
 
-        mostrarError(
-            input,
-            "Solo se permiten letras"
-        );
+      return false;
+    }
+
+    if (id === "telefono" && !/^3\d{9}$/.test(valor)) {
+      mostrarError(input, "Debe iniciar en 3 y tener 10 dígitos");
+
+      return false;
+    }
+
+    if (id === "username" && valor.length < 4) {
+      mostrarError(input, "Mínimo 4 caracteres");
+
+      return false;
+    }
+
+    if (id === "password" && valor.length < 6) {
+      mostrarError(input, "Mínimo 6 caracteres");
+
+      return false;
+    }
+
+    if (id === "peso" && (Number(valor) < 30 || Number(valor) > 200)) {
+      mostrarError(input, "Peso fuera de rango");
+
+      return false;
+    }
+
+    if (id === "altura" && (Number(valor) < 100 || Number(valor) > 250)) {
+      mostrarError(input, "Altura fuera de rango");
+
+      return false;
+    }
+
+    if (id === "fecha_nacimiento") {
+      const fecha = new Date(valor);
+
+      const hoy = new Date();
+
+      if (fecha >= hoy) {
+        mostrarError(input, "Fecha inválida");
 
         return false;
+      }
+    }
+  }
+
+  // =====================
+  // VALIDACIONES ELEMENTO
+  // =====================
+
+  if (modal.id === "modalElemento") {
+    if (id === "serial" && valor.length < 3) {
+      mostrarError(input, "El serial debe tener mínimo 3 caracteres");
+
+      return false;
     }
 
+    if (id === "Marca" && valor.length < 2) {
+      mostrarError(input, "Ingrese una marca válida");
 
-    /* correo */
-
-    if(
-        id === "correo" &&
-        !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(valor)
-    ){
-
-        mostrarError(
-            input,
-            "Correo electrónico inválido"
-        );
-
-        return false;
+      return false;
     }
 
+    if (id === "nombre_elemento" && valor.length < 3) {
+      mostrarError(input, "Ingrese un nombre válido");
 
-    /* teléfono */
-
-    if(
-        id === "telefono" &&
-        !/^3\d{9}$/.test(valor)
-    ){
-
-        mostrarError(
-            input,
-            "Debe iniciar en 3 y tener 10 dígitos"
-        );
-
-        return false;
+      return false;
     }
 
+    if (id === "peso" && Number(valor) <= 0) {
+      mostrarError(input, "Ingrese un peso válido");
 
-    /* username */
-
-    if(
-        id === "username" &&
-        valor.length < 4
-    ){
-
-        mostrarError(
-            input,
-            "Mínimo 4 caracteres"
-        );
-
-        return false;
+      return false;
     }
 
+    if (id === "cantidad" && Number(valor) <= 0) {
+      mostrarError(input, "La cantidad debe ser mayor a cero");
 
-    /* password */
-
-    if(
-        id === "password" &&
-        valor.length < 6
-    ){
-
-        mostrarError(
-            input,
-            "Mínimo 6 caracteres"
-        );
-
-        return false;
+      return false;
     }
-
-
-    /* peso */
-
-    if(
-        (
-            id === "peso_usuario" ||
-            id === "peso_cliente"
-        )
-        &&
-        (
-            Number(valor) < 30 ||
-            Number(valor) > 200
-        )
-    ){
-
-        mostrarError(
-            input,
-            "Peso fuera de rango"
-        );
-
-        return false;
+    if (id === "categoria" && valor === "") {
+      mostrarError(input, "Seleccione una categoría");
+      console.log("Categoria" , valor);
+      return false;
     }
+  }
 
+  limpiarError(input);
 
-    /* altura */
-
-    if(
-        (
-            id === "altura_usuario" ||
-            id === "altura_cliente"
-        )
-        &&
-        (
-            Number(valor) < 100 ||
-            Number(valor) > 250
-        )
-    ){
-
-        mostrarError(
-            input,
-            "Altura fuera de rango"
-        );
-
-        return false;
-    }
-
-
-    /* fecha */
-
-    if(
-        id === "fecha_nacimiento"
-    ){
-
-        const fecha =
-        new Date(valor);
-
-        const hoy =
-        new Date();
-
-        if(fecha >= hoy){
-
-            mostrarError(
-                input,
-                "Fecha inválida"
-            );
-
-            return false;
-        }
-    }
-
-
-    /* select género */
-
-    if(
-        id === "genero" &&
-        valor === ""
-    ){
-
-        mostrarError(
-            input,
-            "Selecciona una opción"
-        );
-
-        return false;
-    }
-
-
-    limpiarError(input);
-
-    return true;
+  return true;
 }
+function validarFormulario(modalId) {
+  const modal = document.getElementById(modalId);
 
-const passwordInput =
-    document.getElementById(
-        "password"
-    );
+  const inputs = modal.querySelectorAll(".form-control, .form-select");
 
-const btnTogglePassword =
-    document.getElementById(
-        "btnTogglePassword"
-    );
+  let valido = true;
 
-const iconPassword =
-    document.getElementById(
-        "iconPassword"
-    );
+  inputs.forEach((input) => {
+    if (!validarCampo(input)) {
+      valido = false;
+    }
+  });
 
-if (
-    btnTogglePassword
-) {
+  return valido;
+}
+const passwordInput = document.getElementById("password");
 
-    btnTogglePassword
-        .addEventListener(
-            "click",
-            function () {
+const btnTogglePassword = document.getElementById("btnTogglePassword");
 
-                const esPassword =
-                    passwordInput.type ===
-                    "password";
+const iconPassword = document.getElementById("iconPassword");
 
-                passwordInput.type =
-                    esPassword
-                        ? "text"
-                        : "password";
+if (btnTogglePassword) {
+  btnTogglePassword.addEventListener("click", function () {
+    const esPassword = passwordInput.type === "password";
 
-                iconPassword.className =
-                    esPassword
-                        ? "ri-eye-off-line"
-                        : "ri-eye-line";
-            }
-        );
+    passwordInput.type = esPassword ? "text" : "password";
+
+    iconPassword.className = esPassword ? "ri-eye-off-line" : "ri-eye-line";
+  });
 }

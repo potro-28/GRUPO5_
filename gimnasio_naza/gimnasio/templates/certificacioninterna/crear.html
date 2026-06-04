@@ -3,7 +3,7 @@
 
 {% block contenido %}
 
-<form method="post" action=".">
+<form method="post" action="." class="needs-validation" id = "certificacionForm" >
     <div class="card card-default">
         <div class="header-encuesta">
             <h3>
@@ -36,7 +36,6 @@
                     <label>{{ field.label }}:</label>
                     <div class="d-flex">
                         {{ field|add_class:'form-control' }}
-                        <button type="button" class="btn btn-success ms-2" onclick="abrirWizard()">+</button>
                     </div>
 
                 {% elif field.name == "descargado" %}
@@ -67,291 +66,179 @@
     </div>
 </form>
 
-<!-- ================= WIZARD ================= -->
-<div class="modal fade" id="modalWizard">
-  <div class="modal-dialog modal-lg">
-    <div class="modal-content">
-
-      <div class="modal-header text-white" style="background-color: #267ca7;">
-        <h5>Wizard Completo</h5>
-        <button class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-      </div>
-
-      <div class="modal-body">
-
-        <!-- PASO 1 -->
-        <div id="paso1">
-            <h6 class="mb-3">Usuario</h6>
-
-            <div class="row">
-  <div class="col-md-6 mb-2">
-    <input 
-      type="text"
-      id="username"
-      name="fake_user"
-      class="form-control"
-      placeholder="Username"
-      autocomplete="off">
-  </div>
-
-  <div class="col-md-6 mb-2">
-    <input 
-      type="password"
-      id="password"
-      name="fake_pass"
-      class="form-control"
-      placeholder="Contraseña"
-      autocomplete="new-password">
-  </div>
-</div>
-
-                <div class="col-md-4 mb-2">
-                    <input id="documento" class="form-control" placeholder="Documento">
-                </div>
-                <div class="col-md-4 mb-2">
-                    <input id="nombre" class="form-control" placeholder="Nombre">
-                </div>
-                <div class="col-md-4 mb-2">
-                    <input id="apellido" class="form-control" placeholder="Apellido">
-                </div>
-
-                <div class="col-md-4 mb-2">
-                    <input id="correo" class="form-control" placeholder="Correo">
-                </div>
-                <div class="col-md-4 mb-2">
-                    <input id="telefono" class="form-control" placeholder="Teléfono">
-                </div>
-                <div class="col-md-4 mb-2">
-                    <input id="fecha_nacimiento" type="date" class="form-control">
-                </div>
-
-                <div class="col-md-4 mb-2">
-                    <input id="peso_usuario" class="form-control" placeholder="Peso usuario">
-                </div>
-                <div class="col-md-4 mb-2">
-                    <input id="altura_usuario" class="form-control" placeholder="Altura usuario">
-                </div>
-                <div class="col-md-4 mb-2">
-                    <select id="genero" class="form-control">
-                        <option value="">Género</option>
-                        <option value="M">Masculino</option>
-                        <option value="F">Femenino</option>
-                    </select>
-                </div>
-            </div>
-        </div>
-
-        <!-- PASO 2 -->
-        <div id="paso2" style="display:none;">
-            <h6 class="mb-3">Membresía</h6>
-
-            <div class="row">
-                <div class="col-md-6 mb-2">
-                    <input id="fecha_inicio" type="date" class="form-control">
-                </div>
-
-                <div class="col-md-6 mb-2">
-                    <input id="fecha_fin" type="date" class="form-control">
-                </div>
-
-                <div class="col-md-6 mb-2">
-                    <select id="estado" class="form-control">
-                        <option value="">Estado</option>
-                        <option value="activo">Activo</option>
-                        <option value="inactivo">Inactivo</option>
-                    </select>
-                </div>
-            </div>
-        </div>
-
-      </div>
-
-      <div class="modal-footer">
-        <button class="btn btn-secondary" onclick="prevPaso()">Anterior</button>
-        <button id="btnNext" class="btn btn-primary" onclick="nextPaso()">Siguiente</button>
-      </div>
-
-    </div>
-  </div>
-</div>
 {% endblock %}
 
 {% block js %}
-<style>
-.swal2-container {
-    z-index: 99999 !important;
-}
-</style>
-{% if form.errors %}
-    <script>
-        Swal.fire({
-            title: "Error",
-            text: "Por favor, verifique los campos marcados en rojo.",
-            icon: "error",
-        });
-    </script>
-    {% endif %}
-
 <script>
-let paso = 1;
-const totalPasos = 2;
 
-function mostrarPaso(){
-    for(let i=1;i<=totalPasos;i++){
-        document.getElementById('paso'+i).style.display = (i === paso) ? 'block' : 'none';
+function mostrarError(input, mensaje){
+
+    input.classList.add('is-invalid');
+
+    let feedback =
+    input.parentNode.querySelector('.invalid-feedback');
+
+    if(!feedback){
+
+        feedback =
+        document.createElement('div');
+
+        feedback.classList.add(
+            'invalid-feedback'
+        );
+
+        input.parentNode.appendChild(
+            feedback
+        );
     }
 
-    let btn = document.getElementById('btnNext');
-    if(paso === totalPasos){
-        btn.innerText = "Guardar";
-    } else {
-        btn.innerText = "Siguiente";
+    feedback.innerText = mensaje;
+}
+
+
+function limpiarError(input){
+
+    input.classList.remove('is-invalid');
+
+    let feedback =
+    input.parentNode.querySelector('.invalid-feedback');
+
+    if(feedback){
+        feedback.remove();
     }
 }
 
-function abrirWizard(){
-    paso = 1;
-    mostrarPaso();
-    new bootstrap.Modal(document.getElementById('modalWizard')).show();
-}
 
-function nextPaso(){
-    if(paso < totalPasos){
-        paso++;
-        mostrarPaso();
-    } else {
-        guardarWizard();
-    }
-}
+function validarCampo(input){
 
-function prevPaso(){
-    if(paso > 1){
-        paso--;
-        mostrarPaso();
-    }
-}
+    limpiarError(input);
 
-function guardarWizard(){
+    // Validar membresía
+    if(input.name === 'fk_membresia'){
 
-    let username = document.getElementById('username').value;
-    let documento = document.getElementById('documento').value;
-    let fecha_inicio = document.getElementById('fecha_inicio').value;
-    let estado = document.getElementById('estado').value;
+        if(!input.value){
 
-    if(!username || !documento || !fecha_inicio || !estado){
-        Swal.fire({
-            title: "Error",
-            text: "Completa todos los campos obligatorios",
-            icon: "error",
-        });
-        return;
+            mostrarError(
+                input,
+                'Este campo es obligatorio'
+            );
+
+            return false;
+        }
     }
 
-    Swal.fire({
-        title: "Correcto",
-        text: "Datos verificados correctamente",
-        icon: "success",
+    // Validar fecha
+    if(input.name === 'fecha_certificacion'){
+
+        if(!input.value){
+
+            mostrarError(
+                input,
+                'Este campo es obligatorio'
+            );
+
+            return false;
+        }
+
+        let fecha =
+        new Date(input.value);
+
+        let hoy =
+        new Date();
+
+        hoy.setHours(0,0,0,0);
+
+        if(fecha < hoy){
+            console.log("Fecha ingresada:", fecha);
+            console.log("Fecha actual:", hoy);
+            mostrarError(
+                input,
+                'La fecha no puede ser anterior a hoy'
+            );
+
+            return false;
+        }
+
+    }
+    if (input.name === 'descripcion_certificacion') {
+        if (!input.value.trim()) {
+            mostrarError(
+                input,
+                'Este campo es obligatorio'
+            );
+            return false;
+        }
+        if(input.value.length > 200){
+            mostrarError(
+                input,
+                'La descripción no puede exceder los 200 caracteres'
+            );
+            return false;
+        }
+        if(input.value.length < 10){
+            mostrarError(
+                input,
+                'La descripción debe tener al menos 10 caracteres'
+            );
+            return false;
+        }
+    }
+
+    return true;
+}
+
+
+document.addEventListener('DOMContentLoaded', function(){
+
+    const form =
+    document.getElementById('certificacionForm');
+
+    const campos =
+    form.querySelectorAll(
+        '[name="descripcion_certificacion"],[name="fk_membresia"], [name="fecha_certificacion"]'
+    );
+    campos.forEach(campo => {
+        campo.addEventListener(
+            'input',
+            () => validarCampo(campo)
+        );
+
+        campo.addEventListener(
+            'change',
+            () => validarCampo(campo)
+        );
+
     });
-}
-</script>
-<script>
 
-function getCookie(name) {
+    form.addEventListener(
+        'submit',
+        function(event){
 
-    let cookieValue = null;
+            let valido = true;
 
-    if (document.cookie && document.cookie !== '') {
+            campos.forEach(campo => {
 
-        let cookies = document.cookie.split(';');
+                if(!validarCampo(campo)){
+                    valido = false;
+                }
 
-        for (let i = 0; i < cookies.length; i++) {
+            });
 
-            let cookie = cookies[i].trim();
+            if(!valido){
 
-            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                event.preventDefault();
 
-                cookieValue = decodeURIComponent(
-                    cookie.substring(name.length + 1)
-                );
+                const primerError =
+                form.querySelector('.is-invalid');
 
-                break;
+                if(primerError){
+                    primerError.focus();
+                }
             }
         }
-    }
+    );
 
-    return cookieValue;
-}
-
-function guardarWizard(){
-
-    let data = {
-
-        username: document.getElementById('username').value,
-        password: document.getElementById('password').value,
-        documento: document.getElementById('documento').value,
-        nombre: document.getElementById('nombre').value,
-        apellido: document.getElementById('apellido').value,
-        correo: document.getElementById('correo').value,
-        telefono: document.getElementById('telefono').value,
-        fecha_nacimiento: document.getElementById('fecha_nacimiento').value,
-        peso_usuario: document.getElementById('peso_usuario').value,
-        altura_usuario: document.getElementById('altura_usuario').value,
-        genero: document.getElementById('genero').value,
-
-        fecha_inicio: document.getElementById('fecha_inicio').value,
-        fecha_fin: document.getElementById('fecha_fin').value,
-        estado: document.getElementById('estado').value
-    };
-
-    fetch('/gimnasio/guardar-wizard/', {
-
-        method: 'POST',
-
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRFToken': getCookie('csrftoken')
-        },
-
-        body: JSON.stringify(data)
-
-    })
-
-    .then(response => response.json())
-
-    .then(data => {
-
-        if(data.success){
-
-            Swal.fire({
-                title: "Correcto",
-                text: data.message,
-                icon: "success"
-            });
-
-            location.reload();
-
-        } else {
-
-            Swal.fire({
-                title: "Error",
-                text: data.message,
-                icon: "error"
-            });
-        }
-    })
-
-    .catch(error => {
-
-        console.error(error);
-
-        Swal.fire({
-            title: "Error",
-            text: "Ocurrió un error",
-            icon: "error"
-        });
-    });
-}
+});
 
 </script>
-
 {% endblock %}

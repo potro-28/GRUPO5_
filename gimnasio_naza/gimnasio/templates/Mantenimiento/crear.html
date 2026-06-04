@@ -1,4 +1,5 @@
 {% extends 'body.html' %}
+{% load static %}
 {% load widget_tweaks %}
  
 {% block contenido %}
@@ -118,12 +119,9 @@
           {% if field.name == 'nombre_elemento' %}
           <div class="d-flex">
             {{ field|add_class:'form-control' }}
-
-            <button type="button"
-                    class="btn btn-success ms-2"
-                    onclick="abrirWizardElemento()">
+              <button type="button" class="btn btn-success ms-2" data-bs-toggle="modal" data-bs-target="#modalElemento">
               +
-            </button>
+              </button>
           </div>
 
           {% else %}
@@ -153,6 +151,163 @@
     </div>
   </form>
 </div>
+<div class="modal fade" id="modalElemento" tabindex="-1">
+  <div class="modal-dialog modal-lg"> 
+    <div class="modal-content">
 
-<!-- TODO EL MODAL WIZARD QUEDA IGUAL -->
+      <div class="modal-header bg-primary text-white py-5">
+        <h5 class="modal-title">
+          <i class="fa-solid fa-box me-2"></i>
+          Crear Elemento 
+        </h5>
+
+        <button
+          type="button"
+          class="btn-close btn-close-white"
+          data-bs-dismiss="modal">
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <!-- PERSONALES -->
+        <h6 class="text-success fw-bold mt-3">Datos personales</h6>
+        <hr>
+
+        <div class="row">
+
+
+          <div class="col-md-6 mb-2">
+            <input type="text" id="serial" class="form-control" placeholder="Serial">
+            <small class="text-danger" id="error_serial"></small>
+          </div>
+
+          <div class="col-md-6 mb-2">
+            <input type="text" id="marca" class="form-control" placeholder="Marca">
+            <small class="text-danger" id="error_marca"></small>
+          </div>
+
+          <div class="col-md-6 mb-2">
+            <input type="text" id="nombre_elemento" class="form-control" placeholder="Nombre">
+            <small class="text-danger" id="error_nombre"></small>
+          </div>
+
+          <div class="col-md-6 mb-2">
+            <input type="text" id="peso" class="form-control" placeholder="Peso">
+            <small class="text-danger" id="error_peso"></small>
+          </div>
+          <div class="col-md-6 mb-2">
+            <select id="Estado" class="form-select">
+              <option value="M">Activo</option>
+              <option value="F">Inactivo</option>
+            </select>
+          </div>
+          <div class="col-md-6 mb-2">
+            <select id="categoria" class="form-select">
+              <option value="">Seleccione una categoría</option>
+
+              {% for categoria in categorias %}
+              <option value="{{ categoria.id}}">
+                {{ categoria.nombre_categoria}}
+              </option>
+              {% endfor %}
+            </select>
+        </div>
+        <div class = "col-md-6 mb-2">
+          <input type="number" id="cantidad" class="form-control" placeholder="Cantidad">
+          <small class="text-danger" id="error_cantidad"></small>
+        </div>
+        <div class = "col-md-6 mb-2">
+          <div class = "text-center">
+            <img id="preview" src="" alt="Vista previa" class="img-thumbnail" style="max-width: 200px; display: none;">
+          </div>
+          <input type="file" id="foto" class="form-control">
+          <small class="text-danger" id="error_foto"></small>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button class="btn btn-primary" onclick="crearElemento()" id = "btnGuardar">Guardar</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block js %}
+<script src = '{% static "js/validation.js" %}'></script>
+<script>
+  const inputFoto = document.getElementById('foto');
+  const preview = document.getElementById('preview');
+
+  inputFoto.addEventListener('change', function(){
+    const file = this.files[0];
+    if (!file){
+      preview.style.display = 'none';
+      return;
+    }
+    const tiposPermitidos = ['image/jpeg', 'image/png', 'image/gif'];
+    if (!tiposPermitidos.includes(file.type)){
+      alert('Archivo no permitido. Solo se permiten imágenes JPEG, PNG o GIF.');
+      this.value = '';
+      preview.style.display = 'none';
+      this.value = '';
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = function(e){
+      preview.src = e.target.result;
+      preview.style.display = 'block';
+    }
+      reader.readAsDataURL(file);
+  })
+
+  function crearElemento() {
+      if(!validarFormulario("modalElemento")){
+        return;
+    }
+    const formData = new FormData();
+    formData.append("serial", document.getElementById("serial").value);
+    formData.append("marca", document.getElementById("marca").value);
+    formData.append("nombre", document.getElementById("nombre_elemento").value);
+    formData.append("peso", document.getElementById("peso").value);
+    formData.append("estado", document.getElementById("Estado").value);
+    formData.append("categoria", document.getElementById("categoria").value);
+    formData.append("cantidad", document.getElementById("cantidad").value);
+
+    formData.append(
+        "foto",
+        document.getElementById("foto").files[0]
+    );
+
+    fetch("{% url 'gimnasio:crear_elemento_ajax' %}", {
+        method: "POST",
+        headers: {
+            "X-CSRFToken": '{{ csrf_token }}'
+        },
+        body: formData
+    })
+    .then(res => res.json())
+    .then(data => {
+
+        if (data.error) {
+            return Swal.fire("Error", data.error, "error");
+        }
+
+        let select = document.querySelector('[name="nombre_elemento"]');
+        if (!select.querySelector(`option[value="${data.id}"]`)) {
+            select.add(new Option(data.nombre, data.id, true, true));
+        }
+
+
+        document.querySelectorAll('#modalElemento input').forEach(i => i.value = '');
+        document.querySelectorAll('[id^="error_"]').forEach(e => e.innerText = '');
+
+        Swal.fire("Correcto", "Elemento creado correctamente", "success");
+        bootstrap.Modal.getInstance(document.getElementById('modalElemento')).hide();
+    });
+}
+
+
+</script>
 {% endblock %}

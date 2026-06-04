@@ -188,7 +188,7 @@
 
       <div class="modal-footer">
         <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-        <button class="btn btn-primary" onclick="crearUsuario()">Guardar</button>
+        <button class="btn btn-primary" onclick="crearUsuario()" id = "btnGuardar">Guardar</button>
       </div>
 
     </div>
@@ -197,13 +197,10 @@
 {% endblock %}
 
 {% block js %}
-<script src = "{% static 'js/validation.js' %}"></script>
+<script src = '{% static "js/validation.js" %}'></script>
 <script>
-
-// CSRF
-// ================= CREAR USUARIO =================
 function crearUsuario() {
-        const modal = document.getElementById("modalUsuario");
+    const modal = document.getElementById("modalUsuario");
     const inputs = modal.querySelectorAll(".form-control, .form-select");
     let formularioValido = true;
 
@@ -221,46 +218,51 @@ function crearUsuario() {
         return; 
     }
     let data = {
-        documento: documento.value,
-        nombre: nombre.value,
-        apellido: apellido.value,
-        correo: correo.value,
-        password: password.value,
-        username: nombreUsuario.value,
-        telefono: telefono.value,
-        fecha_nacimiento: fecha_nacimiento.value,
-        peso: peso.value,
-        altura: altura.value,
-        genero: genero.value
+        username: document.getElementById("username").value,
+        password: document.getElementById("password").value,
+        documento: document.getElementById("documento").value,
+        correo: document.getElementById("correo").value,
+        nombre: document.getElementById("nombre").value,
+        apellido: document.getElementById("apellido").value,
+        telefono: document.getElementById("telefono").value,
+        fecha_nacimiento: document.getElementById("fecha_nacimiento").value,
+        genero: document.getElementById("genero").value,
+        peso: document.getElementById("peso").value,
+        altura: document.getElementById("altura").value,
     };
-
-    fetch("/gimnasio/crear-usuario-ajax/", {
+    document.getElementById("btnGuardar").disabled = true;
+    fetch("{% url 'gimnasio:crear_usuario_ajax' %}", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
-            "X-CSRFToken": getCookie('csrftoken')
+        
+            "X-CSRFToken": '{{csrf_token}}'
         },
         body: JSON.stringify(data)
     })
-    .then(res => res.json())
+    .then(response => response.json())
     .then(data => {
+      console.log(data.error);
         if (data.error) {
-            return Swal.fire("Error", data.error, "error");
+            Swal.fire("Error", data.error, "error");
+            return;
         }
 
-        let select = document.querySelector('[name="fk_usuario"]');
-        if (!select.querySelector(`option[value="${data.id}"]`)) {
-            select.add(new Option(data.nombre, data.id, true, true));
-        }
+        let select = document.getElementById("id_fk_Usuario");
 
-        bootstrap.Modal.getInstance(document.getElementById('modalUsuario')).hide();
+        let option = new Option(data.nombre, data.id, true, true);
+        select.add(option);
 
-        document.querySelectorAll('#modalUsuario input').forEach(i => i.value = '');
-        document.querySelectorAll('[id^="error_"]').forEach(e => e.innerText = '');
+        let modal = bootstrap.Modal.getInstance(document.getElementById('modalUsuario'));
+        modal.hide();
 
         Swal.fire("Correcto", "Usuario creado correctamente", "success");
+    })
+    .catch(error => {
+        Swal.fire("Error", "Ocurrió un error en la petición", "error");
     });
 }
+
 </script>
 {% endblock %}
 

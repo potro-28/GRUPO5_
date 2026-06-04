@@ -15,6 +15,7 @@ from gimnasio.utils import (
 )
 from django.core.mail import send_mail
 from django.conf import settings
+from django.db import transaction
 
 
 # --- ENVÍO INDIVIDUAL (Resuelve el NameError en urls.py) ---
@@ -87,18 +88,20 @@ def crear_usuario_ajax(request):
         return JsonResponse({'error': 'Método no permitido'}, status=405)
     try:
         data = json.loads(request.body)
-        usuario = Usuario.objects.create(
-            documento=data['documento'],
-            nombre_usuario=data['nombre'],
-            apellido_usuario=data['apellido'],
-            correo_usuario=data['correo'],
-            fecha_nacimiento=data.get('fecha_nacimiento', '2000-01-01'),
-            peso_usuario=float(data.get('peso') or 0),
-            altura_usuario=float(data.get('altura') or 0),
-            estado='activo',
-            fecha_registro=date.today()
-        )
-        return JsonResponse({'id': usuario.id, 'nombre': f"{usuario.nombre_usuario}"})
+        with transaction.atomic():
+            usuario = Usuario.objects.create(
+                documento=data['documento'],
+                nombre_usuario=data['nombre'],
+                apellido_usuario=data['apellido'],
+                correo_usuario=data['correo'],
+                fecha_nacimiento=data.get('fecha_nacimiento', '2000-01-01'),
+                peso_usuario=float(data.get('peso') or 0),
+                altura_usuario=float(data.get('altura') or 0),
+                estado='activo',
+                fecha_registro=date.today()
+            )
+            return JsonResponse({'id': usuario.id, 'nombre': f"{usuario.nombre_usuario}"})
+        
     except Exception as e:
         return JsonResponse({'error': str(e)})
 
