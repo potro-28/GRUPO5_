@@ -59,14 +59,14 @@
     {# ── Menú compartido (Admin y Cliente) ── #}
 
     <li class="{% if request.resolver_match.url_name == 'listar_nutriciones' %}active{% endif %}">
-      <a href="{% url 'gimnasio:listar_nutriciones' %}">
+      <a href="{% if user.usuario.rol == 'Administrador' or user.is_superuser %}{% url 'gimnasio:listar_nutriciones' %}{% else %}{% url 'usuarios:mi_nutricion' %}{% endif %}">
         <div class="icon-circle"><i class="fas fa-utensils"></i></div>
         <span>Nutrición</span>
       </a>
     </li>
 
     <li class="{% if request.resolver_match.url_name == 'listar_rutinas' %}active{% endif %}">
-      <a href="{% url 'gimnasio:listar_rutinas' %}">
+      <a href="{% if user.usuario.rol == 'Administrador' or user.is_superuser %}{% url "gimnasio:listar_rutinas" %}{% else %}{% url "usuarios:mi_rutina" %}{% endif %}">
         <div class="icon-circle"><i class="fas fa-dumbbell"></i></div>
         <span>Rutinas</span>
       </a>
@@ -86,7 +86,7 @@
 
     
     <li class="{% if request.resolver_match.url_name == 'listar_certificacioninterna' %}active{% endif %}">
-      <a href="{% url 'gimnasio:listar_certificacioninterna' %}">
+       <a href="{% if user.usuario.rol == 'Administrador' or user.is_superuser %}{% url "gimnasio:listar_certificacioninterna" %}{% else %}{% url "usuarios:mi_certificacion" %}{% endif %}">
         <div class="icon-circle"><i class="fas fa-medal"></i></div>
         <span>Certificaciones</span>
       </a>
@@ -112,12 +112,6 @@
 
     {% endif %}
 
-    <li class="{% if request.resolver_match.url_name == 'listar_Reportes_estadisticas' %}active{% endif %}">
-      <a href="{% url 'gimnasio:listar_Reportes_estadisticas' %}">
-        <div class="icon-circle"><i class="fas fa-chart-bar"></i></div>
-        <span>Reportes</span>
-      </a>
-    </li>
 
     {% if user.usuario.rol == 'Administrador' or user.is_superuser %}
 
@@ -156,7 +150,7 @@
     {% endif %}
 
     <li class="{% if request.resolver_match.url_name == 'listar_sanciones_clas' %}active{% endif %}">
-      <a href="{% url 'gimnasio:listar_sanciones_clas' %}">
+       <a href="{% if user.usuario.rol == 'Administrador' or user.is_superuser %}{% url "gimnasio:listar_sanciones_clas" %}{% else %}{% url "usuarios:mi_sancion" %}{% endif %}">
         <div class="icon-circle"><i class="fas fa-exclamation-triangle"></i></div>
         <span>Sanciones</span>
       </a>

@@ -1,8 +1,9 @@
 from django.shortcuts import render
 from django.views.generic import TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
-from gimnasio.models import Usuario,Membresia,Asistencia
+from gimnasio.models import Usuario,Membresia,Asistencia,Nutricion,Masa_corporal,Rutina,Certificacion_interna,Encuesta,Sancion
 from datetime import date,timedelta
+from django.views.generic import ListView
 import json
 
 from gimnasio.utilities.calcular_dias import calcular_dias
@@ -88,4 +89,71 @@ class DashboardUsuarioView(LoginRequiredMixin, TemplateView):
                 context['dias_restantes'] = None
                 context['dias_totales'] = None
 
+        return context
+    
+
+class MiNutricionView(LoginRequiredMixin, ListView):
+    model = Nutricion
+    template_name = "usuario/nutricion.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        usuario = self.request.user
+        if hasattr(usuario, 'usuario'):
+            nutricion = Nutricion.objects.filter(fk_Usuario=usuario.usuario).first()
+            
+            context['nutricion'] = nutricion
+        return context
+
+class MiRutinaView(LoginRequiredMixin,ListView):
+    model = Rutina
+    template_name = "usuario/rutina.html"
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        usuario = self.request.user
+        if hasattr(usuario,'usuario'):
+            rutina = Rutina.objects.filter(fk_imc__fk_Nutricion__fk_Usuario = usuario.usuario)
+            context['rutina'] = rutina
+        return context
+    
+
+class MiCertificacionView(LoginRequiredMixin,ListView):
+    model = Certificacion_interna
+    template_name = "usuario/certificacion.html"
+    
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        usuario = self.request.user
+        if hasattr(usuario,'usuario'):
+            certificacion = Certificacion_interna.objects.filter(fk_membresia__fk_usuario = usuario.usuario)
+            context['certificaciones'] = certificacion
+        return context
+    
+class MiEncuestasView(LoginRequiredMixin,ListView):
+    model = Encuesta
+    template_name = 'usuario/encuestas.html'
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        usuario = self.request.user
+        if hasattr(usuario,'usuario'):
+            encuesta = Encuesta.objects.filter(
+                miembros = usuario.usuario,
+                estado = 'Activo'
+            )
+            context['encuesta'] = encuesta
+        return context
+
+class MisSancionesView(LoginRequiredMixin,ListView):
+    model = Sancion
+    template_name = 'usuario/sanciones.html'
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        usuario = self.request.user
+        if hasattr(usuario,'usuario'):
+            sancion = Sancion.objects.filter(fk_usuario = usuario.usuario)
+            context['sancion'] = sancion
         return context

@@ -503,7 +503,7 @@ class Masa_corporal(models.Model):
     fecha_control = models.DateField()
     altura_cliente = models.DecimalField(max_digits=10, decimal_places=2)
     fk_Nutricion = models.ForeignKey(
-        Nutricion, on_delete=models.CASCADE, verbose_name="Nutricion"
+        Nutricion, on_delete=models.CASCADE, verbose_name="Nutricion" , related_name='nutricion'
     )
     imc = models.FloatField(null=True, blank=True)
     estado_imc = models.CharField(max_length=50, null=True, blank=True)

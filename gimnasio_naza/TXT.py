@@ -33,7 +33,7 @@ def main():
         if not creds:
             print("Iniciando flujo de autenticación en el navegador...")
             flow = InstalledAppFlow.from_client_secrets_file(
-                r"C:\Proyecto gimnasio\GRUPO5_\gimnasio_naza\credentials.json", SCOPES
+                r"C:\Users\Fernando\proyecto_gimnasio\gimnasio_naza\credentials.json", SCOPES
             )
             
             # --- LAS LÍNEAS CLAVE ESTÁN AQUÍ ---
