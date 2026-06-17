@@ -87,7 +87,7 @@ class MantenimientoListView(ListView):
         context["crear_url"] = reverse_lazy('gimnasio:crear_mantenimiento')
         context['completados'] = Mantenimiento.objects.filter(estado='Completado').count()
         context['pendientes'] = Mantenimiento.objects.filter(estado='Pendiente').count()
-        context['en_proceso'] = Mantenimiento.objects.filter(estado='En Proceso').count()
+        context['en_proceso'] = Mantenimiento.objects.filter(estado='En_Proceso').count()
         context['total_mantenimientos'] = Mantenimiento.objects.count() 
         return context
 

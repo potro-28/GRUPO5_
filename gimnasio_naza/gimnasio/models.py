@@ -149,18 +149,8 @@ class Asistencia(models.Model):
 
 # --------------------CATEGORIA------------------
 class Categoria(models.Model):
-
-    NOMBRE_CATEGORIA = [
-        ("maquinas", "Máquinas"),
-        ("mancuernas", "Mancuernas"),
-        ("discos", "Discos"),
-        ("accesorios", "Accesorios"),
-        ("barras", "Barras"),
-    ]
-
-    nombre_categoria = models.CharField(max_length=45, choices=NOMBRE_CATEGORIA)
+    nombre_categoria = models.CharField(max_length=45 , unique=True , error_messages={"unique": "Ya existe esa categoria"})
     descripcion = models.CharField(max_length=250)
-
     def __str__(self):
         return str(self.nombre_categoria)
 

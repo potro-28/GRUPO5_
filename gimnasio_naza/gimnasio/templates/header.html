@@ -265,7 +265,7 @@
           </li>
           <li>
             <form action="/gimnasio/backup/" method="post">
-              <input type="hidden" name="csrfmiddlewaretoken" value="hHcaLDE4remKUHhPb55NMCqRDdDm0mapUWMH04rnTNUE4f3O0pdXJZfxm6Vf6fYW" />
+              {% csrf_token %}
               <input type="hidden" name="accion" value="backup_completo" />
               <button type="submit" class="dropdown-item waves-effect"><i class="fa-solid fa-download me-2"></i>Backup completo</button>
             </form>
@@ -357,7 +357,7 @@
       { nombre: "Elementos",           url: "{% url 'gimnasio:listar_elementos' %}",         icono: "fa-solid fa-cogs",            tipoRol: "admin" },
       { nombre: "Mantenimiento",       url: "{% url 'gimnasio:listar_mantenimiento' %}",     icono: "fa-solid fa-wrench",          tipoRol: "admin" },
       { nombre: "Categorias",          url: "{% url 'gimnasio:listar_categorias' %}",        icono: "fa-solid fa-tags",            tipoRol: "admin" },
-      { nombre: "Turnos Entrenadores", url: "{% url 'gimnasio:listar_turnodeentrenador' %}", icono: "fa-solid fa-calendar-days",   tipoRol: "admin" }
+      { nombre: "Turnos Entrenadores", url: "{% url 'gimnasio:listar_turnodeentrenador' %}", icono: "fa-solid fa-calendar-days",   tipoRol: "admin" },
       { nombre: "Nutriciones",       url: "{% url 'gimnasio:listar_nutriciones' %}",           icono: "fa-solid fa-utensils",      tipoRol: "admin" },
       { nombre: "Rutinas",         url: "{% url 'gimnasio:listar_rutinas' %}",               icono: "fa-solid fa-dumbbell",      tipoRol: "admin" },
       { nombre: "Masa Corporal",   url: "{% url 'gimnasio:listar_masa_corporal_clas' %}",    icono: "fa-solid fa-weight-scale",  tipoRol: "admin" },

@@ -10,23 +10,39 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from gimnasio.models import *
 from gimnasio.forms import ElementoForm
-
+from django.db import IntegrityError
 
 @require_POST
 @csrf_exempt
 def crear_nombre_categoria_ajax(request):
     try:
+
         data = json.loads(request.body)
+
         categoria = Categoria.objects.create(
             nombre_categoria=data['nombre_nombre_categoria'],
             descripcion=data['descripcion']
         )
+
         return JsonResponse({
+            'success': True,
             'id': categoria.pk,
-            'nombre': categoria.get_nombre_categoria_display()
+            'nombre': categoria.nombre_categoria
         })
+
+    except IntegrityError:
+
+        return JsonResponse({
+            'success': False,
+            'error': 'Ya existe una categoría con ese nombre.'
+        }, status=400)
+
     except Exception as e:
-        return JsonResponse({'error': str(e)}, status=500)
+
+        return JsonResponse({
+            'success': False,
+            'error': str(e)
+        }, status=500)
 
 
 class ElementoListView(ListView):

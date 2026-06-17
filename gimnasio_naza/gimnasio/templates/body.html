@@ -12,7 +12,61 @@
             {% endblock contenido %}
         </main>
     </div>
+ <button id="btn-accesibilidad" aria-label="Abrir menú de accesibilidad" onclick="toggleMenuAccesibilidad()">
+    <i class="fas fa-universal-access"></i>
+</button>
 
+<!-- Menú de Accesibilidad Gym Nazareth -->
+<div id="menu-accesibilidad" class="menu-accesibilidad oculto">
+    
+    <!-- Cabecera del Menú -->
+    <div class="d-flex justify-content-between align-items-center mb-3 pb-2" style="border-bottom: 1px solid #e2e8f0;">
+        <h5 class="m-0 font-weight-bold text-dark" style="font-size: 1rem;">
+            <i class="fas fa-sliders-h mr-2 text-secondary"></i>Accesibilidad
+        </h5>
+        <button onclick="toggleMenuAccesibilidad()" class="p-0 border-0 bg-transparent text-muted font-weight-bold" style="font-size: 1.2rem; width: auto; margin: 0; cursor: pointer;">
+            &times;
+        </button>
+    </div>
+
+    <!-- Opciones de Texto -->
+    <button onclick="aumentarTexto()">
+        <i class="fas fa-search-plus fa-fw"></i> Aumentar texto
+    </button>
+
+    <button onclick="disminuirTexto()">
+        <i class="fas fa-search-minus fa-fw"></i> Disminuir texto
+    </button>
+
+    <!-- Opciones Visuales -->
+    <button onclick="alternarContraste()">
+        <i class="fas fa-adjust fa-fw"></i> Alto contraste
+    </button>
+
+    <button onclick="escalaGrises()">
+        <i class="fas fa-eye fa-fw"></i> Escala de grises
+    </button>
+
+    <button onclick="resaltarEnlaces()">
+        <i class="fas fa-link fa-fw"></i> Resaltar enlaces
+    </button>
+
+    <!-- Opciones de Lectura por Voz -->
+    <button onclick="leerPagina()">
+        <i class="fas fa-volume-up fa-fw"></i> Leer página
+    </button>
+    
+    <button onclick="detenerLectura()">
+        <i class="fas fa-stop-circle fa-fw text-danger"></i> Detener lectura
+    </button>
+
+    <!-- Restablecer Todo -->
+    <button onclick="restablecerAccesibilidad()" class="mt-2 text-danger" style="background-color: #fff5f5; border-color: #feb2b2;">
+        <i class="fas fa-undo-alt fa-fw"></i> Restablecer valores
+    </button>
+</div>
+
+</div>
     <script>
       // Toggle de Barra Lateral Animada
       document.getElementById('menuToggle').addEventListener('click', function () {
@@ -52,9 +106,11 @@
     <script src="{% static 'assets/vendor/libs/apex-charts/apexcharts.js'%}"></script>
     <script src="{% static 'assets/js/main.js'%}"></script>
     <script src="{% static 'assets/js/dashboards-analytics.js'%}"></script>
-    <script async="async" defer="defer" src="https://buttons.github.io/buttons.js"></script>
+      <script
+    src="{% static 'js/accesibilidad.js' %}"
+    defer>
+</script>
     <script src="{% static 'lib/sweetalert2/sweetalert2.all.min.js'%}"></script>
-    <script defer src="{% static 'js/sienna-accessibility.umd.js' %}"></script>
 
     <!-- ===== BUSCADOR DE MÓDULOS ===== -->
     <style>

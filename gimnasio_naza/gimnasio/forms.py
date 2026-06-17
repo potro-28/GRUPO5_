@@ -972,7 +972,7 @@ class CategoriaForm(forms.ModelForm):
         fields = '__all__'
 
         widgets = {
-            'nombre_categoria': forms.Select(attrs={
+            'nombre_categoria': forms.TextInput(attrs={
                 'class': 'form-control'
             }),
 
@@ -986,6 +986,10 @@ class CategoriaForm(forms.ModelForm):
         nombre = self.cleaned_data.get('nombre_categoria')
         if nombre and not nombre.isalpha():
             raise forms.ValidationError("El Nombre no puede contener números")
+        if len(nombre) < 3:
+            raise forms.ValidationError("El nombre debe tener al minimo 3 palabras")
+        if len(nombre) > 45:
+            raise forms.ValidationError("El nombre es demasiado grande")
         return nombre
 
     def clean_material(self):
