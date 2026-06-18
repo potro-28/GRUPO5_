@@ -167,6 +167,7 @@ class UsuarioForm(forms.ModelForm):
             'peso_usuario',
             'altura_usuario',
             'rol',
+            'genero_usuario',
             'foto',
         ]
 
