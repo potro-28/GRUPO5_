@@ -42,7 +42,7 @@ class TurnodeentrenadorUpdateView(UpdateView):
         return context
     
     def form_valid(self, form):
-        messages.success(self.request, 'Actualizacion de turno de entrenador actualizado correctamente')
+        messages.success(self.request, 'Registro de turno de entrenador actualizado correctamente')
         return super().form_valid(form)
 
 class TurnodeentrenadorDeleteView(DeleteView):

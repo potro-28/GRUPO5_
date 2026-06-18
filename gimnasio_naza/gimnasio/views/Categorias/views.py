@@ -57,7 +57,7 @@ class CategoriaCreateView(CreateView):
         return context
     
     def form_valid(self, form):
-        messages.success(self.request, "La categoría se guardó correctamente")
+        messages.success(self.request, "Categoría creada correctamente")
         return super().form_valid(form)
     
     
@@ -74,7 +74,7 @@ class CategoriaUpdateView(UpdateView):
         return context
     
     def form_valid(self, form):
-        messages.success(self.request, "La categoría se editó correctamente")
+        messages.success(self.request, "Categoría editada correctamente")
         return super().form_valid(form)
     
 class CategoriaDeleteView(DeleteView):
@@ -89,5 +89,5 @@ class CategoriaDeleteView(DeleteView):
         return context
     
     def form_valid(self, form):
-        messages.success(self.request, "La categoría se eliminó correctamente")
+        messages.success(self.request, "Categoría eliminada correctamente")
         return super().form_valid(form)

@@ -144,7 +144,7 @@ class MembresiaCreateView(CreateView):
     def form_valid(self, form):
         messages.success(
             self.request,
-            "membresia registrada correctamente"
+            "membresia creada correctamente"
         )
         return super().form_valid(form)
 
@@ -163,7 +163,7 @@ class MembresiaUpdateView(UpdateView):
     def form_valid(self, form):
         messages.success(
             self.request,
-            "membresia editada correctamente correctamente"
+            "membresia actualizada correctamente "
         )
         return super().form_valid(form)
 

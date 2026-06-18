@@ -95,7 +95,7 @@ class Masa_corporalCreateView(CreateView):
 
         messages.success(
             self.request,
-            "Registro corporal guardado correctamente"
+            "Masa corporal creada correctamente"
         )
 
         return super().form_valid(form)
@@ -145,7 +145,7 @@ class Masa_corporalUpdateView(UpdateView):
 
         messages.success(
             self.request,
-            "Registro corporal guardado correctamente"
+            "Masa corporal actualizada correctamente"
         )
 
         return super().form_valid(form)

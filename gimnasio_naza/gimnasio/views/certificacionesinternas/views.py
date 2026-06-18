@@ -98,7 +98,7 @@ class CertificacioninternaCreateView(CreateView):
 
     def form_valid(self, form):
         print('Aqui')
-        messages.success(self.request, 'Certificacion creada correctamente')
+        messages.success(self.request, 'Certificación creada correctamente')
         return super().form_valid(form)
 
 
@@ -115,7 +115,7 @@ class CertificacioninternaUpdateView(UpdateView):
 
     def form_valid(self, form):
         messages.success(
-            self.request, 'Actualizacion de certificación interna actualizado correctamente')
+            self.request, 'Certificación interna actualizada correctamente')
         return super().form_valid(form)
 
 

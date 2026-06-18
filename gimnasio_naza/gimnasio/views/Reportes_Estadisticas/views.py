@@ -252,7 +252,7 @@ class Reportes_estadisticasCreateView(CreateView):
 
         messages.success(
             self.request,
-            "Reporte guardado correctamente"
+            "Reporte creado correctamente"
         )
 
         return super().form_valid(form)
@@ -296,7 +296,7 @@ class Reportes_estadisticasUpdateView(UpdateView):
 
         messages.success(
             self.request,
-            "Reporte editado correctamente"
+            "Reporte actualizado correctamente"
         )
 
         return super().form_valid(form)

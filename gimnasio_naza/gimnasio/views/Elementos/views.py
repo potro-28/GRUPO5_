@@ -120,7 +120,7 @@ class ElementoUpdateView(UpdateView):
     def form_valid(self, form):
         messages.success(
             self.request,
-            "elemento editado correctamente "
+            "elemento actualizado correctamente "
         )
         return super().form_valid(form)
 
