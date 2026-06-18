@@ -132,7 +132,7 @@ class RutinaCreateView(CreateView):
         return context
 
     def form_valid(self, form):
-        messages.success(self.request, "Rutina guardada correctamente")
+        messages.success(self.request, "Rutina creada correctamente")
         return super().form_valid(form)
     
 class RutinaUpdateView(UpdateView):
@@ -148,7 +148,7 @@ class RutinaUpdateView(UpdateView):
         return context
 
     def form_valid(self, form):
-        messages.success(self.request, "La rutina se editó correctamente")
+        messages.success(self.request, "rutina actualizada correctamente")
         return super().form_valid(form)
     
     
@@ -164,5 +164,5 @@ class RutinaDeleteView(DeleteView):
         return context
     
     def form_valid(self, form):
-        messages.success(self.request, "La rutina se eliminó correctamente")
+        messages.success(self.request, "rutina eliminada correctamente")
         return super().form_valid(form)

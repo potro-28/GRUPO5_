@@ -101,7 +101,7 @@ class SancionesCreateView(CreateView):
     success_url = reverse_lazy('gimnasio:listar_sanciones_clas')
 
     def form_valid(self, form):
-        messages.success(self.request, "La sanción se registró correctamente.")
+        messages.success(self.request, "Sanción creada correctamente.")
         return super().form_valid(form)
 
     def get_context_data(self, **kwargs):
@@ -127,7 +127,7 @@ class SancionesUpdateView(UpdateView):
         return context
     
     def form_valid(self, form):
-        messages.success(self.request, "Sanción editada correctamente")
+        messages.success(self.request, "Sanción actualizada correctamente")
         return super().form_valid(form)
 class SancionesDeleteView(DeleteView):
     model = Sancion

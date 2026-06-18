@@ -108,7 +108,7 @@ class RegistrovisitantetemporalUpdateView(UpdateView):
         return context
     
     def form_valid(self, form):
-        messages.success(self.request, 'Actualizacion de registro visitante actualizado correctamente')
+        messages.success(self.request, ' registro visitante actualizado correctamente')
         return super().form_valid(form)
     
 class RegistrovisitantetemporalDeleteView(DeleteView):

@@ -116,7 +116,7 @@ class NutricionCreateView(PermissionRequiredMixin,CreateView):
         return context
     
     def form_valid(self, form):
-        messages.success(self.request, "Nutricion guardada correctamente")
+        messages.success(self.request, "Nutricion creada correctamente")
         return super().form_valid(form)
     
     
@@ -133,7 +133,7 @@ class NutricionUpdateView(UpdateView):
         return context
     
     def form_valid(self, form):
-        messages.success(self.request, "La nutricion se editó correctamente")
+        messages.success(self.request, "nutricion actualizada correctamente")
         return super().form_valid(form)
     
     
@@ -149,5 +149,5 @@ class NutricionDeleteView(DeleteView):
         return context
 
     def form_valid(self, form):
-        messages.success(self.request, "La nutricion se eliminó correctamente")
+        messages.success(self.request, "nutrición eliminada correctamente")
         return super().form_valid(form)

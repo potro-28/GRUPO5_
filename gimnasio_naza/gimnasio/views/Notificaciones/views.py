@@ -117,7 +117,7 @@ class NotificacionCreateView(CreateView):
     def form_valid(self, form):
         messages.success(
             self.request,
-            "notificacion registrada correctamente"
+            "notificación creada correctamente"
         )
         return super().form_valid(form)
     
@@ -136,7 +136,7 @@ class NotificacionUpdateView(UpdateView):
     def form_valid(self, form):
         messages.success(
             self.request,
-            "notificacion registrada correctamente"
+            "notificacióon actualizada correctamente"
         )
         return super().form_valid(form)
 
@@ -154,7 +154,7 @@ class NotificacionDeleteView(DeleteView):
     def form_valid(self, form):
         messages.success(
             self.request,
-            "notificacion registrada correctamente"
+            "notificacón eliminada correctamente"
         )
         return super().form_valid(form)
 

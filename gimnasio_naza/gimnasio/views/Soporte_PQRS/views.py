@@ -111,7 +111,7 @@ class Soporte_PQRSCreateView(CreateView):
         return context
     
     def form_valid(self, form):
-        messages.success(self.request, "Soporte guardado correctamente")
+        messages.success(self.request, "Soporte creado correctamente")
         return super().form_valid(form)
     
 class Soporte_PQRSUpdateView(UpdateView):
@@ -127,7 +127,7 @@ class Soporte_PQRSUpdateView(UpdateView):
         return context
     
     def form_valid(self, form):
-        messages.success(self.request, "Soporte editado correctamente")
+        messages.success(self.request, "Soporte actualizado correctamente")
         return super().form_valid(form)
 
 

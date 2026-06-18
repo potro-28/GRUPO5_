@@ -127,7 +127,7 @@ class AsistenciaCreateView(CreateView):
     def form_valid(self, form):
         messages.success(
             self.request,
-            "Asistencia registrada correctamente"
+            "Asistencia creada correctamente"
         )
         return super().form_valid(form)
     
@@ -145,7 +145,7 @@ class AsistenciaUpdateView(UpdateView):
         return context
     
     def form_valid(self, form):
-        messages.success(self.request, "Asistencia editada correctamente")
+        messages.success(self.request, "Asistencia actualizada correctamente")
         return super().form_valid(form)
 
 class AsistenciaDeleteView(DeleteView):
