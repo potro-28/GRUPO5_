@@ -157,7 +157,7 @@ class Categoria(models.Model):
         ("barras", "Barras"),
     ]
 
-    nombre_categoria = models.CharField(max_length=45, choices=NOMBRE_CATEGORIA)
+    nombre_categoria = models.CharField(max_length=100, unique=True)
     descripcion = models.CharField(max_length=250)
 
     def __str__(self):
