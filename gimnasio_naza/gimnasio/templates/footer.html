@@ -1,21 +1,49 @@
 {% load static %}
-<footer class="content-footer footer bg-footer-theme">
-  <div class="container-xxl">
-    <div class="footer-container d-flex align-items-center justify-content-between py-4 flex-md-row flex-column">
-      <div class="mb-2 mb-md-0">
-        &#169;
-        <script>
-          document.write(new Date().getFullYear());
-        </script>
-        copyright , creado por grupo 5
-      </div>
-      <div class="d-none d-lg-inline-block">
-        <a href="https://wa.me/573208546734" target="_blank" class="footer-link me-4">whatsapp</a>
-        <a href="https://wa.me/573138059194" target="_blank" class="footer-link me-4">contactanos</a>
-        <a href="https://wa.me/573138059194" target="_blank" class="footer-link">soporte</a>
-      </div>
+<style>
+    .footer-neon {
+        background: #050505;
+        border-top: 1px solid rgba(255, 215, 0, 0.2);
+        padding: 20px 0;
+        margin-top: auto;
+        width: 100%;
+    }
+    .footer-text {
+        color: #8b9eb0;
+        font-size: 13px;
+        margin: 0;
+        font-weight: 500;
+        letter-spacing: 0.5px;
+    }
+    .footer-link {
+        color: #ffd700;
+        text-decoration: none;
+        font-weight: 700;
+        transition: 0.3s;
+    }
+    .footer-link:hover { color: #fff; text-shadow: 0 0 10px rgba(255,215,0,0.5); }
+    .footer-social i {
+        font-size: 18px; color: #a0a0a0; margin-left: 15px; transition: 0.3s; cursor: pointer;
+    }
+    .footer-social i:hover { color: #ffd700; transform: scale(1.1); }
+</style>
+<footer class="footer-neon">
+    <div class="container-fluid px-4">
+        <div class="row align-items-center">
+            <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
+                <p class="footer-text">
+                    &copy; <script>document.write(new Date().getFullYear())</script> 
+                    <span style="color: #fff; font-weight: 800;">GYM NAZARETH</span>. 
+                    Todos los derechos reservados. Desarrollado por <a href="#" class="footer-link">Grupo 5</a>.
+                </p>
+            </div>
+            <div class="col-md-6 text-center text-md-end footer-social">
+                <a href="#" class="footer-link me-3">Soporte Técnico</a>
+                <a href="#" class="footer-link me-3">WhatsApp</a>
+                <i class="fab fa-instagram"></i>
+                <i class="fab fa-facebook-f"></i>
+            </div>
+        </div>
     </div>
-  </div>
 </footer>
 
 <!-- ==================== WIDGET ACCESIBILIDAD ==================== -->

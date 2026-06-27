@@ -21,7 +21,7 @@ class MotorRecomendacionGym:
     def generar_recomendaciones(self, usuario_id):
         imc = 0.0 
         try:
-            print(f"\n EJECUTANDO  IA  {usuario_id}")
+            print(f"\n EJECUTANDO IA {usuario_id} EN GPU...")
             usuario = Usuario.objects.get(id=usuario_id)
             edad = self.calcular_edad(usuario.fecha_nacimiento)
             
@@ -47,38 +47,39 @@ class MotorRecomendacionGym:
             - Peso: {peso} kg
             - Calorías de Mantenimiento (aprox): {int(tmb * 1.3)} kcal
 
-            Sé creativo con los ejemplos de rutina (cambia los ejercicios, los días, las divisiones musculares) y con los macros, pero mantén la coherencia. NO repitas siempre lo mismo.
-
             Responde ÚNICAMENTE con un objeto JSON válido que cumpla esta estructura exacta (sin texto fuera del JSON):
             {{
                 "opcion_1": {{
                     "titulo": "Inventa un título creativo (ej. Salud Activa)",
                     "enfoque_rutina": "FUNCIONAL",
-                    "rutina_ejemplo": "Describe una rutina única adaptada al cliente",
-                    "nutricion_objetivo": "Meta calórica en kcal basada en su mantenimiento",
-                    "macros_sugeridos": "Porcentajes C/P/G (ej. 45% C, 35% P, 20% G)"
+                    "rutina_ejemplo": "Describe una rutina única",
+                    "nutricion_objetivo": "Meta calórica",
+                    "macros_sugeridos": "Porcentajes C/P/G"
                 }},
                 "opcion_2": {{
                     "titulo": "Inventa un título creativo (ej. Fuerza Bruta)",
                     "enfoque_rutina": "FUERZA",
-                    "rutina_ejemplo": "Describe una rutina pesada/hipertrofia distinta",
-                    "nutricion_objetivo": "Meta calórica de superávit en kcal",
+                    "rutina_ejemplo": "Describe una rutina pesada/hipertrofia",
+                    "nutricion_objetivo": "Meta calórica de superávit",
                     "macros_sugeridos": "Porcentajes C/P/G diferentes"
                 }}
             }}
             """
 
+            # ====== CORRECCIÓN DE RENDIMIENTO Y GPU ======
             response = requests.post(self.ollama_url, json={
                 "model": self.modelo,
                 "prompt": prompt,
                 "format": "json",
                 "stream": False,
-                "keep_alive": 0,
+        
+                "keep_alive": "15m", 
                 "options": {
                     "temperature": 0.8,
-                    "num_predict": 400  
+                    "num_predict": 400,
+                    "num_gpu": 99 
                 }
-            }, timeout=45)
+            }, timeout=60) 
             
             respuesta_texto = response.json().get('response', '')
             
@@ -97,15 +98,15 @@ class MotorRecomendacionGym:
                 "opcion_1": {
                     "titulo": op1.get("titulo", op1.get("title", "Conservadora/Salud")),
                     "enfoque_rutina": op1.get("enfoque_rutina", op1.get("enfoque", "FUNCIONAL")),
-                    "rutina_ejemplo": op1.get("rutina_ejemplo", op1.get("rutina", op1.get("routine", "Circuito cuerpo completo."))),
-                    "nutricion_objetivo": op1.get("nutricion_objetivo", op1.get("meta_diaria", op1.get("meta", "Dieta base."))),
+                    "rutina_ejemplo": op1.get("rutina_ejemplo", op1.get("rutina", "Circuito cuerpo completo.")),
+                    "nutricion_objetivo": op1.get("nutricion_objetivo", op1.get("meta_diaria", "Dieta base.")),
                     "macros_sugeridos": op1.get("macros_sugeridos", op1.get("macros", "50% C, 30% P, 20% G"))
                 },
                 "opcion_2": {
                     "titulo": op2.get("titulo", op2.get("title", "Agresiva/Hipertrofia")),
                     "enfoque_rutina": op2.get("enfoque_rutina", op2.get("enfoque", "FUERZA")),
-                    "rutina_ejemplo": op2.get("rutina_ejemplo", op2.get("rutina", op2.get("routine", "Rutina pesada 4x10."))),
-                    "nutricion_objetivo": op2.get("nutricion_objetivo", op2.get("meta_diaria", op2.get("meta", "Superávit."))),
+                    "rutina_ejemplo": op2.get("rutina_ejemplo", op2.get("rutina", "Rutina pesada 4x10.")),
+                    "nutricion_objetivo": op2.get("nutricion_objetivo", op2.get("meta_diaria", "Superávit.")),
                     "macros_sugeridos": op2.get("macros_sugeridos", op2.get("macros", "40% C, 40% P, 20% G"))
                 },
                 "Advertencia": " Las imágenes y calorías son referenciales. Consulta a un profesional."

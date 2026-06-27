@@ -1,158 +1,139 @@
-{% extends 'body.html' %}
+{% extends "body.html" %}
 {% load static %}
 
 {% block contenido %}
 <style>
+    /* ANIMACIONES */
     .stagger-1 { animation: revealBounce 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; animation-delay: 0.1s; opacity: 0; }
     .stagger-2 { animation: revealBounce 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; animation-delay: 0.2s; opacity: 0; }
     @keyframes revealBounce { 0% { opacity: 0; transform: translateY(30px) scale(0.97); } 100% { opacity: 1; transform: translateY(0) scale(1); } }
 
+    /* =======================================================
+       TARJETA DASHBOARD: FIX FRANJA Y RESPONSIVE
+       ======================================================= */
     .card-dash { 
         position: relative; background: rgba(10, 10, 10, 0.95); backdrop-filter: blur(10px); 
-        border-radius: 15px; padding: 25px; box-shadow: 0 15px 35px rgba(0,0,0,0.9); 
+        border-radius: 15px; 
+        padding: 25px 25px 25px 35px; /* Más padding a la izquierda */
+        box-shadow: 0 15px 35px rgba(0,0,0,0.9); 
         border: 1px solid rgba(255,215,0,0.1); margin-bottom: 25px;
+        overflow: hidden; /* Oculta el desborde de la franja */
+        z-index: 1;
+    }
+    .card-dash::before {
+        content: ''; position: absolute; top: -10%; left: -15px; width: 30px; height: 120%;
+        background: #ffd700; transform: skewX(-15deg); box-shadow: 0 0 15px rgba(255, 215, 0, 0.4);
+        z-index: -1; /* FIX: Empuja la franja detrás del contenido */
     }
     
-    .card-dash::before {
-        content: ''; position: absolute; top: 0; left: -15px; width: 20px; height: 100%;
-        background: #ffd700; transform: skewX(-15deg); box-shadow: 0 0 10px rgba(255, 215, 0, 0.2);
+    /* FIX: Capa de protección para que el texto resalte por encima de la franja */
+    .table-wrapper-safe {
+        position: relative; z-index: 2; width: 100%;
     }
 
-    .header-title { color: #fff; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; margin: 0;}
-    
+    /* BOTONES DORADOS */
     .btn-hero-gold { background: #ffd700; color: #000; border: none; font-weight: 900; padding: 10px 20px; font-size: 13px; text-transform: uppercase; display: inline-flex; align-items: center; gap: 8px; transform: skewX(-10deg); transition: 0.3s; text-decoration: none;}
     .btn-hero-gold span { transform: skewX(10deg); display: block; }
     .btn-hero-gold:hover { transform: skewX(-10deg) scale(1.05); box-shadow: 0 0 25px #ffd700; background: #fff; color: #000;}
 
-    .btn-hero-outline { background: rgba(255,215,0,0.05); color: #ffd700; border: 1px solid #ffd700; font-weight: 900; padding: 10px 20px; font-size: 13px; text-transform: uppercase; display: inline-flex; align-items: center; gap: 8px; transform: skewX(-10deg); transition: 0.3s; border-radius: 0;}
-    .btn-hero-outline span { transform: skewX(10deg); display: block; }
-    .btn-hero-outline:hover { background: #ffd700; color: #000; box-shadow: 0 0 20px rgba(255,215,0,0.5); }
-
-    /* FILTROS */
-    .filter-box { background: rgba(0,0,0,0.5); border-radius: 10px; padding: 15px; margin-bottom: 20px; border: 1px solid rgba(255,255,255,0.05);}
-    .filter-input { background: #111; border: 1px solid #333; color: #fff; }
-    .filter-input:focus { border-color: #ffd700; box-shadow: 0 0 10px rgba(255,215,0,0.2); background: #000;}
-    .filter-input::-webkit-calendar-picker-indicator { filter: invert(1); cursor: pointer;}
-
-    /* 🛡️ DESTRUCTOR DE AZUL: FUERZA ESTILOS OSCUROS EN DATATABLES 🛡️ */
-    .dataTables_wrapper .dataTables_length, .dataTables_wrapper .dataTables_filter, .dataTables_wrapper .dataTables_info, .dataTables_wrapper .dataTables_paginate { color: #a0a0a0 !important; font-weight: 600; font-size: 12px; text-transform: uppercase;}
-    .dataTables_wrapper .dataTables_filter input { background: #000 !important; border: 1px solid rgba(255,215,0,0.3) !important; color: #fff !important; }
+    /* TABLA DARK GOLD ESTRICTO (BLANCO, NEGRO, DORADO - SIN AZUL) */
+    .dataTables_wrapper .dataTables_length, .dataTables_wrapper .dataTables_filter, .dataTables_wrapper .dataTables_info, .dataTables_wrapper .dataTables_paginate { color: #ffffff !important; font-weight: 600; font-size: 12px; text-transform: uppercase;}
+    .dataTables_wrapper .dataTables_filter input { background: #000 !important; border: 1px solid rgba(255,215,0,0.3) !important; color: #fff !important; border-radius: 5px; padding: 4px 10px;}
+    .dataTables_wrapper .dataTables_filter input:focus { border-color: #ffd700 !important; box-shadow: 0 0 10px rgba(255,215,0,0.3) !important; outline: none;}
     
-    table.dataTable, .table-dark-gold { width: 100% !important; border-collapse: separate !important; border-spacing: 0 5px !important; margin-top: 15px !important; border: none !important;}
+    table.dataTable { width: 100% !important; border-collapse: separate !important; border-spacing: 0 5px !important; margin-top: 15px !important; border: none !important;}
+    table.dataTable thead th { background: #000 !important; color: #ffd700 !important; border-bottom: 2px solid #ffd700 !important; border-top: none !important; padding: 15px !important; text-transform: uppercase; font-size: 11px; font-weight: 900; letter-spacing: 1px; white-space: nowrap;}
+    table.dataTable tbody tr { background: rgba(0,0,0,0.5) !important; transition: 0.3s; }
+    table.dataTable tbody tr:hover { background-color: rgba(255, 215, 0, 0.05) !important; border-left: 3px solid #ffd700 !important;}
     
-    /* Forzamos el background-color para anular cualquier 'table-light' o 'bg-primary' base */
-    table.dataTable thead th, .table-dark-gold thead th, table.dataTable thead td { 
-        background-color: #000 !important; background: #000 !important; color: #ffd700 !important; 
-        border-bottom: 2px solid #ffd700 !important; border-top: none !important; 
-        padding: 15px !important; text-transform: uppercase; font-size: 12px; font-weight: 900; letter-spacing: 1px;
-    }
+    /* FIX: Color de letra blanco absoluto */
+    table.dataTable tbody td { padding: 15px !important; border: none !important; vertical-align: middle; color: #ffffff !important; font-size: 13px; white-space: nowrap;}
     
-    table.dataTable tbody tr, .table-dark-gold tbody tr { background-color: rgba(0,0,0,0.5) !important; background: rgba(0,0,0,0.5) !important; transition: 0.3s; }
-    table.dataTable tbody tr:hover, .table-dark-gold tbody tr:hover { background-color: rgba(255, 215, 0, 0.05) !important; border-left: 3px solid #ffd700 !important;}
-    table.dataTable tbody td, .table-dark-gold td { padding: 15px !important; border: none !important; vertical-align: middle; color: #fff !important; background-color: transparent !important;}
-    
+    /* PAGINACIÓN */
     .page-item.active .page-link { background-color: #ffd700 !important; border-color: #ffd700 !important; color: #000 !important; font-weight: 900; box-shadow: 0 0 15px rgba(255, 215, 0, 0.5); }
     .page-item .page-link { background-color: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.1); color: #fff;}
-
-    .modal-dark .modal-content { background: #0a0a0a; border: 1px solid #ffd700; box-shadow: 0 15px 50px rgba(0,0,0,0.9); color: #fff; }
-    .modal-dark .modal-header { border-bottom: 1px solid rgba(255,215,0,0.2); background: #000; }
-    .modal-dark .btn-close { filter: invert(1); }
+    .page-item .page-link:hover { background-color: rgba(255,215,0,0.2); color: #ffd700; }
 </style>
 
-<link rel="stylesheet" href="{% static 'lib/datatables-1.10.20/css/dataTables.bootstrap4.min.css' %}" />
-<link rel="stylesheet" href="{% static 'lib/datatables-1.10.20/plugins/responsive-2.2.3/css/responsive.bootstrap4.min.css' %}" />
-
-<div style="position: fixed; top: 20%; right: 5%; width: 300px; height: 800px; background: #ffd700; opacity: 0.02; transform: skewX(-30deg); z-index: -1; pointer-events: none;"></div>
+<link rel="stylesheet" href="{% static 'lib/datatables-1.10.20/css/dataTables.bootstrap4.min.css' %}">
+<link rel="stylesheet" href="{% static 'lib/datatables-1.10.20/plugins/responsive-2.2.3/css/responsive.bootstrap4.min.css' %}">
 
 <div class="container-fluid mt-4">
-    <div class="d-flex flex-column flex-lg-row justify-content-between align-items-lg-center mb-4 gap-3 stagger-1">
-        <h3 class="header-title"><i class="fas fa-list-check" style="color: #ffd700; margin-right: 10px;"></i> Registro de Asistencias</h3>
+    <div class="d-flex flex-column flex-lg-row justify-content-between align-items-lg-center mb-4 gap-3 stagger-1" style="position: relative; z-index: 100;">
+        <h3 class="text-white fw-bold m-0 text-uppercase"><i class="fas fa-list-check" style="color: #ffd700; margin-right: 10px;"></i> Registro de Asistencias</h3>
         
         <div class="d-flex gap-3 flex-wrap">
-            <button type="button" class="btn-hero-outline" data-bs-toggle="modal" data-bs-target="#modalqr">
-                <span><i class="fas fa-qrcode"></i> Escanear QR</span>
+            <button class="btn" style="background: rgba(255,215,0,0.1); color: #ffd700; border: 1px solid #ffd700; font-weight: 900;" data-bs-toggle="modal" data-bs-target="#modalQR">
+                <i class="fas fa-qrcode me-2"></i> Escanear QR
             </button>
-            <div class="dropdown" style="position: relative; z-index: 10;">
-                <button class="btn-hero-outline dropdown-toggle" type="button" data-bs-toggle="dropdown" style="transform: skewX(0); border-radius: 4px;">
-                    <i class="fas fa-file-export me-2"></i> Exportar
-                </button>
-                <ul class="dropdown-menu dropdown-menu-dark bg-dark border-warning mt-2">
-                    <li><a class="dropdown-item fw-bold" href="{% url 'gimnasio:exportar_asistencia_excel' %}"><i class="fas fa-file-excel me-2 text-success"></i> Formato Excel</a></li>
-                    <li><a class="dropdown-item fw-bold" href="{% url 'gimnasio:exportar_asistencia_pdf' %}"><i class="fas fa-file-pdf me-2 text-danger"></i> Formato PDF</a></li>
-                </ul>
-            </div>
-            <a href="{{ crear_url }}" class="btn-hero-gold">
+            <a href="{% url 'gimnasio:crear_asistencia' %}" class="btn-hero-gold">
                 <span><i class="fas fa-plus"></i> Nueva Asistencia</span>
             </a>
         </div>
     </div>
 
     <div class="card-dash stagger-2">
-        <div class="filter-box row align-items-end">
-            <div class="col-md-4 mb-2 mb-md-0">
-                <label class="text-muted small fw-bold text-uppercase mb-1" style="letter-spacing: 1px;">Fecha Desde:</label>
-                <input type="date" id="min-date" class="form-control filter-input">
+        <div class="table-wrapper-safe">
+            <div class="row mb-4 align-items-end">
+                <div class="col-md-4">
+                    <label style="color: #a0a0a0; font-size: 10px; font-weight: 800; text-transform: uppercase;">Fecha Desde:</label>
+                    <input type="date" id="min-date" class="form-control" style="background: #000; border: 1px solid rgba(255,215,0,0.3); color: #fff;">
+                </div>
+                <div class="col-md-4">
+                    <label style="color: #a0a0a0; font-size: 10px; font-weight: 800; text-transform: uppercase;">Fecha Hasta:</label>
+                    <input type="date" id="max-date" class="form-control" style="background: #000; border: 1px solid rgba(255,215,0,0.3); color: #fff;">
+                </div>
+                <div class="col-md-4">
+                    <button id="clear-dates" class="btn w-100" style="background: rgba(255,255,255,0.05); color: #fff; border: 1px solid rgba(255,255,255,0.2); font-weight: 800; text-transform: uppercase;">
+                        <i class="fas fa-eraser me-2" style="color: #ffd700;"></i> Limpiar Filtros
+                    </button>
+                </div>
             </div>
-            <div class="col-md-4 mb-2 mb-md-0">
-                <label class="text-muted small fw-bold text-uppercase mb-1" style="letter-spacing: 1px;">Fecha Hasta:</label>
-                <input type="date" id="max-date" class="form-control filter-input">
-            </div>
-            <div class="col-md-4">
-                <button id="clear-dates" class="btn w-100" style="background: rgba(255, 255, 255, 0.05); color: #fff; border: 1px solid rgba(255,255,255,0.2); font-weight: 800; text-transform: uppercase; font-size: 12px; padding: 10px;">
-                    <i class="fas fa-eraser me-2 text-warning"></i> Limpiar Filtros
-                </button>
-            </div>
-        </div>
 
-        <div class="table-responsive">
-            <!-- Nota: Quité cualquier clase table-striped o table-light para evitar conflictos -->
-            <table id="tabla-asistencia" class="table-dark-gold display nowrap">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Fecha</th>
-                        <th>Hora</th>
-                        <th>Atleta (Membresía)</th>
-                        <th>Documento</th>
-                        <th class="text-center">Acciones</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for a in object_list %}
-                    <tr>
-                        <td class="fw-bold" style="color: #6c757d; font-size: 14px;">#{{ a.id }}</td>
-                        <td class="fw-bold text-white">{{ a.fecha_asistencia|date:"Y-m-d" }}</td>
-                        <td style="color: #ffd700; font-weight: 900; font-size: 15px;">{{ a.hora_ingreso }}</td>
-                        <td>
-                            <div class="text-white fw-bold" style="font-size: 15px; text-transform: uppercase;">{{ a.fk_membresia.fk_usuario.nombre_usuario }} {{ a.fk_membresia.fk_usuario.apellido_usuario }}</div>
-                            <span style="background: rgba(255,215,0,0.1); color: #ffd700; padding: 2px 8px; border-radius: 4px; font-size: 10px; font-weight: 800; text-transform: uppercase; border: 1px solid rgba(255,215,0,0.2);">Mem. ID: {{ a.fk_membresia.id }}</span>
-                        </td>
-                        <td class="fw-bold" style="color: #a0a0a0;">{{ a.fk_membresia.fk_usuario.documento }}</td>
-                        <td class="text-center">
-                            <a href="{% url 'gimnasio:editar_asistencia' a.id %}" class="btn btn-sm" style="background: rgba(255,215,0,0.1); color: #ffd700; border: 1px solid #ffd700; border-radius: 4px; padding: 6px 12px; transition: 0.3s;"><i class="fas fa-edit"></i></a>
-                            <a href="{% url 'gimnasio:eliminar_asistencia' a.id %}" class="btn btn-sm" style="background: rgba(255,255,255,0.05); color: #fff; border: 1px solid rgba(255,255,255,0.2); border-radius: 4px; padding: 6px 12px; transition: 0.3s; margin-left: 5px;"><i class="fas fa-trash"></i></a>
-                        </td>
-                    </tr>
-                    {% empty %}
-                    <tr><td colspan="6" class="text-center py-5"><i class="fas fa-database fa-3x mb-3" style="color: #ffd700; opacity: 0.2;"></i><br><span class="text-muted fw-bold text-uppercase" style="letter-spacing: 1px;">No hay asistencias registradas</span></td></tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-    </div>
-</div>
+            <div class="table-responsive">
+                <table id="tabla-asistencias" class="table display nowrap">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Fecha</th>
+                            <th>Hora</th>
+                            <th>Atleta (Membresía)</th>
+                            <th>Documento</th>
+                            <th class="text-center">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for a in object_list %}
+                        <tr>
+                            <td class="fw-bold" style="color: #6c757d;">#{{ a.id }}</td>
+                            <td style="color: #ffffff; font-weight: bold;">{{ a.fecha_asistencia|date:"Y-m-d" }}</td>
+                            <td style="color: #ffffff; font-weight: bold;">{{ a.hora_asistencia|time:"H:i" }}</td>
+                            <td class="text-uppercase" style="color: #ffffff; font-weight: 900;">
+                                {{ a.fk_membresia.fk_usuario.nombre_usuario }} 
+                                <span style="background: rgba(255,215,0,0.1); color: #ffd700; padding: 2px 6px; border-radius: 4px; font-size: 9px; margin-left: 5px;">MEM. ID: {{ a.fk_membresia.id }}</span>
+                            </td>
+                            <td style="color: #ffffff; font-weight: bold;">{{ a.fk_membresia.fk_usuario.documento }}</td>
+                            <td class="text-center">
+                                <a href="{% url 'gimnasio:editar_asistencia' a.id %}" class="btn btn-sm" style="background: rgba(255,215,0,0.1); color: #ffd700; border: 1px solid #ffd700; border-radius: 4px; padding: 6px 12px; margin-right: 5px;"><i class="fas fa-edit"></i></a>
+                                <a href="{% url 'gimnasio:eliminar_asistencia' a.id %}" class="btn btn-sm" style="background: rgba(255,255,255,0.05); color: #fff; border: 1px solid rgba(255,255,255,0.2); border-radius: 4px; padding: 6px 12px;"><i class="fas fa-trash"></i></a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div> </div> </div>
 
-<!-- MODAL QR OSCURO -->
-<div class="modal fade modal-dark" id="modalqr" tabindex="-1">
+<div class="modal fade" id="modalQR" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="fw-bold text-uppercase m-0" style="color: #ffd700; font-size: 16px;"><i class="fas fa-qrcode me-2"></i> Escáner de Acceso</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        <div class="modal-content" style="background: #0a0a0a; border: 1px solid #ffd700; color: #fff;">
+            <div class="modal-header border-0" style="border-bottom: 1px solid rgba(255,215,0,0.2) !important;">
+                <h5 class="fw-bold text-uppercase m-0" style="color: #ffd700;"><i class="fas fa-qrcode me-2"></i> Lector QR</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
-            <div class="modal-body text-center p-4">
-                <div id="qr-reader" style="width: 100%; border-radius: 10px; overflow: hidden; border: 2px solid #ffd700; box-shadow: 0 0 20px rgba(255,215,0,0.2); background: #000;"></div>
-                <div id="resultado" class="mt-4 fw-bold text-uppercase" style="font-size: 1.2rem; color: #ffd700; letter-spacing: 1px;"></div>
+            <div class="modal-body text-center">
+                <div id="qr-reader" style="width: 100%; max-width: 400px; margin: auto; background: #000; border: 1px solid #ffd700; padding: 10px; border-radius: 10px;"></div>
+                <h5 id="resultado" class="mt-3 fw-bold" style="color: #28a745;"></h5>
             </div>
         </div>
     </div>
@@ -164,44 +145,30 @@
 <script src="{% static 'lib/datatables-1.10.20/js/dataTables.bootstrap4.min.js' %}"></script>
 <script src="{% static 'lib/datatables-1.10.20/plugins/responsive-2.2.3/js/dataTables.responsive.min.js' %}"></script>
 <script src="{% static 'lib/datatables-1.10.20/plugins/responsive-2.2.3/js/responsive.bootstrap4.min.js' %}"></script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="https://unpkg.com/html5-qrcode"></script>
 
 <script>
-$(document).ready(function() {
-    $.fn.dataTable.ext.search.push(
-        function(settings, data, dataIndex) {
+    $(document).ready(function() {
+        let table = $('#tabla-asistencias').DataTable({
+            responsive: true,
+            autoWidth: false,
+            language: { url: "{% static 'lib/datatables-1.10.20/spanish.txt' %}" },
+            columnDefs: [{ orderable: false, targets: 5 }]
+        });
+
+        $('#min-date, #max-date').on('change', function() { table.draw(); });
+        $('#clear-dates').on('click', function() { $('#min-date, #max-date').val(''); table.draw(); });
+
+        $.fn.dataTable.ext.search.push(function(settings, data, dataIndex) {
             let min = $('#min-date').val();
             let max = $('#max-date').val();
-            let dateStr = data[1]; 
+            let dateStr = data[1];
             if (!min && !max) return true;
-            let date = new Date(dateStr);
-            let minDate = min ? new Date(min) : null;
-            let maxDate = max ? new Date(max) : null;
-            if (minDate && date < minDate) return false;
-            if (maxDate && date > maxDate) return false;
+            if (min && dateStr < min) return false;
+            if (max && dateStr > max) return false;
             return true;
-        }
-    );
-
-    let table = $('#tabla-asistencia').DataTable({
-        responsive: true, autoWidth: false, pageLength: 10,
-        language: { url: "{% static 'lib/datatables-1.10.20/spanish.txt' %}" },
-        columnDefs: [{ orderable: false, targets: 5 }]
+        });
     });
-
-    $('#min-date, #max-date').on('change', function() { table.draw(); });
-    $('#clear-dates').on('click', function() { $('#min-date, #max-date').val(''); table.draw(); });
-
-    {% if messages %}
-        {% for message in messages %}
-            Swal.fire({
-                title: "Notificación", text: "{{ message }}", icon: "success",
-                background: "rgba(10,10,10,0.95)", color: "#fff", confirmButtonColor: "#ffd700",
-                customClass: { popup: 'border border-warning' }
-            });
-        {% endfor %}
-    {% endif %}
 
     let lista = [];
     function onScanSuccess(decodedText, decodedResult) {
@@ -216,10 +183,12 @@ $(document).ready(function() {
             .then(data => { document.getElementById('resultado').innerText = data.mensaje; });
         }
     }
-    
     let html5QrcodeScanner = new Html5QrcodeScanner('qr-reader', { fps: 10, qrbox: 250 });
-    $('#modalqr').on('shown.bs.modal', function () { html5QrcodeScanner.render(onScanSuccess); });
-    $('#modalqr').on('hidden.bs.modal', function () { html5QrcodeScanner.clear(); });
-});
+    document.getElementById('modalQR').addEventListener('shown.bs.modal', function () {
+        html5QrcodeScanner.render(onScanSuccess);
+    });
+    document.getElementById('modalQR').addEventListener('hidden.bs.modal', function () {
+        html5QrcodeScanner.clear();
+    });
 </script>
 {% endblock %}
