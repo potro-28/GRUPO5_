@@ -1,0 +1,15 @@
+{% extends 'body.html' %}
+{% block contenido %}
+<div class="container mt-5" style="max-width: 600px;">
+    <div class="card" style="background: #0a0a0a; border: 1px solid #ff4d4f; color: #fff; padding: 40px; text-align: center; border-radius: 15px;">
+        <i class="fas fa-trash fa-4x mb-4" style="color: #ff4d4f;"></i>
+        <h3 class="text-uppercase">Eliminar Visitante</h3>
+        <p class="text-muted">¿Confirmas dar de baja el registro #{{ object.id }}?</p>
+        <form method="post" action=".">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger mt-3">Sí, Confirmar</button>
+            <a href="{% url 'gimnasio:listar_registrovisitante' %}" class="btn btn-secondary mt-3">Cancelar</a>
+        </form>
+    </div>
+</div>
+{% endblock %}
