@@ -53,9 +53,6 @@
 <div class="container-fluid mt-4">
     <div class="d-flex flex-column flex-lg-row justify-content-between align-items-lg-center mb-4 gap-3 stagger-1">
         <h3 class="header-title"><i class="fas fa-apple-alt" style="color: #ffd700; margin-right: 10px;"></i> Listado de Planes Nutricionales</h3>
-        <a href="{% url 'gimnasio:crear_nutricion' %}" class="btn-hero-gold">
-            <span><i class="fas fa-plus"></i> Nuevo Plan</span>
-        </a>
     </div>
 
     <div class="card-dash stagger-2">
@@ -82,7 +79,6 @@
                         <td class="text-white fw-bold">{{ nutricion.tipo_plan_alimenticio }}</td>
                         <td style="color: #a0a0a0; font-size: 13px;">{{ nutricion.nivel_actividad_fisica }}</td>
                         <td class="text-center">
-                            <a href="{% url 'gimnasio:editar_nutricion' nutricion.id %}" class="btn btn-sm" style="background: rgba(255,215,0,0.1); color: #ffd700; border: 1px solid #ffd700; border-radius: 4px; padding: 6px 12px; transition: 0.3s;"><i class="fas fa-edit"></i></a>
                             <a href="{% url 'gimnasio:eliminar_nutricion' nutricion.id %}" class="btn btn-sm" style="background: rgba(255,255,255,0.05); color: #fff; border: 1px solid rgba(255,255,255,0.2); border-radius: 4px; padding: 6px 12px; transition: 0.3s; margin-left: 5px;"><i class="fas fa-trash"></i></a>
                         </td>
                     </tr>

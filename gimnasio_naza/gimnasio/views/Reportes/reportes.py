@@ -464,9 +464,14 @@ class ExportarCertificacioninternaPDF(DjangoView):
         
         # Preparar los datos en formato de tuplas
         datos = [
-            (turno.id, turno.descripcion_certificacion, turno.fecha_certificacion, turno.fk_membresia)
-            for turno in registro
-        ]
+    (
+        turno.id,
+        turno.descripcion_certificacion,
+        turno.fecha_certificacion,
+        str(turno.fk_membresia)
+    )
+    for turno in registro
+]
         
         # Generar nombre del archivo con timestamp
         nombre_archivo = f'CertificacionesInternas {datetime.now().strftime("%d_%m_%Y")}'
@@ -487,6 +492,11 @@ class ExportarCertificacioninternaExcel(DjangoView):
     """
     
     def get(self, request):
+        registro = Certificacion_interna.objects.all()
+
+        wb = Workbook()
+        ws = wb.active
+        ws.title = "Certificaciones Internas"
         # Obtener todas las certificaciones internas
         registro = Certificacion_interna.objects.all()
         
@@ -495,7 +505,7 @@ class ExportarCertificacioninternaExcel(DjangoView):
         
         # Preparar los datos en  tuplas
         datos = [
-            (turno.id, turno.descripcion_certificacion, turno.fecha_certificacion, turno.fk_membresia)
+            (turno.id, turno.descripcion_certificacion, turno.fecha_certificacion, str(turno.fk_membresia))
             for turno in registro
         ]
         
