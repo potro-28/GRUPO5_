@@ -136,7 +136,7 @@
     </li>
 
     {% endif %}
-    {% if user.usuario.rol == 'Administrador' or user.is_superuser %}
+    {% if user.usuario.rol == 'Cliente' %}
     <li class="{% if request.resolver_match.url_name == 'listar_Soporte_PQRS' %}active{% endif %}">
       <a href="{% url 'gimnasio:listar_Soporte_PQRS' %}">
         <div class="icon-circle"><i class="fas fa-headset"></i></div>
@@ -160,7 +160,7 @@
     </li>
     {% endif %}
 
-    {% if user.usuario.rol == 'Cliente' %}
+    {% if user.usuario.rol == 'Administrador' or user.is_superuser %}
     <li class="{% if request.resolver_match.url_name == 'miPqrs' %}active{% endif %}">
       <a href="{% url 'usuarios:miPqrs' %}">
         <div class="icon-circle"><i class="fas fa-question-circle"></i></div>

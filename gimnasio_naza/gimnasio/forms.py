@@ -148,6 +148,10 @@ from .models import Usuario
 
 
 class UsuarioForm(forms.ModelForm):
+    
+    foto = forms.ImageField(
+        required=False
+    )
 
     class Meta:
         model = Usuario
@@ -163,6 +167,7 @@ class UsuarioForm(forms.ModelForm):
             'peso_usuario',
             'altura_usuario',
             'rol',
+            'genero_usuario',
             'foto',
         ]
 
@@ -972,7 +977,7 @@ class CategoriaForm(forms.ModelForm):
         fields = '__all__'
 
         widgets = {
-            'nombre_categoria': forms.Select(attrs={
+            'nombre_categoria': forms.TextInput(attrs={
                 'class': 'form-control'
             }),
 
@@ -986,6 +991,10 @@ class CategoriaForm(forms.ModelForm):
         nombre = self.cleaned_data.get('nombre_categoria')
         if nombre and not nombre.isalpha():
             raise forms.ValidationError("El Nombre no puede contener números")
+        if len(nombre) < 3:
+            raise forms.ValidationError("El nombre debe tener al minimo 3 palabras")
+        if len(nombre) > 45:
+            raise forms.ValidationError("El nombre es demasiado grande")
         return nombre
 
     def clean_material(self):
@@ -1276,7 +1285,7 @@ class TurnodeentrenadorForm(ModelForm):
     class Meta:
         model = Turnosentrenadores
         fields = [
-            'administrador',         
+            'administrador',
             'fecha_turno_inicio',
             'fecha_turno_final',
             'jornada',
@@ -1319,12 +1328,27 @@ class TurnodeentrenadorForm(ModelForm):
         cleaned_data = super().clean()
         inicio = cleaned_data.get('fecha_turno_inicio')
         fin = cleaned_data.get('fecha_turno_final')
+        jornada = cleaned_data.get('jornada')
 
         if inicio and fin and fin < inicio:
             self.add_error(
                 'fecha_turno_final',
                 "La fecha final no puede ser menor a la fecha de inicio."
             )
+
+        # VALIDACIÓN NUEVA: No permitir jornadas repetidas
+        if jornada:
+            turno = Turnosentrenadores.objects.filter(jornada=jornada)
+
+            # Si se está editando un turno, excluir el mismo registro
+            if self.instance.pk:
+                turno = turno.exclude(pk=self.instance.pk)
+
+            if turno.exists():
+                self.add_error(
+                    'jornada',
+                    "Esta jornada ya está asignada a otro entrenador."
+                )
 
         return cleaned_data
 class CertificacioninternaForm(ModelForm):
@@ -1376,6 +1400,4 @@ class CertificacioninternaForm(ModelForm):
             raise forms.ValidationError(
             "La fecha de certificación no puede ser una fecha futura."
         )
-        return fecha_certificacion    
-
-
+        return fecha_certificacion

@@ -114,7 +114,7 @@ class RegistrovisitantetemporalUpdateView(UpdateView):
 class RegistrovisitantetemporalDeleteView(DeleteView):
     model = Registrovisitantestemporales
     template_name = 'registrovisitantetemporal/eliminar.html'
-    success_url = reverse_lazy('gimnasio:listar_registrovisitante')
+    success_url = reverse_lazy('gimnasio:eliminar_registrovisitante')
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
