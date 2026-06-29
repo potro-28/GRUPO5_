@@ -73,6 +73,7 @@ urlpatterns = [
          name='exportar_mantenimiento_excel'),
     path('crear_elemento_ajax/', crear_elemento_ajax, name='crear_elemento_ajax'),
     path('crear_categoria_ajax/', crear_categoria_ajax, name='crear_categoria_ajax'),
+    path('obtener_elementos_por_categoria/', obtener_elementos_por_categoria, name='obtener_elementos_por_categoria'),
 
     # ==============================asistencia==============================#
 
