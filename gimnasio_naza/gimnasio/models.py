@@ -452,15 +452,16 @@ class Nutricion(models.Model):
 
 class Registrovisitantestemporales(models.Model):
     fecha_registro = models.DateField(default=date.today)
-    fk_usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
+    nombre = models.CharField(max_length=100)
+    cedula = models.CharField(max_length=20)
 
-    def _str_(self):
-        return str(self.fk_usuario.nombre_usuario)
+    def __str__(self):
+        return f"{self.nombre} - {self.cedula}"
 
     class Meta:
-        verbose_name = "Registro_Visitante"
-        verbose_name_plural = "Registro_Visitantes"
-        db_table = "registro_Visitantes"
+        verbose_name = "Registro Visitante"
+        verbose_name_plural = "Registros Visitantes"
+        db_table = "registro_visitantes"
 
 
 # -----------TURNO DE ENTRENADORES----------------

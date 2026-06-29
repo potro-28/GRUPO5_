@@ -140,14 +140,12 @@
             <div class="modal-body p-4 p-md-5">
                 <div class="mb-4">
                     <label class="form-label-custom">Nombre Categoría:</label>
-                    <select id="nombre_nombre_categoria" class="form-select input-dark">
-                        <option value="" disabled selected>-- Selecciona --</option>
-                        <option value="maquinas">Máquinas</option>
-                        <option value="mancuernas">Mancuernas</option>
-                        <option value="discos">Discos</option>
-                        <option value="accesorios">Accesorios</option>
-                        <option value="barras">Barras</option>
-                    </select>
+                    <input
+                        type="text"
+                        id="nombre_categoria"
+                        class="form-control input-dark"
+                        maxlength="100"
+                        placeholder="Ingrese el nombre de la categoría">
                 </div>
                 <div class="mb-2">
                     <label class="form-label-custom">Descripción:</label>
@@ -205,7 +203,7 @@
             method: "POST", headers: { "Content-Type": "application/json", "X-CSRFToken": "{{ csrf_token }}" }, body: JSON.stringify(data)
         }).then(response => response.json()).then(data => {
             if (data.error) { Swal.fire({background: "rgba(10,10,10,0.95)", color: "#fff", icon: "error", title: "Error", text: data.error}); return; }
-            let select = document.getElementById("id_nombre_categoria");
+            document.getElementById("id_nombre_categoria").value = data.nombre;
             select.add(new Option(data.nombre, data.id, true, true));
             bootstrap.Modal.getInstance(document.getElementById('modalnombre_categoria')).hide();
             Swal.fire({background: "rgba(10,10,10,0.95)", color: "#fff", icon: "success", title: "Correcto", text: "Categoría creada exitosamente", confirmButtonColor: "#ffd700"});

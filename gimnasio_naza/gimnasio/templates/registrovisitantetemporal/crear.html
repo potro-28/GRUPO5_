@@ -1,5 +1,6 @@
 {% extends 'body.html' %}
 {% load widget_tweaks %}
+{% load static %}
 
 {% block contenido %}
 <style>
@@ -36,4 +37,102 @@
     </form>
 </div>
 <!-- Incluir aquí el mismo modal de usuario oscuro de tus módulos anteriores -->
+{% endblock %}
+{% block js %}
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const formulario = document.querySelector("form");
+
+    const nombre = document.getElementById("id_nombre");
+    const cedula = document.getElementById("id_cedula");
+
+    crearMensaje(nombre);
+    crearMensaje(cedula);
+
+    function crearMensaje(input){
+        const mensaje = document.createElement("small");
+        mensaje.classList.add("text-danger");
+        mensaje.style.display = "block";
+        mensaje.style.marginTop = "5px";
+        input.parentNode.appendChild(mensaje);
+    }
+
+    function mostrarError(input, mensaje){
+        input.style.border = "2px solid #dc3545";
+        input.nextElementSibling.textContent = mensaje;
+    }
+
+    function mostrarCorrecto(input){
+        input.style.border = "2px solid #28a745";
+        input.nextElementSibling.textContent = "";
+    }
+
+    // VALIDACIÓN NOMBRE
+    nombre.addEventListener("input", function(){
+
+        let valor = this.value.trim();
+
+        if(valor.length === 0){
+            mostrarError(this,"El nombre es obligatorio.");
+            return;
+        }
+
+        if(valor.length < 3){
+            mostrarError(this,"Debe tener mínimo 3 caracteres.");
+            return;
+        }
+
+        if(!/^[A-Za-zÁÉÍÓÚáéíóúÑñ ]+$/.test(valor)){
+            mostrarError(this,"Solo se permiten letras y espacios.");
+            return;
+        }
+
+        mostrarCorrecto(this);
+
+    });
+
+    // VALIDACIÓN CÉDULA
+    cedula.addEventListener("input", function(){
+
+        this.value = this.value.replace(/\D/g,'');
+
+        let valor = this.value;
+
+        if(valor.length === 0){
+            mostrarError(this,"La cédula es obligatoria.");
+            return;
+        }
+
+        if(valor.length < 6){
+            mostrarError(this,"Debe tener mínimo 6 dígitos.");
+            return;
+        }
+
+        if(valor.length > 12){
+            mostrarError(this,"Máximo 12 dígitos.");
+            return;
+        }
+
+        mostrarCorrecto(this);
+
+    });
+
+    // VALIDAR ANTES DE ENVIAR
+    formulario.addEventListener("submit", function(e){
+
+        nombre.dispatchEvent(new Event("input"));
+        cedula.dispatchEvent(new Event("input"));
+
+        if(
+            nombre.nextElementSibling.textContent !== "" ||
+            cedula.nextElementSibling.textContent !== ""
+        ){
+            e.preventDefault();
+        }
+
+    });
+
+});
+</script>
 {% endblock %}

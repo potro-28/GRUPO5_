@@ -166,95 +166,241 @@
 {% endblock %}
 
 {% block js %}
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-<!-- SWEET ALERT ERRORES -->
-{% if form.errors %}
-<script>
-Swal.fire({
-    title: "Error", text: "Verifica los campos ingresados", icon: "error",
-    background: "rgba(10,10,10,0.95)", color: "#fff", confirmButtonColor: "#ffd700"
-});
-</script>
-{% endif %}
-
-<!-- CREAR NUTRICION AJAX -->
-<script>
-function crearNutricion() {
-    let nivel = document.getElementById("nivel_actividad").value;
-    let objetivo = document.getElementById("tipo_objetivo").value;
-    let dieta = document.getElementById("tipo_dieta").value;
-    let usuario = document.getElementById("fk_usuario").value;
-
-    if (!nivel || !objetivo || !dieta || !usuario) {
-        Swal.fire({ title: "Faltan Datos", text: "Todos los campos son obligatorios", icon: "warning", background: "rgba(10,10,10,0.95)", color: "#fff", confirmButtonColor: "#ffd700" });
-        return;
-    }
-
-    fetch("{% url 'gimnasio:crear_nutricion_ajax' %}", {
-        method: "POST",
-        headers: { "Content-Type": "application/json", "X-CSRFToken": "{{ csrf_token }}" },
-        body: JSON.stringify({ nivel_actividad: nivel, tipo_objetivo: objetivo, tipo_dieta: dieta, fk_usuario: usuario })
-    })
-    .then(response => response.json())
-    .then(data => {
-        let select = document.getElementById("id_fk_Nutricion");
-        if(select) select.add(new Option(data.nombre, data.id, true, true));
-        bootstrap.Modal.getInstance(document.getElementById('modalNutricion')).hide();
-        Swal.fire({ title: "Correcto", text: "Plan Nutricional creado y enlazado.", icon: "success", background: "rgba(10,10,10,0.95)", color: "#fff", confirmButtonColor: "#ffd700" });
-    });
-}
-</script>
-
-<!-- VALIDACIONES JS ORIGINALES CON ESTILOS -->
 <script>
 document.addEventListener("DOMContentLoaded", function () {
+
+    const formulario = document.querySelector("form");
+
     const peso = document.getElementById("id_peso_cliente");
     const altura = document.getElementById("id_altura_cliente");
     const fecha = document.getElementById("id_fecha_control");
 
-    // BLOQUEAR FECHA
+    // ==========================
+    // FECHA
+    // ==========================
+
     if (fecha) {
-        let hoy = new Date();
-        let yyyy = hoy.getFullYear();
-        let mm = String(hoy.getMonth() + 1).padStart(2, '0');
-        let dd = String(hoy.getDate()).padStart(2, '0');
-        let fechaHoy = `${yyyy}-${mm}-${dd}`;
-        fecha.value = fechaHoy;
-        fecha.min = fechaHoy;
+        const hoy = new Date();
+
+        const yyyy = hoy.getFullYear();
+        const mm = String(hoy.getMonth() + 1).padStart(2, "0");
+        const dd = String(hoy.getDate()).padStart(2, "0");
+
+        const fechaHoy = `${yyyy}-${mm}-${dd}`;
+
         fecha.max = fechaHoy;
+        fecha.value = fechaHoy;
     }
 
-    // Funciones Helper para Validar
-    function setFeedback(element, isValid) {
-        if(isValid){
-            element.classList.remove("is-invalid"); element.style.borderColor = "#ffd700";
-        } else {
-            element.classList.add("is-invalid"); element.style.borderColor = "#ff4d4f";
+    //============================
+    // MENSAJES
+    //============================
+
+    function crearMensaje(input){
+
+        let mensaje = input.parentNode.querySelector(".mensaje-validacion");
+
+        if(!mensaje){
+
+            mensaje = document.createElement("small");
+            mensaje.className="mensaje-validacion";
+            mensaje.style.display="block";
+            mensaje.style.marginTop="5px";
+            mensaje.style.fontWeight="bold";
+
+            input.parentNode.appendChild(mensaje);
         }
+
+        return mensaje;
     }
 
-    if (peso) {
-        peso.addEventListener("input", function () {
-            let valor = parseFloat(this.value);
-            setFeedback(this, (valor >= 30 && valor <= 300));
-        });
+    function valido(input){
+
+        input.classList.remove("is-invalid");
+        input.classList.add("is-valid");
+
+        input.style.borderColor="#ffd700";
+
+        crearMensaje(input).innerHTML="";
     }
 
-    if (altura) {
-        altura.addEventListener("input", function () {
-            let valor = parseFloat(this.value);
-            setFeedback(this, (valor >= 1 && valor <= 2.5));
-        });
+    function invalido(input,texto){
+
+        input.classList.remove("is-valid");
+        input.classList.add("is-invalid");
+
+        input.style.borderColor="#ff4d4f";
+
+        const mensaje=crearMensaje(input);
+
+        mensaje.style.color="#ff4d4f";
+        mensaje.innerHTML=texto;
     }
 
-    if (fecha) {
-        fecha.addEventListener("input", function () {
-            let hoy = new Date();
-            let fechaHoy = `${hoy.getFullYear()}-${String(hoy.getMonth() + 1).padStart(2, '0')}-${String(hoy.getDate()).padStart(2, '0')}`;
-            setFeedback(this, (this.value === fechaHoy));
-        });
+    //=================================
+    // PESO
+    //=================================
+
+    function validarPeso(){
+
+        const valor=parseFloat(peso.value);
+
+        if(peso.value===""){
+            invalido(peso,"El peso es obligatorio.");
+            return false;
+        }
+
+        if(isNaN(valor)){
+            invalido(peso,"Debe ingresar un número.");
+            return false;
+        }
+
+        if(valor<=0){
+            invalido(peso,"El peso debe ser mayor que 0.");
+            return false;
+        }
+
+        if(valor<30 || valor>300){
+            invalido(peso,"El peso debe estar entre 30kg y 300kg.");
+            return false;
+        }
+
+        valido(peso);
+        return true;
     }
+
+    //=================================
+    // ALTURA
+    //=================================
+
+    function validarAltura(){
+
+        const valor=parseFloat(altura.value);
+
+        if(altura.value===""){
+            invalido(altura,"La altura es obligatoria.");
+            return false;
+        }
+
+        if(isNaN(valor)){
+            invalido(altura,"Debe ingresar un número.");
+            return false;
+        }
+
+        if(valor<=0){
+            invalido(altura,"La altura debe ser mayor que 0.");
+            return false;
+        }
+
+        if(valor<0.5 || valor>2.5){
+            invalido(altura,"La altura debe estar entre 0.5 m y 2.5 m.");
+            return false;
+        }
+
+        valido(altura);
+        return true;
+    }
+
+    //=================================
+    // FECHA
+    //=================================
+
+    function validarFecha(){
+
+        if(fecha.value===""){
+            invalido(fecha,"Debe seleccionar una fecha.");
+            return false;
+        }
+
+        const seleccionada=new Date(fecha.value);
+
+        const hoy=new Date();
+        hoy.setHours(0,0,0,0);
+
+        const minima=new Date("1950-01-01");
+
+        if(seleccionada>hoy){
+            invalido(fecha,"La fecha no puede ser futura.");
+            return false;
+        }
+
+        if(seleccionada<minima){
+            invalido(fecha,"La fecha no puede ser anterior al 01/01/1950.");
+            return false;
+        }
+
+        valido(fecha);
+        return true;
+    }
+
+    //=================================
+    // EVENTOS
+    //=================================
+
+    if(peso){
+
+        peso.addEventListener("input",validarPeso);
+        peso.addEventListener("blur",validarPeso);
+
+    }
+
+    if(altura){
+
+        altura.addEventListener("input",validarAltura);
+        altura.addEventListener("blur",validarAltura);
+
+    }
+
+    if(fecha){
+
+        fecha.addEventListener("change",validarFecha);
+        fecha.addEventListener("blur",validarFecha);
+
+    }
+
+    //=================================
+    // VALIDAR AL ENVIAR
+    //=================================
+
+    formulario.addEventListener("submit",function(e){
+
+        let correcto=true;
+
+        if(peso){
+            if(!validarPeso()){
+                correcto=false;
+            }
+        }
+
+        if(altura){
+            if(!validarAltura()){
+                correcto=false;
+            }
+        }
+
+        if(fecha){
+            if(!validarFecha()){
+                correcto=false;
+            }
+        }
+
+        if(!correcto){
+
+            e.preventDefault();
+
+            Swal.fire({
+                icon:"error",
+                title:"Formulario inválido",
+                text:"Corrige los campos resaltados.",
+                background:"rgba(10,10,10,.95)",
+                color:"#fff",
+                confirmButtonColor:"#ffd700"
+            });
+
+        }
+
+    });
+
 });
 </script>
 {% endblock %}

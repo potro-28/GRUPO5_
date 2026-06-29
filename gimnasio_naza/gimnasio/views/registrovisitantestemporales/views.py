@@ -9,6 +9,9 @@ from gimnasio.models import Usuario,Membresia
 from  django.contrib.auth.models import User
 import json
 from datetime import date, datetime
+from django.db.models import Count
+from django.utils import timezone
+from django.shortcuts import redirect
 
 def crear_usuario_ajax(request):
 
@@ -74,8 +77,36 @@ class RegistrovisitantetemporalListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['titulo'] = 'Listado de visitantes temporales'
-        context['crear_url'] = reverse_lazy('gimnasio:crear_registrovisitante')
+
+        visitantes = (
+            Registrovisitantestemporales.objects
+            .values('fecha_registro')
+            .annotate(total=Count('id'))
+            .order_by('fecha_registro')
+        )
+
+        labels = []
+        datos = []
+        detalle = {}
+
+        for v in visitantes:
+            fecha = v['fecha_registro'].strftime("%d/%m/%Y")
+            labels.append(fecha)
+            datos.append(v['total'])
+
+            registros = Registrovisitantestemporales.objects.filter(
+                fecha_registro=v['fecha_registro']
+            )
+
+            detalle[fecha] = [
+                f"{r.nombre} - {r.cedula}"
+                for r in registros
+            ]
+
+        context['labels_estadisticas'] = json.dumps(labels)
+        context['datos_estadisticas'] = json.dumps(datos)
+        context['detalle_visitantes'] = json.dumps(detalle)
+
         return context
 
 
@@ -89,10 +120,17 @@ class RegistrovisitantestemporalCreateView(CreateView):
         context = super().get_context_data(**kwargs)
         context['titulo'] = 'Crear registro visitante'
         return context
-    
+
     def form_valid(self, form):
-        messages.success(self.request, 'Registro de visitante creado correctamente')
-        return super().form_valid(form)
+        form.instance.fecha_registro = timezone.now().date()
+        form.save()
+
+        messages.success(
+            self.request,
+            "Registro de visitante creado correctamente"
+        )
+
+        return redirect('gimnasio:listar_registrovisitante')
 
 
 
@@ -110,6 +148,7 @@ class RegistrovisitantetemporalUpdateView(UpdateView):
     def form_valid(self, form):
         messages.success(self.request, 'Actualizacion de registro visitante actualizado correctamente')
         return super().form_valid(form)
+    
     
 class RegistrovisitantetemporalDeleteView(DeleteView):
     model = Registrovisitantestemporales

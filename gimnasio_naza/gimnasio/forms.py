@@ -108,14 +108,17 @@ class ElementoForm(forms.ModelForm):
 class UserForm(forms.ModelForm):
 
     password = forms.CharField(
+        label="Contraseña",
+        required=False,
         widget=forms.PasswordInput(
             attrs={
                 'class': 'form-control',
-                'placeholder': 'Ingrese contraseña',
-                'autocomplete': 'off'
-            }
-        ),
-        required=False
+                'placeholder': 'Dejar vacío para no cambiar',
+                'autocomplete': 'new-password',
+                'id': 'password-field'
+            },
+            render_value=False   # ← CAMBIAR ESTO
+        )
     )
 
     class Meta:
@@ -133,7 +136,11 @@ class UserForm(forms.ModelForm):
             )
         }
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
 
+        # Nunca mostrar el hash de la contraseña
+        self.initial['password'] = ''
 # ==========================================
 # FORMULARIO DE USUARIO
 # ==========================================
@@ -224,10 +231,13 @@ class UsuarioForm(forms.ModelForm):
             # FECHA NACIMIENTO
             # ==========================================
 
-            'fecha_nacimiento': forms.DateInput(attrs={
-                'type': 'date',
-                'class': 'form-control'
-            }),
+            'fecha_nacimiento': forms.DateInput(
+                format='%Y-%m-%d',
+                attrs={
+                    'type': 'date',
+                    'class': 'form-control'
+                }
+            ),
 
             # ==========================================
             # TELEFONO
@@ -292,6 +302,11 @@ class UsuarioForm(forms.ModelForm):
                 'accept': '.jpg,.jpeg,.png,.webp'
             }),
         }
+        
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.fields['fecha_nacimiento'].input_formats = ['%Y-%m-%d']
 
     # =====================================================
     # VALIDAR ROL
@@ -379,34 +394,41 @@ class UsuarioForm(forms.ModelForm):
     # =====================================================
 
     def clean_fecha_nacimiento(self):
+        fecha = self.cleaned_data.get('fecha_nacimiento')
 
-        fecha_nacimiento = forms.DateField(
-        widget=forms.DateInput(
-            attrs={'type': 'date'},
-            format='%Y-%m-%d'
-        ),
-        input_formats=['%Y-%m-%d']
-    )
-    def clean_fecha_nacimiento(self):
-        fecha_nacimiento = self.cleaned_data.get('fecha_nacimiento')
-
-        if fecha_nacimiento is None:
-            raise forms.ValidationError("Por favor ingresa una fecha de nacimiento.")
+        if not fecha:
+            raise forms.ValidationError(
+                "Por favor ingresa una fecha de nacimiento."
+            )
 
         hoy = date.today()
 
-        if fecha_nacimiento >= hoy:
-            raise forms.ValidationError("La fecha de nacimiento no puede ser hoy ni una fecha futura.")
+        if fecha >= hoy:
+            raise forms.ValidationError(
+                "La fecha de nacimiento no puede ser hoy ni futura."
+            )
 
-        if fecha_nacimiento.year < 1900:
-            raise forms.ValidationError("La fecha de nacimiento debe ser posterior al año 1900.")
+        if fecha.year < 1900:
+            raise forms.ValidationError(
+                "La fecha debe ser posterior al año 1900."
+            )
 
-        edad_minima = hoy.replace(year=hoy.year - 5)
+        edad = (
+            hoy.year
+            - fecha.year
+            - (
+                (hoy.month, hoy.day)
+                <
+                (fecha.month, fecha.day)
+            )
+        )
 
-        if fecha_nacimiento > edad_minima:
-            raise forms.ValidationError("La fecha de nacimiento no es válida, verifica el año ingresado.")
+        if edad < 16:
+            raise forms.ValidationError(
+                "El usuario debe tener mínimo 16 años."
+            )
 
-        return fecha_nacimiento    
+        return fecha   
     def clean_telefono_usuario(self):
         telefono = self.cleaned_data.get('telefono_usuario')
         if telefono:
@@ -440,27 +462,34 @@ class UsuarioForm(forms.ModelForm):
 class MantenimientoForm(forms.ModelForm):
     class Meta:
         model = Mantenimiento
-        fields = '__all__'
+        fields = "__all__"
         widgets = {
-            'fecha_programada': forms.DateInput(attrs={'type': 'date'}),
-            'fecha_realizada': forms.DateInput(attrs={'type': 'date'}),
-            'descripcion' : forms.TextInput(attrs={ 
-                'class':'form-control',
-                'placeholder': 'Ingrese la descripcion del mantenimiento'}),
+            "fecha_programada": forms.DateInput(attrs={"type": "date"}),
+            "descripcion": forms.Textarea(attrs={
+                "class": "form-control",
+                "placeholder": "Ingrese la descripción"
+            }),
         }
 
     def clean(self):
         cleaned_data = super().clean()
-        fecha_programada = cleaned_data.get('fecha_programada')
-        elemento = cleaned_data.get('Elemento')
+
+        fecha_programada = cleaned_data.get("fecha_programada")
+        elemento = cleaned_data.get("nombre_elemento")
 
         if elemento and fecha_programada:
-            qs = Mantenimiento.objects.filter(Elemento=elemento)
-            if self.instance and self.instance.pk:
+
+            qs = Mantenimiento.objects.filter(
+                nombre_elemento=elemento
+            )
+
+            if self.instance.pk:
                 qs = qs.exclude(pk=self.instance.pk)
 
             if qs.filter(fecha_programada=fecha_programada).exists():
-                raise forms.ValidationError('Ya existe un mantenimiento programado para esa fecha en este elemento.')
+                raise forms.ValidationError(
+                    "Ya existe un mantenimiento para esa fecha."
+                )
 
         return cleaned_data
     
@@ -1248,30 +1277,60 @@ class SancionesForm(forms.ModelForm):
 
 
 class RegistrovisitantetemporalForm(ModelForm):
+
     class Meta:
         model = Registrovisitantestemporales
-        fields = '__all__'
+        fields = ['nombre', 'cedula']
         widgets = {
-            'fecha_registro': forms.DateInput(attrs={
+            'nombre': forms.TextInput(attrs={
                 'class': 'form-control',
-                'type': 'date'
+                'placeholder': 'Ingrese el nombre completo'
             }),
-            'fk_usuario': forms.Select(attrs={
+            'cedula': forms.TextInput(attrs={
                 'class': 'form-control',
+                'placeholder': 'Ingrese la cédula'
             }),
         }
-    def clean_fecha_registro(self):
-        fecha_registro = self.cleaned_data.get('fecha_registro')
-        hoy = timezone.now().date()
-        if fecha_registro < hoy:
+
+    def clean_nombre(self):
+        nombre = self.cleaned_data.get('nombre')
+
+        if not nombre:
+            raise forms.ValidationError("El nombre es obligatorio.")
+
+        nombre = nombre.strip()
+
+        if len(nombre) < 3:
             raise forms.ValidationError(
-            "La fecha de registro no puede ser en el pasado."
-        )
-        if fecha_registro > hoy:
+                "El nombre debe tener mínimo 3 caracteres."
+            )
+
+        if not all(c.isalpha() or c.isspace() for c in nombre):
             raise forms.ValidationError(
-            "La fecha de registro no puede ser en el futuro."
-        )
-        return fecha_registro
+                "El nombre solo puede contener letras y espacios."
+            )
+
+        return nombre.title()
+
+    def clean_cedula(self):
+        cedula = self.cleaned_data.get('cedula')
+
+        if not cedula:
+            raise forms.ValidationError("La cédula es obligatoria.")
+
+        cedula = cedula.strip()
+
+        if not cedula.isdigit():
+            raise forms.ValidationError(
+                "La cédula solo puede contener números."
+            )
+
+        if len(cedula) < 6 or len(cedula) > 12:
+            raise forms.ValidationError(
+                "La cédula debe tener entre 6 y 12 dígitos."
+            )
+
+        return cedula
     
 class TurnodeentrenadorForm(ModelForm):
     administrador = forms.ModelChoiceField(

@@ -77,7 +77,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'gimnasio_db',
         'USER': 'root',
-        'PASSWORD': 'F4b14n89',
+        'PASSWORD': 'mamitas39',
         'HOST': 'localhost',
         'PORT' : '3306',
     }
