@@ -33,8 +33,8 @@ def crear_categoria_ajax(request):
     )
 
     return JsonResponse({
-        'id':     categoria.id,
-        'nombre': categoria.nombre_categoria,  
+        "id": categoria.id,
+        "nombre": categoria.nombre_categoria,
     })
 
 @csrf_exempt
@@ -47,11 +47,14 @@ def crear_elemento_ajax(request):
             marca = request.POST.get('marca')
             nombre = request.POST.get('nombre')
             peso = request.POST.get('peso')
+            unidad_peso = request.POST.get('unidad_peso')
             estado = request.POST.get('estado')
+            fecha_compra = request.POST.get('fecha_compra')
             categoria_id = request.POST.get('categoria')
             cantidad = request.POST.get('cantidad')
-
             foto = request.FILES.get('foto')
+
+            foto = request.FILES.get("imagen")
             if not all([serial, marca, nombre, peso, estado, categoria_id, cantidad]):
                 return JsonResponse({'error': 'Todos los campos son obligatorios'}, status=400)
             categoria = Categoria.objects.get(id=categoria_id)        
@@ -60,15 +63,18 @@ def crear_elemento_ajax(request):
                 marca=marca,
                 nombre_elemento=nombre,
                 peso_elemento=peso,
+                unidad_peso=unidad_peso,
                 estado=estado,
+                fecha_ingreso=fecha_compra,
                 nombre_categoria=categoria,
                 cantidad=cantidad,
-                imagen=foto,
-                fecha_ingreso = timezone.now()
+                imagen=foto
             )
             return JsonResponse({
                 'id': elemento.id,
                 'nombre': elemento.nombre_elemento,
+                'serial': elemento.serial,
+                'categoria': elemento.nombre_categoria.nombre_categoria,
             })
     except Categoria.DoesNotExist:
         return JsonResponse({'error': 'Categoría no encontrada'}, status=404)

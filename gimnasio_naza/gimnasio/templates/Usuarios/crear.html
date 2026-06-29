@@ -42,25 +42,58 @@
                 {% endif %}
 
                 <!-- DATOS DE ACCESO -->
-                <h6 class="fw-bold text-uppercase mb-4 pb-2" style="color: #ffd700; border-bottom: 1px solid rgba(255,255,255,0.1); font-size: 14px; letter-spacing: 1px;"><i class="fas fa-lock me-2"></i> Credenciales de Acceso</h6>
-                <div class="row mb-5">
-                    {% for field in user_form.visible_fields %}
-                        <div class="col-12 col-lg-6 mb-3">
-                            <label class="form-label-custom">{{ field.label }}</label>
-                            {% if field.name == 'password' %}
-                                <div style="position: relative;">
-                                    {% render_field field class="form-control input-dark" required="required" id="password-field" %}
-                                    <i class="fas fa-eye" id="toggle-password" style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); cursor: pointer; color: #ffd700;"></i>
-                                    <div id="password-feedback" style="display: none;"></div>
-                                </div>
-                            {% else %}
-                                {% render_field field class="form-control input-dark" required="required" %}
-                            {% endif %}
-                            {% if field.errors %}<div class="text-danger small mt-1 fw-bold" style="color:#ff4d4f!important;">{{ field.errors|striptags }}</div>{% endif %}
-                            <div class="invalid-feedback fw-bold" style="color:#ff4d4f;"></div>
-                        </div>
-                    {% endfor %}
-                </div>
+                    <h6 class="fw-bold text-uppercase mb-4 pb-2"
+                        style="color:#ffd700;border-bottom:1px solid rgba(255,255,255,.1);font-size:14px;letter-spacing:1px;">
+                        <i class="fas fa-lock me-2"></i> Credenciales de Acceso
+                    </h6>
+
+                    <div class="row mb-5">
+
+                        {% for field in user_form.visible_fields %}
+
+                            <div class="col-12 col-lg-6 mb-3">
+
+                                <label class="form-label-custom">{{ field.label }}</label>
+
+                                {% if field.name == "password" %}
+
+                                    <div class="input-group">
+
+                                        {% render_field field class="form-control input-dark" id="password-field" %}
+
+                                        <button
+                                            type="button"
+                                            id="toggle-password"
+                                            class="btn"
+                                            style="background:#ffd700;color:#000;">
+
+                                            <i id="eye-icon" class="fas fa-eye"></i>
+
+                                        </button>
+
+                                    </div>
+
+                                    <small id="password-feedback" style="display:none;"></small>
+
+                                {% else %}
+
+                                    {% render_field field class="form-control input-dark" %}
+
+                                {% endif %}
+
+                                {% if field.errors %}
+                                    <div class="text-danger small mt-1 fw-bold" style="color:#ff4d4f!important;">
+                                        {{ field.errors|striptags }}
+                                    </div>
+                                {% endif %}
+
+                                <div class="invalid-feedback fw-bold" style="color:#ff4d4f;"></div>
+
+                            </div>
+
+                        {% endfor %}
+
+                    </div>
 
                 <!-- DATOS PERSONALES -->
                 <h6 class="fw-bold text-uppercase mb-4 pb-2" style="color: #ffd700; border-bottom: 1px solid rgba(255,255,255,0.1); font-size: 14px; letter-spacing: 1px;"><i class="fas fa-id-card me-2"></i> Perfil Personal y Físico</h6>
@@ -68,7 +101,7 @@
                     {% for field in form.visible_fields %}
                         <div class="col-12 col-md-6 mb-3">
                             <label class="form-label-custom">{{ field.label }}</label>
-                            {% render_field field class="form-control input-dark" required="required" %}
+                            {% render_field field class="form-control input-dark" %}
                             {% if field.errors %}<div class="text-danger small mt-1 fw-bold" style="color:#ff4d4f!important;">{{ field.errors|striptags }}</div>{% endif %}
                             <div class="invalid-feedback fw-bold" style="color:#ff4d4f;"></div>
                         </div>
@@ -90,7 +123,33 @@
 {% block js %}
 
 <script>
-document.getElementById('toggle-password').addEventListener('click', function(){
+document.addEventListener('DOMContentLoaded', function () {
+
+    const boton = document.getElementById('toggle-password');
+
+    if (boton) {
+
+        boton.addEventListener('click', function () {
+
+            const passwordInput = document.getElementById('password-field');
+            const IconEye = document.getElementById('eye-icon');
+
+            if (passwordInput.type === 'password') {
+
+                passwordInput.type = 'text';
+                IconEye.classList.replace('fa-eye', 'fa-eye-slash');
+
+            } else {
+
+                passwordInput.type = 'password';
+                IconEye.classList.replace('fa-eye-slash', 'fa-eye');
+
+            }
+
+        });
+
+    }
+
   const passwordInput = document.getElementById('password-field');
   const IconEye = document.getElementById('eye-icon');
 

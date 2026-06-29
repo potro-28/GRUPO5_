@@ -54,6 +54,32 @@
                 <h6 class="fw-bold" style="color: #ff4d4f;"><i class="ri-error-warning-line me-2"></i> Verifica los campos.</h6>
                 <ul class="mb-0 small">{% for field in form %}{% for error in field.errors %}<li>{{ field.label }}: {{ error }}</li>{% endfor %}{% endfor %}</ul>
             </div>
+        </div>
+        {% endif %}
+
+        {% for field in form.visible_fields %}
+        <div class="form-group mb-4 stagger-2">
+            <label class="form-label-custom">
+                {% if field.name == 'nombre_elemento' %} Equipo Asociado {% else %} {{ field.label }} {% endif %}
+            </label>
+
+            {% if field.name == 'nombre_elemento' %}
+            <div class="d-flex align-items-center gap-2">
+                {{ field|add_class:'form-select input-dark' }}
+                <button type="button"
+                        class="btn"
+                        style="background: rgba(255,215,0,.1);
+                              color:#ffd700;
+                              border:1px solid #ffd700;
+                              padding:12px 18px;
+                              border-radius:6px;"
+                        data-bs-toggle="modal"
+                        data-bs-target="#modalWizard">
+                    <i class="ri-add-line"></i>
+                </button>
+            </div>
+            {% else %}
+                {{ field|add_class:'form-control input-dark' }}
             {% endif %}
 
             {% if elemento_pre %}
@@ -81,189 +107,431 @@
             </div>
             {% endfor %}
         </div>
-        <div class="card-footer border-0 p-4 p-md-5 pt-0 d-flex gap-3" style="background: transparent; z-index: 2;">
-            <button type="submit" class="btn-hero-gold"><span><i class="ri-save-line me-1"></i> Guardar</span></button>
-            <a href="{% url 'gimnasio:listar_mantenimiento' %}" class="btn fw-bold px-4 py-2" style="background: rgba(255,255,255,0.05); color: #fff; border: 1px solid rgba(255,255,255,0.2); text-transform: uppercase; font-size: 13px; transform: skewX(-10deg); text-decoration: none;">
-                <span style="transform: skewX(10deg);"><i class="ri-close-line me-1"></i> Cancelar</span>
-            </a>
-        </div>
-    </form>
-</div>
+        {% endfor %}
+    </div>
 
-<!-- MODAL: REGISTRAR ELEMENTO -->
-<div class="modal fade modal-dark" id="modalElemento" tabindex="-1">
-    <div class="modal-dialog modal-lg modal-dialog-centered"> 
-        <div class="modal-content">
-            <div class="modal-header border-0" style="background: #000; border-bottom: 1px solid rgba(255,215,0,0.2) !important; padding: 20px 30px;">
-                <h5 class="fw-bold text-uppercase m-0" style="color: #ffd700; font-size: 16px;"><i class="ri-box-3-line me-2"></i> Nuevo Elemento</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body p-4 p-md-5">
-                <div class="row g-3">
-                    <div class="col-md-6">
-                        <input type="text" id="serial" class="form-control input-dark" placeholder="Serial">
-                        <small class="text-danger fw-bold mt-1" id="error_serial"></small>
-                    </div>
-                    <div class="col-md-6">
-                        <input type="text" id="marca" class="form-control input-dark" placeholder="Marca">
-                        <small class="text-danger fw-bold mt-1" id="error_marca"></small>
-                    </div>
-                    <div class="col-md-6">
-                        <input type="text" id="nombre_elemento" class="form-control input-dark" placeholder="Nombre">
-                        <small class="text-danger fw-bold mt-1" id="error_nombre_elemento"></small>
-                    </div>
-                    <div class="col-md-6">
-                        <input type="number" id="peso" class="form-control input-dark" placeholder="Peso (kg)">
-                        <small class="text-danger fw-bold mt-1" id="error_peso"></small>
-                    </div>
-                    <div class="col-md-6">
-                        <select id="Estado" class="form-select input-dark"><option value="M">Activo</option><option value="F">Inactivo</option></select>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="d-flex gap-2">
-                            <select id="categoria" class="form-select input-dark" style="flex: 1;">
-                                <option value="">Categoría</option>
-                                {% for c in categorias %}<option value="{{ c.id }}">{{ c.get_nombre_categoria_display }}</option>{% endfor %}
-                            </select>
-                            <button type="button" class="btn-add-cat" id="btnAbrirModalCategoria"><i class="ri-add-line"></i></button>
+    <div class="card-footer border-0 p-4 p-md-5 pt-0 d-flex gap-3" style="background: transparent; position: relative; z-index: 2;">
+        <button type="submit" class="btn-hero-gold"><span><i class="ri-save-line me-1"></i> Guardar</span></button>
+        <a href="{% url 'gimnasio:listar_mantenimiento' %}" class="btn fw-bold px-4 py-2" style="background: rgba(255,255,255,0.05); color: #fff; border: 1px solid rgba(255,255,255,0.2); text-transform: uppercase; font-size: 13px; transform: skewX(-10deg); display: inline-flex; text-decoration: none;">
+            <span style="transform: skewX(10deg);"><i class="ri-close-line me-1"></i> Cancelar</span>
+        </a>
+    </div>
+  </form>
+      <div class="modal fade" id="modalWizard" tabindex="-1">
+      <div class="modal-dialog modal-xl modal-dialog-centered">
+          <div class="modal-content modal-dark">
+
+              <div class="modal-header">
+                  <h5 class="modal-title">
+                      <i class="ri-add-circle-line text-warning"></i>
+                      Registrar nuevo equipo
+                  </h5>
+
+                  <button class="btn-close btn-close-white"
+                          data-bs-dismiss="modal"></button>
+              </div>
+
+              <div class="modal-body">
+
+                  <div class="d-flex justify-content-center mb-4">
+
+                      <div class="wizard-indicator active mx-2">
+                          1️⃣ Categoría
+                      </div>
+
+                      <div class="wizard-indicator mx-2">
+                          2️⃣ Elemento
+                      </div>
+
+                  </div>
+
+                  <!-- PASO 1 -->
+                    <div id="step1" class="wizard-step">
+
+                        <h5 class="text-warning mb-4">
+                            Paso 1 - Crear categoría
+                        </h5>
+
+                        <div class="mb-3">
+                            <label class="form-label-custom">
+                                Nombre de la categoría
+                            </label>
+
+                            <input
+                                type="text"
+                                id="nombreCategoria"
+                                class="form-control input-dark"
+                                placeholder="Ingrese el nombre de la categoría">
                         </div>
-                        <small class="text-danger fw-bold mt-1" id="error_categoria"></small>
+
+                        <div class="mb-4">
+                            <label class="form-label-custom">
+                                Descripción
+                            </label>
+
+                            <textarea
+                                id="descripcionCategoria"
+                                rows="4"
+                                class="form-control input-dark"
+                                placeholder="Descripción de la categoría"></textarea>
+                        </div>
+
                     </div>
-                    <div class="col-md-6">
-                        <input type="number" id="cantidad" class="form-control input-dark" placeholder="Cantidad">
-                        <small class="text-danger fw-bold mt-1" id="error_cantidad"></small>
+
+                  <!-- PASO 2 -->
+                  <div id="step2" class="wizard-step" style="display:none;">
+
+                      <h5 class="text-warning mb-4">
+                          Paso 2 - Datos del equipo
+                      </h5>
+
+                      <div class="row">
+
+                          <div class="col-md-6 mb-3">
+                              <label class="form-label-custom">Serial</label>
+                              <input type="text" id="serial" class="form-control input-dark">
+                          </div>
+
+                          <div class="col-md-6 mb-3">
+                              <label class="form-label-custom">Marca</label>
+                              <input type="text" id="marca" class="form-control input-dark">
+                          </div>
+
+                          <div class="col-md-6 mb-3">
+                              <label class="form-label-custom">Nombre del elemento</label>
+                              <input type="text" id="nombre" class="form-control input-dark">
+                          </div>
+
+                          <div class="col-md-6 mb-3">
+                              <label class="form-label-custom">Peso</label>
+                              <input type="number" step="0.01" id="peso" class="form-control input-dark">
+                          </div>
+
+                          <div class="col-md-6 mb-3">
+                                <label class="form-label-custom">Unidad de peso</label>
+
+                                <select id="unidad_peso" class="form-select input-dark">
+                                    <option value="kg">kg</option>
+                                    <option value="lb">lb</option>
+                                </select>
+                            </div>
+
+                          <div class="col-md-6 mb-3">
+                              <label class="form-label-custom">Estado</label>
+                              <select id="estado" class="form-select input-dark">
+                                  <option value="activo">Activo</option>
+                                  <option value="inactivo">Inactivo</option>
+                              </select>
+                          </div>
+
+                          <div class="col-md-6 mb-3">
+                                <label class="form-label-custom">
+                                    Fecha de compra
+                                </label>
+
+                                <input
+                                    type="date"
+                                    id="fecha_compra"
+                                    class="form-control input-dark">
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label-custom">
+                                    Categoría creada
+                                </label>
+
+                                <input
+                                    type="text"
+                                    id="categoriaCreada"
+                                    class="form-control input-dark"
+                                    readonly>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label-custom">
+                                    Cantidad
+                                </label>
+
+                                <input
+                                    type="number"
+                                    id="cantidad"
+                                    class="form-control input-dark"
+                                    value="1"
+                                    min="1">
+                            </div>
+
+                          <div class="col-12 mb-3">
+                              <label class="form-label-custom">Imagen</label>
+                              <input type="file" id="foto" class="form-control input-dark">
+                          </div>
+
+                      </div>
+
+                  </div>
+                      <div class="modal-footer">
+
+                        <button
+                            type="button"
+                            class="btn btn-secondary"
+                            id="btnAnterior"
+                            style="display:none;">
+                            Anterior
+                        </button>
+
+                        <button
+                            type="button"
+                            class="btn btn-warning"
+                            id="btnSiguiente">
+                            Siguiente
+                        </button>
+
+                        <button
+                            type="button"
+                            class="btn btn-success"
+                            id="btnGuardarElemento"
+                            style="display:none;">
+                            Guardar Equipo
+                        </button>
+
                     </div>
-                    <div class="col-md-6">
-                        <input type="file" id="foto" class="form-control input-dark">
-                        <div class="text-center mt-2"><img id="preview" src="" class="img-thumbnail" style="max-width: 150px; display: none; background: #000; border-color: #ffd700;"></div>
-                        <small class="text-danger fw-bold mt-1" id="error_foto"></small>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer border-0 p-4" style="background: rgba(0,0,0,0.5);">
-                <button class="btn fw-bold px-4" style="background: rgba(255,255,255,0.05); color: #fff; border: 1px solid rgba(255,255,255,0.1);" data-bs-dismiss="modal">Cancelar</button>
-                <button class="btn btn-hero-gold px-4" onclick="crearElemento()" id="btnGuardar" style="transform:none"><span><i class="ri-save-line me-1"></i> Crear</span></button>
-            </div>
-        </div>
-    </div>
+              </div>
+          </div>
+
+                  
+      </div>
+  </div>
+
 </div>
 
-<div class="backdrop-cat" id="backdropCat"></div>
 
-<!-- MODAL: CATEGORÍA -->
-<div class="modal fade modal-dark" id="modalCategoria" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header border-0" style="background: #000; border-bottom: 1px solid rgba(255,215,0,0.2) !important; padding: 20px 30px;">
-                <h5 class="fw-bold text-uppercase m-0" style="color: #ffd700; font-size: 16px;"><i class="ri-price-tag-3-line me-2"></i> Crear Categoría</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body p-4 p-md-5">
-                <div class="mb-4">
-                    <label class="form-label-custom">Nombre</label>
-                    <select id="cat_nombre" class="form-select input-dark">
-                        <option value="">-- Selecciona --</option>
-                        <option value="maquinas">Máquinas</option><option value="mancuernas">Mancuernas</option>
-                        <option value="discos">Discos</option><option value="barras">Barras</option>
-                    </select>
-                    <small class="text-danger fw-bold mt-1" id="error_cat_nombre"></small>
-                </div>
-                <div class="mb-2">
-                    <label class="form-label-custom">Descripción</label>
-                    <textarea id="cat_descripcion" class="form-control input-dark" rows="3" placeholder="Descripción..."></textarea>
-                    <small class="text-danger fw-bold mt-1" id="error_cat_desc"></small>
-                </div>
-            </div>
-            <div class="modal-footer border-0 p-4" style="background: rgba(0,0,0,0.5);">
-                <button class="btn fw-bold px-4" style="background: rgba(255,255,255,0.05); color: #fff; border: 1px solid rgba(255,255,255,0.1);" id="btnCancelarCategoria">Cancelar</button>
-                <button class="btn btn-hero-gold px-4" onclick="crearCategoria()" id="btnGuardarCat" style="transform:none"><span><i class="ri-save-line me-1"></i> Guardar</span></button>
-            </div>
-        </div>
-    </div>
-</div>
 {% endblock %}
 
 {% block js %}
-<script src='{% static "js/validation.js" %}'></script>
+<script src="{% static 'js/validation.js' %}"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 <script>
-    const swalConfig = { background: "rgba(10,10,10,0.95)", color: "#fff", confirmButtonColor: "#ffd700" };
-    const modalEl = id => document.getElementById(id);
-    const getVal = id => modalEl(id).value.trim();
+document.addEventListener("DOMContentLoaded", function () {
 
-    document.addEventListener('DOMContentLoaded', () => {
-        ['modalCategoria', 'backdropCat'].forEach(id => {
-            const el = modalEl(id);
-            if(el) document.body.appendChild(el);
+    let paso = 1;
+    let categoriaCreada = null;
+
+    const btnSiguiente = document.getElementById("btnSiguiente");
+    const btnAnterior = document.getElementById("btnAnterior");
+    const btnGuardarElemento = document.getElementById("btnGuardarElemento");
+
+    const txtNombreCategoria = document.getElementById("nombreCategoria");
+    const txtDescripcionCategoria = document.getElementById("descripcionCategoria");
+    const txtCategoriaCreada = document.getElementById("categoriaCreada");
+    const txtSerial = document.getElementById("serial");
+    const txtMarca = document.getElementById("marca");
+    const txtNombre = document.getElementById("nombre");
+    const txtPeso = document.getElementById("peso");
+    const txtUnidad = document.getElementById("unidad_peso");
+    const txtEstado = document.getElementById("estado");
+    const txtFecha = document.getElementById("fecha_compra");
+    const txtCantidad = document.getElementById("cantidad");
+    const txtFoto = document.getElementById("foto");
+
+    if (!btnSiguiente) return;
+
+    function mostrarPaso(numero){
+
+        document.querySelectorAll(".wizard-step").forEach(step=>{
+            step.style.display="none";
         });
-    });
 
-    // Preview Imagen
-    modalEl('foto').addEventListener('change', function() {
-        const file = this.files[0];
-        const preview = modalEl('preview');
-        if (!file || !file.type.startsWith('image/')) {
-            if(file) Swal.fire({...swalConfig, icon: "warning", title: "Formato no válido"});
-            this.value = ''; preview.style.display = 'none'; return;
+        document.getElementById("step"+numero).style.display="block";
+
+        paso = numero;
+
+        // Botón anterior
+        btnAnterior.style.display = (paso === 1) ? "none" : "inline-block";
+
+        // Solo existen 2 pasos
+        if(paso === 1){
+
+            btnSiguiente.style.display = "inline-block";
+            btnGuardarElemento.style.display = "none";
+
+        }else{
+
+            btnSiguiente.style.display = "none";
+            btnGuardarElemento.style.display = "inline-block";
+
         }
-        const reader = new FileReader();
-        reader.onload = e => { preview.src = e.target.result; preview.style.display = 'block'; };
-        reader.readAsDataURL(file);
+
+        document.querySelectorAll(".wizard-indicator").forEach((item,index)=>{
+
+            if(index + 1 <= paso){
+
+                item.classList.add("active");
+
+            }else{
+
+                item.classList.remove("active");
+
+            }
+
+        });
+
+    }
+
+    btnSiguiente.addEventListener("click", function () {
+
+        if (paso !== 1) return;
+
+        if (
+            txtNombreCategoria.value.trim() === "" ||
+            txtDescripcionCategoria.value.trim() === ""
+        ) {
+
+            Swal.fire({
+                icon: "warning",
+                title: "Campos obligatorios",
+                text: "Debe ingresar el nombre y la descripción de la categoría."
+            });
+
+            return;
+        }
+
+        fetch("{% url 'gimnasio:crear_categoria_ajax' %}", {
+
+            method: "POST",
+
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": document.querySelector("[name=csrfmiddlewaretoken]").value
+            },
+
+            body: JSON.stringify({
+
+                nombre_categoria: txtNombreCategoria.value,
+                descripcion: txtDescripcionCategoria.value
+
+            })
+
+        })
+
+        .then(response => response.json())
+
+        .then(data => {
+
+            if (data.error) {
+
+                Swal.fire({
+                    icon: "error",
+                    title: "Error",
+                    text: data.error
+                });
+
+                return;
+            }
+
+            categoriaCreada = data.id;
+
+            txtCategoriaCreada.value = data.nombre;
+
+            mostrarPaso(2);
+
+        })
+
+        .catch(error => {
+
+            console.error(error);
+
+            Swal.fire({
+                icon: "error",
+                title: "Error",
+                text: "No fue posible crear la categoría."
+            });
+
+        });
+
     });
 
-    // Modales Apilados
-    const mCat = new bootstrap.Modal(modalEl('modalCategoria'), { backdrop: false, keyboard: false });
-    modalEl('btnAbrirModalCategoria').onclick = () => { modalEl('backdropCat').classList.add('show'); mCat.show(); };
-    
-    const closeCat = () => { modalEl('backdropCat').classList.remove('show'); mCat.hide(); modalEl('modalElemento').focus(); };
-    modalEl('modalCategoria').addEventListener('hidden.bs.modal', closeCat);
-    modalEl('backdropCat').onclick = closeCat;
-    modalEl('btnCancelarCategoria').onclick = closeCat;
+    btnAnterior.addEventListener("click",function(){
 
-    async function ajaxPost(url, body, isJson = true) {
-        const headers = { "X-CSRFToken": '{{ csrf_token }}' };
-        if(isJson) headers["Content-Type"] = "application/json";
-        const res = await fetch(url, { method: "POST", headers, body });
-        return res.json();
+        if(paso === 2){
+
+            mostrarPaso(1);
+
+        }
+
+    });
+    btnGuardarElemento.addEventListener("click", function () {
+
+    let datos = new FormData();
+
+    datos.append("serial", txtSerial.value);
+    datos.append("marca", txtMarca.value);
+    datos.append("nombre", txtNombre.value);
+    datos.append("peso", txtPeso.value);
+    datos.append("unidad_peso", txtUnidad.value);
+    datos.append("estado", txtEstado.value);
+    datos.append("fecha_compra", txtFecha.value);
+    datos.append("categoria", categoriaCreada);
+    datos.append("cantidad", txtCantidad.value);
+
+    if (txtFoto.files.length > 0) {
+        datos.append("foto", txtFoto.files[0]);
     }
 
-    async function crearElemento() {
-        if(typeof validarFormulario === "function" && !validarFormulario("modalElemento")) return;
-        modalEl("btnGuardar").disabled = true;
-        const fd = new FormData();
-        fd.append("serial", getVal("serial"));
-        fd.append("marca", getVal("marca"));
-        fd.append("nombre", getVal("nombre_elemento"));
-        fd.append("peso", getVal("peso"));
-        fd.append("estado", getVal("Estado"));
-        fd.append("categoria", getVal("categoria"));
-        fd.append("cantidad", getVal("cantidad"));
-        if(modalEl("foto").files[0]) fd.append("foto", modalEl("foto").files[0]);
+    fetch("{% url 'gimnasio:crear_elemento_ajax' %}", {
 
-        try {
-            const data = await ajaxPost("{% url 'gimnasio:crear_elemento_ajax' %}", fd, false);
-            if (data.error) throw new Error(data.error);
-            const select = document.querySelector('[name="nombre_elemento"]');
-            select.add(new Option(data.nombre, data.id, true, true));
-            Swal.fire({...swalConfig, icon: "success", title: "Creado"});
-            bootstrap.Modal.getInstance(modalEl('modalElemento')).hide();
-        } catch (e) { Swal.fire({...swalConfig, icon: "error", title: "Error", text: e.message}); }
-        modalEl("btnGuardar").disabled = false;
-    }
+        method: "POST",
 
-    async function crearCategoria() {
-        const nombre = getVal('cat_nombre'), desc = getVal('cat_descripcion');
-        if (!nombre || !desc) return Swal.fire({...swalConfig, icon: "warning", title: "Campos obligatorios"});
-        modalEl('btnGuardarCat').disabled = true;
-        try {
-            const data = await ajaxPost("{% url 'gimnasio:crear_categoria_ajax' %}", JSON.stringify({ nombre_categoria: nombre, descripcion: desc }));
-            if (data.error) throw new Error(data.error);
-            const selectCat = modalEl('categoria');
-            selectCat.add(new Option(data.nombre, data.id, true, true));
-            Swal.fire({...swalConfig, icon: "success", title: "Categoría creada", timer: 1500, showConfirmButton: false});
-            mCat.hide();
-        } catch (e) { Swal.fire({...swalConfig, icon: "error", title: "Error", text: e.message}); }
-        modalEl('btnGuardarCat').disabled = false;
-    }
+        headers: {
+            "X-CSRFToken": document.querySelector("[name=csrfmiddlewaretoken]").value
+        },
+
+        body: datos
+
+    })
+
+    .then(response => response.json())
+
+    .then(data => {
+
+        console.log("Respuesta del servidor:", data);
+
+        if (data.error) {
+
+            console.error(data.error);
+
+            Swal.fire({
+                icon: "error",
+                title: "Error",
+                text: data.error
+            });
+
+            return;
+
+        }
+
+        Swal.fire({
+            icon: "success",
+            title: "Equipo creado correctamente",
+            text: data.nombre
+        });
+
+    })
+
+    .catch(error => {
+
+        console.error(error);
+
+        Swal.fire({
+            icon: "error",
+            title: "Error",
+            text: "No fue posible crear el equipo."
+        });
+
+    });
+
+});
+    mostrarPaso(1);
+
+});
 </script>
 {% endblock %}

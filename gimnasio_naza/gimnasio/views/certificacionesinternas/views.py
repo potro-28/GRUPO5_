@@ -130,6 +130,11 @@ class CertificacioninternaDeleteView(DeleteView):
         context['listar_url'] = reverse_lazy(
             'gimnasio:listar_certificacioninterna')
         return context
+    
+    def form_valid(self, form):
+        messages.success(self.request, 'Certificación interna eliminada correctamente')
+        return super().form_valid(form)
+
 
 
 class CertificacioninternaUser(View):

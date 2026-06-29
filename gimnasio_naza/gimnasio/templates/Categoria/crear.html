@@ -97,19 +97,165 @@
 {% if form.errors %}
 <script>
 Swal.fire({
-    title: "Error", text: "Verifica los campos ingresados", icon: "error",
-    background: "rgba(10,10,10,0.95)", color: "#fff", confirmButtonColor: "#ffd700"
+    title: "Error",
+    text: "Verifica los campos ingresados",
+    icon: "error",
+    background: "rgba(10,10,10,0.95)",
+    color: "#fff",
+    confirmButtonColor: "#ffd700"
 });
 </script>
 {% endif %}
 
 <script>
-document.addEventListener("DOMContentLoaded", function() {
-    const input = document.querySelector("input[name='peso_equipo']");
-    if (input) {
-        input.addEventListener("input", function() { this.value = this.value.replace(",", "."); });
-        input.addEventListener("blur", function() { if (parseFloat(this.value) < 1) { this.value = "1"; } });
+document.addEventListener("DOMContentLoaded", function () {
+
+    // ===============================
+    // FUNCIONES DE VALIDACIÓN
+    // ===============================
+
+    function setError(field, mensaje) {
+
+        field.classList.remove("is-valid");
+        field.classList.add("is-invalid");
+
+        let feedback = field.parentNode.querySelector(".invalid-feedback");
+
+        if (!feedback) {
+            feedback = document.createElement("div");
+            feedback.className = "invalid-feedback d-block fw-bold mt-2";
+            feedback.style.color = "#ff4d4f";
+            field.parentNode.appendChild(feedback);
+        }
+
+        feedback.innerHTML = mensaje;
     }
+
+    function setOk(field) {
+
+        field.classList.remove("is-invalid");
+        field.classList.add("is-valid");
+
+        const feedback = field.parentNode.querySelector(".invalid-feedback");
+
+        if (feedback) {
+            feedback.innerHTML = "";
+        }
+    }
+
+    // ===============================
+    // CAMPOS
+    // ===============================
+
+    const categoria = document.querySelector("[name='nombre_categoria']");
+    const descripcion = document.querySelector("[name='descripcion']");
+
+    // ===============================
+    // VALIDAR NOMBRE CATEGORÍA
+    // ===============================
+
+    function validarCategoria() {
+
+        const valor = categoria.value.trim();
+
+        if (valor === "") {
+            setError(categoria, "El nombre es obligatorio.");
+            return false;
+        }
+
+        if (!/^[A-Za-zÁÉÍÓÚáéíóúÑñ ]+$/.test(valor)) {
+            setError(categoria, "El nombre no puede contener números.");
+            return false;
+        }
+
+        if (valor.length < 3) {
+            setError(categoria, "El nombre debe tener mínimo 3 caracteres.");
+            return false;
+        }
+
+        if (valor.length > 45) {
+            setError(categoria, "El nombre no puede superar los 45 caracteres.");
+            return false;
+        }
+
+        setOk(categoria);
+        return true;
+    }
+
+    // ===============================
+    // VALIDAR DESCRIPCIÓN
+    // ===============================
+
+    function validarDescripcion() {
+
+        const valor = descripcion.value.trim();
+
+        if (valor === "") {
+            setError(descripcion, "La descripción es obligatoria.");
+            return false;
+        }
+
+        if (valor.length < 10) {
+            setError(descripcion, "La descripción debe tener mínimo 10 caracteres.");
+            return false;
+        }
+
+        if (valor.length > 250) {
+            setError(descripcion, "La descripción no puede superar los 250 caracteres.");
+            return false;
+        }
+
+        setOk(descripcion);
+        return true;
+    }
+
+    // ===============================
+    // EVENTOS
+    // ===============================
+
+    if (categoria) {
+        categoria.addEventListener("input", validarCategoria);
+        categoria.addEventListener("blur", validarCategoria);
+    }
+
+    if (descripcion) {
+        descripcion.addEventListener("input", validarDescripcion);
+        descripcion.addEventListener("blur", validarDescripcion);
+    }
+
+    // ===============================
+    // VALIDAR FORMULARIO
+    // ===============================
+
+    const formulario = document.querySelector("form");
+
+    formulario.addEventListener("submit", function (e) {
+
+        let valido = true;
+
+        if (categoria && !validarCategoria())
+            valido = false;
+
+        if (descripcion && !validarDescripcion())
+            valido = false;
+
+        if (!valido) {
+
+            e.preventDefault();
+
+            Swal.fire({
+                title: "Formulario incompleto",
+                text: "Corrige los campos marcados en rojo.",
+                icon: "error",
+                background: "rgba(10,10,10,0.95)",
+                color: "#fff",
+                confirmButtonColor: "#ffd700"
+            });
+
+        }
+
+    });
+
 });
 </script>
 {% endblock %}

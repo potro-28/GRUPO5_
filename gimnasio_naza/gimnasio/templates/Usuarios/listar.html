@@ -119,10 +119,44 @@
                         <td class="text-center">{{ u.genero_usuario }}</td>
                         <td class="text-center">
                             <a href="{% url 'gimnasio:editar_usuario' u.id %}" class="btn btn-sm" style="background: rgba(255,215,0,0.1); color: #ffd700; border: 1px solid #ffd700; border-radius: 4px; padding: 6px 12px; transition: 0.3s;"><i class="fas fa-edit"></i></a>
-                            <form action="{% url 'gimnasio:eliminar_usuario' u.id %}" method="post" class="d-inline ms-1">
-                                {% csrf_token %}
-                                <button type="submit" class="btn btn-sm" style="background: rgba(255,255,255,0.05); color: #fff; border: 1px solid rgba(255,255,255,0.2); border-radius: 4px; padding: 6px 12px; transition: 0.3s;" onclick="return confirm('¿Estás seguro de eliminar este usuario?');"><i class="fas fa-trash"></i></button>
-                            </form>
+                            <form
+    id="form-{{ u.id }}"
+    action="{% url 'gimnasio:eliminar_usuario' u.id %}"
+    method="post"
+    class="d-inline ms-1">
+
+    {% csrf_token %}
+
+    <button
+        type="button"
+        class="btn btn-sm"
+
+        style="
+            background:
+            {% if u.estado == 'activo' %}
+                rgba(220,53,69,.10);
+                color:#dc3545;
+                border:1px solid #dc3545;
+            {% else %}
+                rgba(40,167,69,.10);
+                color:#28a745;
+                border:1px solid #28a745;
+            {% endif %}
+            border-radius:4px;
+            padding:6px 12px;
+            transition:.3s;"
+
+        onclick="cambiarEstado('{{ u.id }}','{{ u.estado }}')">
+
+        {% if u.estado == "activo" %}
+            <i class="fas fa-user-slash"></i>
+        {% else %}
+            <i class="fas fa-user-check"></i>
+        {% endif %}
+
+    </button>
+
+</form>
                         </td>
                     </tr>
                     {% empty %}
@@ -136,29 +170,133 @@
 {% endblock %}
 
 {% block js %}
+
 <script src="{% static 'lib/datatables-1.10.20/js/jquery.dataTables.min.js' %}"></script>
 <script src="{% static 'lib/datatables-1.10.20/js/dataTables.bootstrap4.min.js' %}"></script>
 <script src="{% static 'lib/datatables-1.10.20/plugins/responsive-2.2.3/js/dataTables.responsive.min.js' %}"></script>
 <script src="{% static 'lib/datatables-1.10.20/plugins/responsive-2.2.3/js/responsive.bootstrap4.min.js' %}"></script>
+
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
-    $(function () {
-        $('#tabla-usuarios').DataTable({
-            responsive: true, autoWidth: false, pageLength: 10,
-            language: { url: "{% static 'lib/datatables-1.10.20/spanish.txt' %}" },
-            columnDefs: [ { orderable: false, targets: [0, 15] } ]
-        });
+
+$(function () {
+
+    $('#tabla-usuarios').DataTable({
+
+        responsive: true,
+        autoWidth: false,
+        pageLength: 10,
+
+        language: {
+            url: "{% static 'lib/datatables-1.10.20/spanish.txt' %}"
+        },
+
+        columnDefs: [
+            {
+                orderable: false,
+                targets: [0,15]
+            }
+        ]
+
     });
 
-    {% if messages %}
-        {% for message in messages %}
-            Swal.fire({
-                title: "Notificación", text: "{{ message }}", icon: "success",
-                background: "rgba(10,10,10,0.95)", color: "#fff", confirmButtonColor: "#ffd700",
-                customClass: { popup: 'border border-warning' }
-            });
-        {% endfor %}
-    {% endif %}
+});
+
+
+function cambiarEstado(id, estado){
+
+    let titulo = "";
+    let texto = "";
+    let boton = "";
+    let icono = "";
+
+    if(estado === "activo"){
+
+        titulo = "¿Desactivar usuario?";
+        texto = "El usuario dejará de tener acceso al sistema.";
+        boton = "Sí, desactivar";
+        icono = "warning";
+
+    }else{
+
+        titulo = "¿Activar usuario?";
+        texto = "El usuario volverá a tener acceso al sistema.";
+        boton = "Sí, activar";
+        icono = "question";
+
+    }
+
+    Swal.fire({
+
+        title: titulo,
+
+        text: texto,
+
+        icon: icono,
+
+        background: "rgba(10,10,10,.97)",
+
+        color: "#fff",
+
+        confirmButtonColor: "#ffd700",
+
+        cancelButtonColor: "#6c757d",
+
+        confirmButtonText: boton,
+
+        cancelButtonText: "Cancelar",
+
+        showCancelButton: true,
+
+        reverseButtons: true,
+
+        allowOutsideClick:false
+
+    }).then((result)=>{
+
+        if(result.isConfirmed){
+
+            document.getElementById("form-"+id).submit();
+
+        }
+
+    });
+
+}
+
+
+
+{% if messages %}
+
+{% for message in messages %}
+
+Swal.fire({
+
+    title:"Proceso realizado",
+
+    text:"{{ message }}",
+
+    icon:"success",
+
+    timer:1800,
+
+    showConfirmButton:false,
+
+    background:"rgba(10,10,10,.97)",
+
+    color:"#fff",
+
+    customClass:{
+        popup:'border border-warning'
+    }
+
+});
+
+{% endfor %}
+
+{% endif %}
+
 </script>
+
 {% endblock %}
