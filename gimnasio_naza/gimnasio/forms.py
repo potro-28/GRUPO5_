@@ -4,7 +4,11 @@ from django.forms import ModelForm, formset_factory, inlineformset_factory
 from gimnasio.models import *
 from django import forms
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 from datetime import date, datetime, time, timedelta
+=======
+from datetime import date, time
+>>>>>>> Stashed changes
 =======
 from datetime import date, time
 >>>>>>> Stashed changes
@@ -102,6 +106,7 @@ class ElementoForm(forms.ModelForm):
         return imagen
 
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 
 # ==========================================
 # FORMULARIO DE ACCESO
@@ -127,6 +132,8 @@ from .models import Usuario, Asistencia, Membresia
 # se deja igual a como ya lo tenías)
 # ==========================================
 
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
 class UserForm(forms.ModelForm):
@@ -157,6 +164,7 @@ class UserForm(forms.ModelForm):
             )
         }
 
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream
 
 # ==========================================
@@ -216,6 +224,30 @@ class UsuarioForm(forms.ModelForm):
 
 class UsuarioForm(forms.ModelForm):
 >>>>>>> Stashed changes
+=======
+    def clean_password(self):
+        password = self.cleaned_data.get('password')
+        
+        if password:
+            if len(password) < 7:
+                raise forms.ValidationError('La contraseña debe tener al menos 7 caracteres.')
+            
+            if not re.search(r'[A-Z]', password):
+                raise forms.ValidationError('La contraseña debe contener al menos una letra mayúscula.')
+            
+            if not re.search(r'[a-z]', password):
+                raise forms.ValidationError('La contraseña debe contener al menos una letra minúscula.')
+            
+            if not re.search(r'[0-9]', password):
+                raise forms.ValidationError('La contraseña debe contener al menos un número.')
+            
+            if not re.search(r'[!@#$%^&*(),.?":{}|<>]', password):
+                raise forms.ValidationError('La contraseña debe contener al menos un carácter especial (!@#$%^&*(),.?":{}|<>).')
+        
+        return password
+
+class UsuarioForm(forms.ModelForm):
+>>>>>>> Stashed changes
     foto = forms.ImageField(required=False)
 
     class Meta:
@@ -226,7 +258,10 @@ class UsuarioForm(forms.ModelForm):
             'peso_usuario', 'altura_usuario', 'rol', 'genero_usuario', 'foto',
         ]
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 =======
+=======
+>>>>>>> Stashed changes
         exclude = ['user', 'estado', 'fecha_registro']
 >>>>>>> Stashed changes
 
@@ -238,9 +273,13 @@ class UsuarioForm(forms.ModelForm):
                 'oninput': 'this.value=this.value.replace(/[^0-9]/g,"")'
             }),
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
             'tipo_documento': forms.Select(attrs={
                 'class': 'form-select'
             }),
+=======
+            'tipo_documento': forms.Select(attrs={'class': 'form-select'}),
+>>>>>>> Stashed changes
 =======
             'tipo_documento': forms.Select(attrs={'class': 'form-select'}),
 >>>>>>> Stashed changes
@@ -255,10 +294,14 @@ class UsuarioForm(forms.ModelForm):
                 'autocomplete': 'off'
             }),
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
             'fecha_nacimiento': forms.DateInput(attrs={
                 'type': 'date',
                 'class': 'form-control'
             }),
+=======
+            'fecha_nacimiento': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
+>>>>>>> Stashed changes
 =======
             'fecha_nacimiento': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
 >>>>>>> Stashed changes
@@ -278,10 +321,14 @@ class UsuarioForm(forms.ModelForm):
                 'class': 'form-control', 'placeholder': 'Altura en cm', 'min': '100', 'max': '230'
             }),
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
             'rol': forms.Select(attrs={
                 'class': 'form-select',
                 'required': 'required'
             }),
+=======
+            'rol': forms.Select(attrs={'class': 'form-select', 'required': 'required'}),
+>>>>>>> Stashed changes
 =======
             'rol': forms.Select(attrs={'class': 'form-select', 'required': 'required'}),
 >>>>>>> Stashed changes
@@ -291,9 +338,12 @@ class UsuarioForm(forms.ModelForm):
         }
 
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
     # =====================================================
     # VALIDAR ROL
     # =====================================================
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
     def clean_rol(self):
@@ -302,6 +352,7 @@ class UsuarioForm(forms.ModelForm):
             raise forms.ValidationError('Debe seleccionar un rol válido.')
         return rol
 
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream
     # =====================================================
     # VALIDAR NOMBRE
@@ -368,6 +419,30 @@ class UsuarioForm(forms.ModelForm):
         return apellido.title()
 
 >>>>>>> Stashed changes
+=======
+    def clean_nombre_usuario(self):
+        nombre = self.cleaned_data.get('nombre_usuario', '').strip()
+        if not re.match(r'^[A-Za-záéíóúÁÉÍÓÚñÑ ]+$', nombre):
+            raise forms.ValidationError('El nombre solo puede contener letras.')
+        if len(nombre) < 2:
+            raise forms.ValidationError('El nombre es demasiado corto.')
+        limpio = nombre.lower().replace(' ', '')
+        if len(set(limpio)) == 1:
+            raise forms.ValidationError('Ingrese un nombre válido.')
+        return nombre.title()
+
+    def clean_apellido_usuario(self):
+        apellido = self.cleaned_data.get('apellido_usuario', '').strip()
+        if not re.match(r'^[A-Za-záéíóúÁÉÍÓÚñÑ ]+$', apellido):
+            raise forms.ValidationError('El apellido solo puede contener letras.')
+        if len(apellido) < 2:
+            raise forms.ValidationError('El apellido es demasiado corto.')
+        limpio = apellido.lower().replace(' ', '')
+        if len(set(limpio)) == 1:
+            raise forms.ValidationError('Ingrese un apellido válido.')
+        return apellido.title()
+
+>>>>>>> Stashed changes
     def clean_fecha_nacimiento(self):
         fecha_nacimiento = self.cleaned_data.get('fecha_nacimiento')
         if fecha_nacimiento is None:
@@ -376,12 +451,18 @@ class UsuarioForm(forms.ModelForm):
 
 =======
             raise forms.ValidationError("Por favor ingresa una fecha de nacimiento.")
+<<<<<<< Updated upstream
 >>>>>>> Stashed changes
         hoy = date.today()
         if fecha_nacimiento >= hoy:
 <<<<<<< Updated upstream
             raise forms.ValidationError('La fecha de nacimiento no puede ser hoy ni una fecha futura.')
 
+=======
+        hoy = date.today()
+        if fecha_nacimiento >= hoy:
+            raise forms.ValidationError("La fecha de nacimiento no puede ser hoy ni una fecha futura.")
+>>>>>>> Stashed changes
         if fecha_nacimiento.year < 1900:
             raise forms.ValidationError('La fecha de nacimiento debe ser posterior al año 1900.')
 
@@ -409,6 +490,9 @@ class UsuarioForm(forms.ModelForm):
             raise forms.ValidationError("La fecha de nacimiento no es válida, verifica el año ingresado.")
         return fecha_nacimiento
 
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
     def clean_telefono_usuario(self):
         telefono = self.cleaned_data.get('telefono_usuario')
@@ -419,6 +503,7 @@ class UsuarioForm(forms.ModelForm):
                 )
         return telefono
 
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream
     # =====================================================
     # VALIDAR CORREO (duplicados, dejado explícito porque
@@ -517,6 +602,8 @@ def validar_password(password):
         return 'Debe contener al menos un símbolo (ej: ! @ # $ % &).'
     return None
 
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
 class MantenimientoForm(forms.ModelForm):
