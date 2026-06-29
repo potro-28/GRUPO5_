@@ -4,6 +4,7 @@ from django.views import View
 from django.urls import reverse_lazy
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth import update_session_auth_hash
 
 from gimnasio.models import Usuario
 from gimnasio.forms import UsuarioForm, UserForm
@@ -149,13 +150,16 @@ class UsuarioUpdateView(LoginRequiredMixin, UpdateView):
 
         if password:
             user.set_password(password)
-        user.save()
+            user.save()
+            # Mantiene la sesión activa del usuario autenticado tras el cambio de contraseña
+            update_session_auth_hash(self.request, user)
+        else:
+            user.save()
 
         usuario_form.save() # Actualiza los datos del perfil (incluyendo el nuevo rol asignado)
 
         messages.success(self.request, 'Usuario actualizado correctamente')
-        # CORRECCIÓN: Cambiado super().form_valid() por redirección explícita segura
-        return redirect(self.success_url) 
+        return redirect(self.success_url)
 
     def form_invalid(self, usuario_form, user_form):
         return self.render_to_response(

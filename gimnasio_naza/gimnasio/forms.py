@@ -3,7 +3,7 @@ import re
 from django.forms import ModelForm, formset_factory, inlineformset_factory
 from gimnasio.models import *
 from django import forms
-from datetime import date
+from datetime import date, datetime, time, timedelta
 from django.utils import timezone
 from django.contrib.auth.models import User
 from django.shortcuts import render

@@ -77,7 +77,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'gimnasio_db',
         'USER': 'root',
-        'PASSWORD': '123456789',
+        'PASSWORD': 'zamir2580*',
         'HOST': 'localhost',
         'PORT' : '3306',
     }
@@ -172,7 +172,7 @@ LOGGING = {
 LOGIN_URL = '/login/'  # Ajusta a la URL real de tu vista de login
 LOGIN_REDIRECT_URL = '/' # A dónde va tras loguearse
 
-# Cierre automático de sesión (3 minutos = 180 segundos)
-SESSION_COOKIE_AGE = 180 
+# Cierre automático de sesión (8 horas = 28800 segundos)
+SESSION_COOKIE_AGE = 28800
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
-SESSION_SAVE_EVERY_REQUEST = True # Reinicia el contador de 3 min si el usuario hace clic en algo
+SESSION_SAVE_EVERY_REQUEST = True  # Reinicia el contador si el usuario hace clic en algo

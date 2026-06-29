@@ -47,7 +47,15 @@
                     {% for field in user_form.visible_fields %}
                         <div class="col-12 col-lg-6 mb-3">
                             <label class="form-label-custom">{{ field.label }}</label>
-                            {% render_field field class="form-control input-dark" required="required" %}
+                            {% if field.name == 'password' %}
+                                <div style="position: relative;">
+                                    {% render_field field class="form-control input-dark" required="required" id="password-field" %}
+                                    <i class="fas fa-eye" id="toggle-password" style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); cursor: pointer; color: #ffd700;"></i>
+                                    <div id="password-feedback" style="display: none;"></div>
+                                </div>
+                            {% else %}
+                                {% render_field field class="form-control input-dark" required="required" %}
+                            {% endif %}
                             {% if field.errors %}<div class="text-danger small mt-1 fw-bold" style="color:#ff4d4f!important;">{{ field.errors|striptags }}</div>{% endif %}
                             <div class="invalid-feedback fw-bold" style="color:#ff4d4f;"></div>
                         </div>
@@ -329,8 +337,8 @@ if (passwordField) {
 
         let mensaje = '';
 
-        if (valor.length < 6) {
-            mensaje = 'Mínimo 8 caracteres';
+        if (valor.length < 7) {
+            mensaje = 'Mínimo 7 caracteres';
         }
         else if (!/[A-Z]/.test(valor)) {
             mensaje = 'Debe contener una letra mayúscula';
@@ -338,8 +346,8 @@ if (passwordField) {
         else if (!/[a-z]/.test(valor)) {
             mensaje = 'Debe contener una letra minúscula';
         }
-        else if (!/[0-9]/.test(valor)) {
-            mensaje = 'Debe contener un número';
+        else if (!/[!@#$%^&*(),.?":{}|<>]/.test(valor)) {
+            mensaje = 'Debe contener un carácter especial';
         }
 
         if (mensaje !== '') {

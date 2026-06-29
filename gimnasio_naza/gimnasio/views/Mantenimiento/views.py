@@ -1,6 +1,6 @@
 from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
-from gimnasio.models import Mantenimiento, Elemento,Categoria  # ← importar Elemento y Categoria
+from gimnasio.models import Mantenimiento, Elemento, Categoria
 from gimnasio.forms import MantenimientoForm
 from django.shortcuts import render, redirect
 from django.http import JsonResponse
@@ -9,7 +9,6 @@ from django.views.decorators.csrf import csrf_exempt
 import json
 from django.db import transaction
 from django.utils import timezone
-# Agrega esta vista a tu views.py de mantenimiento (o donde gestiones categorías)
 
 @csrf_exempt
 @require_POST
@@ -77,7 +76,6 @@ def crear_elemento_ajax(request):
         print("Error al crear elemento:", str(e))
         return JsonResponse({'error': str(e)}, status=500)
 
-# HISTORIAL DE MANTENIMIENTO
 class MantenimientoListView(ListView):
     model = Mantenimiento
     template_name = 'Mantenimiento/listar.html'
@@ -92,8 +90,6 @@ class MantenimientoListView(ListView):
         context['total_mantenimientos'] = Mantenimiento.objects.count() 
         return context
 
-
-# REGISTRAR
 class MantenimientoCreateView(CreateView):
     model = Mantenimiento
     form_class = MantenimientoForm
@@ -119,15 +115,13 @@ class MantenimientoCreateView(CreateView):
         context['categorias'] = Categoria.objects.all()
         print("Categorías en contexto:", context['categorias'])
         return context
-# EDITAR
+
 class MantenimientoUpdateView(UpdateView):
     model = Mantenimiento
     form_class = MantenimientoForm
     template_name = 'Mantenimiento/crear.html'
     success_url = reverse_lazy('gimnasio:listar_mantenimiento')
 
-
-# ELIMINAR
 class MantenimientoDeleteView(DeleteView):
     model = Mantenimiento
     template_name = 'Mantenimiento/eliminar.html'

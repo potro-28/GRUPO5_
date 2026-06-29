@@ -5,33 +5,26 @@
     {% include 'header.html' %}
     <div class="main-container">
         {% include "aside.html" %}
-        <main class="content-area">
-            {% block contenido %}
-            {% endblock contenido %}
-        </main>
+        <main class="content-area">{% block contenido %}{% endblock contenido %}</main>
     </div>
 
     <script>
-      document.getElementById('menuToggle').addEventListener('click', function () {
-        if (window.innerWidth > 1024) {
-          document.body.classList.toggle('sidebar-collapsed');
-        } else {
-          document.getElementById('sidebar').classList.toggle('mobile-active');
-        }
-      });
+      const menuToggle = document.getElementById('menuToggle');
+      if(menuToggle) {
+        menuToggle.addEventListener('click', () => {
+          if (window.innerWidth > 1024) document.body.classList.toggle('sidebar-collapsed');
+          else document.getElementById('sidebar').classList.toggle('mobile-active');
+        });
+      }
       
-      document.querySelectorAll('.submenu-toggle').forEach((toggle) => {
-        toggle.addEventListener('click', function (e) {
+      document.querySelectorAll('.submenu-toggle').forEach(t => {
+        t.addEventListener('click', function(e) {
           e.preventDefault();
           if (!document.body.classList.contains('sidebar-collapsed')) {
-            const parentLi = this.parentElement;
-            parentLi.classList.toggle('open');
-            const icon = this.querySelector('.arrow-icon');
-            if (parentLi.classList.contains('open')) {
-              icon.classList.replace('fa-chevron-right', 'fa-chevron-down');
-            } else {
-              icon.classList.replace('fa-chevron-down', 'fa-chevron-right');
-            }
+            const p = this.parentElement; p.classList.toggle('open');
+            const i = this.querySelector('.arrow-icon');
+            i.classList.toggle('fa-chevron-right', !p.classList.contains('open'));
+            i.classList.toggle('fa-chevron-down', p.classList.contains('open'));
           }
         });
       });
@@ -46,113 +39,150 @@
     <script src="{% static 'assets/vendor/libs/apex-charts/apexcharts.js' %}"></script>
     <script src="{% static 'assets/js/main.js' %}"></script>
     <script src="{% static 'assets/js/dashboards-analytics.js' %}"></script>
-    <script async="async" defer="defer" src="https://buttons.github.io/buttons.js"></script>
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
     <script src="{% static 'lib/sweetalert2/sweetalert2.all.min.js' %}"></script>
+    
     <style>
-        .search-container {
-          max-width: 220px !important;
-          width: 220px !important;
-          position: relative;
-        }
-        #input-buscar {
-          width: 100% !important;
-          padding: 6px 12px !important;
-          font-size: 0.85rem !important;
-          background: rgba(255, 255, 255, 0.05) !important;
-          border: 1px solid var(--border-color) !important;
-          color: #ffffff !important;
-          border-radius: var(--border-radius-btn) !important;
-        }  
-        .resultados-dropdown {
-            position: absolute;
-            top: calc(100% + 6px);
-            left: 0;
-            right: 0;
-            background: var(--bg-surface);
-            border-radius: var(--border-radius-card);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.6);
-            z-index: 9999;
-            overflow: hidden;
-            min-width: 240px;
-            border: 1px solid var(--border-color);
-        }
-        .resultado-item {
-            display: flex;
-            align-items: center;
-            padding: 10px 16px;
-            color: var(--text-muted);
-            text-decoration: none;
-            font-size: 0.88rem;
-            transition: var(--transition);
-        }
-        .resultado-item:hover {
-            background: var(--bg-surface-hover);
-            color: var(--primary-blue);
-        }
+        .search-container { max-width: 220px!important; width: 220px!important; position: relative; }
+        #input-buscar { width: 100%!important; padding: 6px 12px!important; font-size: .85rem!important; background: rgba(255,255,255,.05)!important; border: 1px solid var(--border-color)!important; color: #fff!important; border-radius: var(--border-radius-btn)!important; }  
+        .resultados-dropdown { position: absolute; top: calc(100% + 6px); left: 0; right: 0; background: var(--bg-surface); border-radius: var(--border-radius-card); box-shadow: 0 10px 30px rgba(0,0,0,.6); z-index: 9999; overflow: hidden; min-width: 240px; border: 1px solid var(--border-color); }
+        .resultado-item { display: flex; align-items: center; padding: 10px 16px; color: var(--text-muted); text-decoration: none; font-size: .88rem; transition: var(--transition); }
+        .resultado-item:hover { background: var(--bg-surface-hover); color: var(--primary-blue); }
+
+        /* ACCESIBILIDAD - POSICIÓN MARCADA EN LA IMAGEN */
+        #accesibilidad-widget { position: fixed; bottom: 50px; right: 10px; z-index: 10000; font-family: sans-serif; }
+        #btn-accesibilidad-toggle { width: 45px; height: 45px; border-radius: 50%; background: #000; border: 2px solid #fff; color: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 15px rgba(0,0,0,.4); transition: .2s; }
+        #btn-accesibilidad-toggle:hover { transform: scale(1.1); }
+        #btn-accesibilidad-toggle svg { width: 24px; height: 24px; fill: currentColor; }
+
+        #accesibilidad-panel { position: absolute; bottom: 55px; right: 0; width: 220px; background: #1a4a4a; border-radius: 15px; padding: 15px; display: none; flex-direction: column; gap: 10px; box-shadow: 0 8px 25px rgba(0,0,0,.5); border: 1px solid rgba(255,255,255,.1); }
+        #accesibilidad-panel.activo { display: flex; }
+        .accesibilidad-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+        .accesibilidad-btn { background: #fff; border: none; border-radius: 10px; padding: 8px 2px; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 4px; transition: .15s; color: #1a3a5c; font-size: 10px; font-weight: 700; text-align: center; line-height: 1.1; min-height: 60px; justify-content: center; }
+        .accesibilidad-btn:hover { background: #e0f7fa; transform: translateY(-2px); }
+        .accesibilidad-btn.activo { background: #ffd700; box-shadow: 0 0 0 2px #ffd70066; }
+        .accesibilidad-btn svg, .accesibilidad-btn .icono-letra { width: 20px; height: 20px; fill: #1a3a5c; font-size: 16px; font-weight: bold; display: flex; align-items: center; justify-content: center; }
+
+        #daltonismo-submenu { display: none; grid-template-columns: 1fr 1fr; gap: 5px; }
+        #daltonismo-submenu.visible { display: grid; }
+        .daltonismo-opcion { border: none; border-radius: 8px; padding: 6px 2px; cursor: pointer; font-size: 9px; font-weight: 700; color: #fff; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 3px; }
+        .daltonismo-opcion.activo { outline: 2px solid #fff; }
+        .daltonismo-ninguno { background: #6c757d; } .daltonismo-protanopia { background: #e74c3c; } .daltonismo-deuteranopia { background: #27ae60; } .daltonismo-tritanopia { background: #3498db; }
+
+        .btn-restablecer { background: #ff6b6b; border: none; border-radius: 10px; padding: 10px; cursor: pointer; color: #fff; font-size: 11px; font-weight: 700; width: 100%; display: flex; align-items: center; justify-content: center; gap: 5px; }
+        #indicador-accesibilidad { position: fixed; top: 20px; right: 20px; background: #1a4a4a; color: #fff; padding: 8px 15px; border-radius: 8px; font-size: 12px; font-weight: 700; display: none; z-index: 10001; box-shadow: 0 4px 12px rgba(0,0,0,.3); }
+
+        body.alto-contraste, body.alto-contraste * { background: #000!important; color: #ff0!important; border-color: #ff0!important; filter: contrast(1.2); }
+        @font-face { font-family: 'OpenDyslexic'; src: url('https://cdn.jsdelivr.net/npm/open-dyslexic@1.0.0/ttf/OpenDyslexic-Regular.ttf'); }
+        body.modo-dislexia, body.modo-dislexia * { font-family: 'OpenDyslexic', sans-serif!important; }
+        body.daltonismo-protanopia { filter: url('#protanopia')!important; }
+        body.daltonismo-deuteranopia { filter: url('#deuteranopia')!important; }
+        body.daltonismo-tritanopia { filter: url('#tritanopia')!important; }
     </style>
 
     <script>
         const modulos = [
-            { nombre: "Asistencia",          url: "{% url 'gimnasio:listar_asistencia' %}",       icono: "fa-solid fa-calendar-check" },
-            { nombre: "Membresía",           url: "{% url 'gimnasio:listar_membresia' %}",         icono: "fa-solid fa-crown" },
-            { nombre: "Notificaciones",      url: "{% url 'gimnasio:listar_notificacion' %}",    icono: "fa-solid fa-bell" },
-            { nombre: "Usuarios",            url: "{% url 'gimnasio:listar_usuario' %}",          icono: "fa-solid fa-users" },
-            { nombre: "Registro Visitantes", url: "{% url 'gimnasio:listar_registrovisitante' %}", icono: "fa-solid fa-person-walking" },
-            { nombre: "Nutrición",           url: "{% url 'gimnasio:listar_nutriciones' %}",         icono: "fa-solid fa-utensils" },
-            { nombre: "Rutinas",             url: "{% url 'gimnasio:listar_rutinas' %}",             icono: "fa-solid fa-dumbbell" },
-            { nombre: "Masa Corporal",       url: "{% url 'gimnasio:listar_masa_corporal_clas' %}",     icono: "fa-solid fa-weight-scale" },
-            { nombre: "Certificaciones",     url: "{% url 'gimnasio:listar_certificacioninterna' %}",   icono: "fa-solid fa-award" },
-            { nombre: "Elementos",           url: "{% url 'gimnasio:listar_elementos' %}",         icono: "fa-solid fa-cogs" },
-            { nombre: "Mantenimiento",       url: "{% url 'gimnasio:listar_mantenimiento' %}",     icono: "fa-solid fa-wrench" },
-            { nombre: "Reportes",            url: "{% url 'gimnasio:listar_Reportes_estadisticas' %}",                 icono: "fa-solid fa-chart-line" },
-            { nombre: "Categorías",          url: "{% url 'gimnasio:listar_categorias' %}",        icono: "fa-solid fa-tags" },
-            { nombre: "Turnos Entrenadores", url: "{% url 'gimnasio:listar_turnodeentrenador' %}", icono: "fa-solid fa-calendar-days" },
-            { nombre: "Encuestas",           url: "{% url 'gimnasio:listar_encuestas' %}",         icono: "fa-solid fa-poll" },
-            { nombre: "Soporte PQRS",        url: "{% url 'gimnasio:listar_Soporte_PQRS' %}",           icono: "fa-solid fa-headset" },
-            { nombre: "Sanciones",           url: "{% url 'gimnasio:listar_sanciones_clas' %}",         icono: "fa-solid fa-gavel" }
+            { n: "Asistencia", u: "{% url 'gimnasio:listar_asistencia' %}", i: "fa-solid fa-calendar-check" },
+            { n: "Membresía", u: "{% url 'gimnasio:listar_membresia' %}", i: "fa-solid fa-crown" },
+            { n: "Notificaciones", u: "{% url 'gimnasio:listar_notificacion' %}", i: "fa-solid fa-bell" },
+            { n: "Usuarios", u: "{% url 'gimnasio:listar_usuario' %}", i: "fa-solid fa-users" },
+            { n: "Registro Visitantes", u: "{% url 'gimnasio:listar_registrovisitante' %}", i: "fa-solid fa-person-walking" },
+            { n: "Nutrición", u: "{% url 'gimnasio:listar_nutriciones' %}", i: "fa-solid fa-utensils" },
+            { n: "Rutinas", u: "{% url 'gimnasio:listar_rutinas' %}", i: "fa-solid fa-dumbbell" },
+            { n: "Masa Corporal", u: "{% url 'gimnasio:listar_masa_corporal_clas' %}", i: "fa-solid fa-weight-scale" },
+            { n: "Certificaciones", u: "{% url 'gimnasio:listar_certificacioninterna' %}", i: "fa-solid fa-award" },
+            { n: "Elementos", u: "{% url 'gimnasio:listar_elementos' %}", i: "fa-solid fa-cogs" },
+            { n: "Mantenimiento", u: "{% url 'gimnasio:listar_mantenimiento' %}", i: "fa-solid fa-wrench" },
+            { n: "Reportes", u: "{% url 'gimnasio:listar_Reportes_estadisticas' %}", i: "fa-solid fa-chart-line" },
+            { n: "Categorías", u: "{% url 'gimnasio:listar_categorias' %}", i: "fa-solid fa-tags" },
+            { n: "Turnos Entrenadores", u: "{% url 'gimnasio:listar_turnodeentrenador' %}", i: "fa-solid fa-calendar-days" },
+            { n: "Encuestas", u: "{% url 'gimnasio:listar_encuestas' %}", i: "fa-solid fa-poll" },
+            { n: "Soporte PQRS", u: "{% url 'gimnasio:listar_Soporte_PQRS' %}", i: "fa-solid fa-headset" },
+            { n: "Sanciones", u: "{% url 'gimnasio:listar_sanciones_clas' %}", i: "fa-solid fa-gavel" }
         ];
-
-        const inputBuscar  = document.getElementById("input-buscar");
-        const resultadosEl = document.getElementById("resultados-buscar");
-
-        if (inputBuscar && resultadosEl) {
-            inputBuscar.addEventListener("input", function () {
-                const query = this.value.trim().toLowerCase();
-                resultadosEl.innerHTML = "";
-
-                if (query.length === 0) {
-                    resultadosEl.classList.add("d-none");
-                    return;
-                }
-
-                const filtrados = modulos.filter(m => m.nombre.toLowerCase().includes(query));
-
-                if (filtrados.length === 0) {
-                    resultadosEl.innerHTML = `<div class="resultado-item text-muted">Sin resultados</div>`;
-                } else {
-                    filtrados.forEach(m => {
-                        resultadosEl.innerHTML += `
-                            <a href="${m.url}" class="resultado-item">
-                                <i class="${m.icono} me-2"></i>${m.nombre}
-                            </a>`;
-                    });
-                }
-                resultadosEl.classList.remove("d-none");
+        const inp = document.getElementById("input-buscar"), res = document.getElementById("resultados-buscar");
+        if (inp && res) {
+            inp.addEventListener("input", function() {
+                const q = this.value.trim().toLowerCase(); res.innerHTML = "";
+                if (!q) return res.classList.add("d-none");
+                const f = modulos.filter(m => m.n.toLowerCase().includes(q));
+                if (!f.length) res.innerHTML = `<div class="resultado-item text-muted">Sin resultados</div>`;
+                else f.forEach(m => res.innerHTML += `<a href="${m.u}" class="resultado-item"><i class="${m.i} me-2"></i>${m.n}</a>`);
+                res.classList.remove("d-none");
             });
-
-            document.addEventListener("click", function (e) {
-                if (!inputBuscar.contains(e.target) && !resultadosEl.contains(e.target)) {
-                    resultadosEl.classList.add("d-none");
-                }
-            });
-
-            inputBuscar.addEventListener("keydown", function (e) {
-                if (e.key === "Enter") {
-                    const primero = resultadosEl.querySelector("a");
-                    if (primero) primero.click();
-                }
-            });
+            document.addEventListener("click", e => { if(!inp.contains(e.target) && !res.contains(e.target)) res.classList.add("d-none"); });
         }
+    </script>
+
+    <svg style="display:none;"><defs>
+        <filter id="protanopia"><feColorMatrix values="0.567 0.433 0 0 0  0.558 0.442 0 0 0  0 0.242 0.758 0 0  0 0 0 1 0"/></filter>
+        <filter id="deuteranopia"><feColorMatrix values="0.625 0.375 0 0 0  0.7 0.3 0 0 0  0 0.3 0.7 0 0  0 0 0 1 0"/></filter>
+        <filter id="tritanopia"><feColorMatrix values="0.95 0.05 0 0 0  0 0.433 0.567 0 0  0 0.475 0.525 0 0  0 0 0 1 0"/></filter>
+    </defs></svg>
+
+    <div id="indicador-accesibilidad"></div>
+    <div id="accesibilidad-widget">
+      <div id="accesibilidad-panel">
+        <div class="accesibilidad-grid">
+          <button class="accesibilidad-btn" id="btn-aumentar"><span class="icono-letra">A+</span><span>Aumentar</span></button>
+          <button class="accesibilidad-btn" id="btn-disminuir"><span class="icono-letra">A-</span><span>Disminuir</span></button>
+          <button class="accesibilidad-btn" id="btn-contraste"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg><span>Contraste</span></button>
+          <button class="accesibilidad-btn" id="btn-dislexia"><svg viewBox="0 0 24 24"><path d="M12 3L1 9l4 2.18v6L12 21l7-3.82v-6l2-1.09V17h2V9L12 3z"/></svg><span>Dislexia</span></button>
+          <button class="accesibilidad-btn" id="btn-lector"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg><span>Lector</span></button>
+          <button class="accesibilidad-btn" id="btn-daltonismo"><svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5z"/></svg><span>Daltonismo</span></button>
+        </div>
+        <div id="daltonismo-submenu">
+          <button class="daltonismo-opcion daltonismo-ninguno" data-tipo="ninguno">Normal</button>
+          <button class="daltonismo-opcion daltonismo-protanopia" data-tipo="protanopia">Protan</button>
+          <button class="daltonismo-opcion daltonismo-deuteranopia" data-tipo="deuteranopia">Deuter</button>
+          <button class="daltonismo-opcion daltonismo-tritanopia" data-tipo="tritanopia">Tritan</button>
+        </div>
+        <button class="btn-restablecer" id="btn-restablecer">Restablecer</button>
+      </div>
+      <button id="btn-accesibilidad-toggle"><svg viewBox="0 0 24 24"><path d="M12 2c1.1 0 2 .9 2 2s-.9 2-2 2-2-.9-2-2 .9-2 2-2zm9 7h-6v13h-2v-6h-2v6H9V9H3V7h18v2z"/></svg></button>
+    </div>
+
+    <script>
+    (function() {
+      const $ = id => document.getElementById(id), b = document.body, s = localStorage;
+      const t = $('btn-accesibilidad-toggle'), p = $('accesibilidad-panel'), ind = $('indicador-accesibilidad');
+      let cfg = JSON.parse(s.getItem('acc_cfg') || '{"z":100,"l":false,"d":null,"c":false,"dx":false}');
+
+      const save = () => s.setItem('acc_cfg', JSON.stringify(cfg));
+      const msg = txt => { ind.innerText = txt; ind.style.display='block'; setTimeout(()=>ind.style.display='none', 2000); };
+      
+      const apply = () => {
+        b.style.zoom = cfg.z/100;
+        b.classList.toggle('alto-contraste', cfg.c); $('btn-contraste').classList.toggle('activo', cfg.c);
+        b.classList.toggle('modo-dislexia', cfg.dx); $('btn-dislexia').classList.toggle('activo', cfg.dx);
+        $('btn-lector').classList.toggle('activo', cfg.l);
+        if(cfg.d) { b.classList.add('daltonismo-'+cfg.d); $('btn-daltonismo').classList.add('activo'); }
+      };
+
+      t.onclick = e => { e.stopPropagation(); p.classList.toggle('activo'); };
+      document.onclick = e => { if(!$('accesibilidad-widget').contains(e.target)) p.classList.remove('activo'); };
+
+      $('btn-aumentar').onclick = () => { if(cfg.z<200) { cfg.z+=10; b.style.zoom=cfg.z/100; save(); msg(cfg.z+'%'); } };
+      $('btn-disminuir').onclick = () => { if(cfg.z>70) { cfg.z-=10; b.style.zoom=cfg.z/100; save(); msg(cfg.z+'%'); } };
+      $('btn-contraste').onclick = () => { cfg.c=!cfg.c; apply(); save(); };
+      $('btn-dislexia').onclick = () => { cfg.dx=!cfg.dx; apply(); save(); };
+      
+      const read = () => { if(!cfg.l) return; const txt = window.getSelection().toString(); if(txt) { speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(txt); u.lang='es-ES'; speechSynthesis.speak(u); } };
+      $('btn-lector').onclick = () => { cfg.l=!cfg.l; apply(); save(); if(cfg.l) document.onmouseup=read; else document.onmouseup=null; };
+
+      $('btn-daltonismo').onclick = () => $('daltonismo-submenu').classList.toggle('visible');
+      document.querySelectorAll('.daltonismo-opcion').forEach(btn => {
+        btn.onclick = () => {
+          const type = btn.dataset.tipo;
+          b.classList.remove('daltonismo-protanopia','daltonismo-deuteranopia','daltonismo-tritanopia');
+          if(type!=='ninguno') { b.classList.add('daltonismo-'+type); cfg.d=type; } else cfg.d=null;
+          apply(); save();
+        };
+      });
+
+      $('btn-restablecer').onclick = () => { s.removeItem('acc_cfg'); location.reload(); };
+      apply(); if(cfg.l) document.onmouseup=read;
+    })();
     </script>
     {% block js %}{% endblock %}
   </body>
