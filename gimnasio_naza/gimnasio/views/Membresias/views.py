@@ -61,10 +61,6 @@ def crear_usuario_ajax(request):
             fecha_registro=date.today()
         )
 
-        Membresia.objects.create(
-            fk_usuario=usuario
-        )
-
         return JsonResponse({
             'id': usuario.id,
             'nombre': f"{usuario.nombre_usuario} {usuario.apellido_usuario}"

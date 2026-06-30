@@ -207,7 +207,7 @@
             <div id="err_modal_peso" class="text-danger small mt-1 fw-bold" style="color: #ff4d4f;"></div>
           </div>
           <div class="col-md-6">
-            <input type="number" id="altura" step="0.01" class="form-control input-dark" placeholder="Altura (m) Ej: 1.75">
+            <input type="number" id="altura" step="0.01" class="form-control input-dark" placeholder="Altura (cm) Ej: 175">
             <div id="err_modal_altura" class="text-danger small mt-1 fw-bold" style="color: #ff4d4f;"></div>
           </div>
         </div>
@@ -478,9 +478,9 @@
 
     // --- PESO (opcional) ---
     on("peso", "input", function () {
-        if (!this.value.trim()) { renderEstado("peso", "err_modal_peso", null, ""); return; }
+            if (!this.value.trim()) { renderEstado("peso", "err_modal_peso", null, ""); return; }
         const p = parseFloat(this.value);
-        if (isNaN(p) || p < 30 || p > 300) { renderEstado("peso", "err_modal_peso", false, "El peso debe estar entre 30 kg y 300 kg."); return; }
+        if (isNaN(p) || p < 30 || p > 150) { renderEstado("peso", "err_modal_peso", false, "El peso debe estar entre 30 kg y 150 kg."); return; }
         renderEstado("peso", "err_modal_peso", true, "");
     });
 
@@ -488,7 +488,7 @@
     on("altura", "input", function () {
         if (!this.value.trim()) { renderEstado("altura", "err_modal_altura", null, ""); return; }
         const h = parseFloat(this.value);
-        if (isNaN(h) || h < 0.5 || h > 2.5) { renderEstado("altura", "err_modal_altura", false, "La altura debe estar entre 0.5 m y 2.5 m."); return; }
+        if (isNaN(h) || h < 100 || h > 230) { renderEstado("altura", "err_modal_altura", false, "La altura debe estar entre 100 cm y 230 cm."); return; }
         renderEstado("altura", "err_modal_altura", true, "");
     });
 
