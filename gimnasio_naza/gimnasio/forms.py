@@ -435,11 +435,6 @@ class UsuarioForm(forms.ModelForm):
             raise forms.ValidationError('El peso debe estar entre 30 kg y 150 kg.')
         return peso
 
-    def clean_altura_usuario(self):
-        altura = self.cleaned_data.get('altura_usuario')
-        if altura is not None and not (1.00 <= altura <= 2.30):
-            raise forms.ValidationError('La altura debe estar entre 1.00 m y 2.30 m.')
-        return altura
 
 
 # ==========================================
