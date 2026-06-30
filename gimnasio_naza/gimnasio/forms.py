@@ -437,8 +437,8 @@ class UsuarioForm(forms.ModelForm):
 
     def clean_altura_usuario(self):
         altura = self.cleaned_data.get('altura_usuario')
-        if altura is not None and not (1.00 <= altura <= 2.30):
-            raise forms.ValidationError('La altura debe estar entre 1.00 m y 2.30 m.')
+        if altura is not None and not (100 <= altura <= 230):
+            raise forms.ValidationError('La altura debe estar entre 100 cm y 230 cm.')
         return altura
 
 
